@@ -2,8 +2,8 @@ import '../model/trip.dart';
 
 final List<Trip> activeTripList = [
   Trip(
-    start: '11 shogaolu close',
-    end: 'Tejuosho Market',
+    start: 'Abuja Lagos Close',
+    end: 'Osode Market',
     date: '20 Dec 2020',
     cost: 300,
     rating: 4,
