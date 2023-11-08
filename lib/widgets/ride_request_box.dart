@@ -11,7 +11,10 @@ import 'package:ride_on_driver/widgets/spacing.dart';
 
 class RideRequestBox extends StatelessWidget {
   const RideRequestBox(
-      {super.key, required this.onAccept, required this.buttonText, required this.price});
+      {super.key,
+      required this.onAccept,
+      required this.buttonText,
+      required this.price});
   final Function() onAccept;
   final String buttonText;
   final int price;
@@ -95,7 +98,7 @@ class RideRequestBox extends StatelessWidget {
               const HorizontalSpacing(10),
               AppElevatedButton.medium(
                 onPressed: () => AppDialogs.showNegotialtionDialog(context),
-                text: 'Negoiate',
+                text: 'Negotiate',
                 backgroundColor: AppColors.lightGrey,
               ).expand(),
             ],
