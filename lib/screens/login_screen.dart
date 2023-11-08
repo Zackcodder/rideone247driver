@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/screens/forget_password.dart';
-import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/screens/signup_screen.dart';
 import 'package:ride_on_driver/widgets/app_elevated_button.dart';
 import 'package:ride_on_driver/widgets/app_logo.dart';
@@ -13,11 +14,33 @@ import '../core/extensions/build_context_extensions.dart';
 import '../core/extensions/widget_extensions.dart';
 import '../widgets/app_text_button.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  static String id = 'login';
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _isPasswordVisible = false;
+  _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -26,7 +49,9 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             children: [
               const VerticalSpacing(50),
+              //app logo
               const AppLogo(),
+              //welcome note
               SizedBox(
                 width: 220.w,
                 child: Text(
@@ -36,27 +61,47 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const VerticalSpacing(100),
-              const AppTextField(
+              //email text field
+              AppTextField(
                 hintText: 'Cristianoronaldo@gmail.com',
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.alternate_email_rounded,
                   color: AppColors.grey,
                 ),
+                controller: emailController,
               ),
               const VerticalSpacing(20),
-              const AppTextField(
+              //password text field
+              AppTextField(
                 hintText: 'Your Password',
-                prefixIcon: Icon(
-                  Icons.lock_outline_rounded,
-                  color: AppColors.grey,
+                prefixIcon: GestureDetector(
+                  onTap: _togglePasswordVisibility,
+                  child: Icon(
+                    _isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.lock_outline_rounded,
+                    color: AppColors.grey,
+                  ),
                 ),
                 isPassword: true,
+                controller: passwordController,
               ),
               const VerticalSpacing(50),
-              AppElevatedButton.large(
-                onPressed: () => context.pushReplacement(const HomeScreen()),
-                text: 'Login',
-              ),
+              //login button
+              authProvider.signInLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.black),
+                      ),
+                    )
+                  : AppElevatedButton.large(
+                      onPressed: () async {
+                        final email = emailController.text;
+                        final password = passwordController.text;
+                        authProvider.signIn(context, email, password);
+                      },
+                      text: 'Login',
+                    ),
               const VerticalSpacing(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
