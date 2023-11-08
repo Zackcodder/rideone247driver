@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ride_on_driver/model/driver_model.dart';
 import 'package:ride_on_driver/services/authentication_services.dart';
-import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 

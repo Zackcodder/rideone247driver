@@ -84,16 +84,21 @@ class _AppTextFieldState extends State<AppTextField> {
               : widget.prefixIcon,
           suffixIcon: widget.isPassword
               ? Icon(
-                  visible ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  visible
+                      ? Icons.visibility_off_rounded
+                      : Icons.visibility_rounded,
                   color: AppColors.grey,
                 ).onTap(() {
                   setState(() => visible = !visible);
                 })
               : widget.suffixIcon,
-          hintStyle: context.textTheme.bodySmall!.copyWith(color: AppColors.black.withOpacity(0.5)),
+          hintStyle: context.textTheme.bodySmall!
+              .copyWith(color: AppColors.black.withOpacity(0.5)),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: !widget.hasBorder || widget.readOnly ? AppColors.lightGrey : AppColors.yellow,
+              color: !widget.hasBorder || widget.readOnly
+                  ? AppColors.lightGrey
+                  : AppColors.yellow,
             ),
             borderRadius: BorderRadius.all(Radius.circular(10.r)),
           ),
@@ -103,13 +108,17 @@ class _AppTextFieldState extends State<AppTextField> {
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: !widget.hasBorder || widget.readOnly ? AppColors.lightGrey : AppColors.error,
+              color: !widget.hasBorder || widget.readOnly
+                  ? AppColors.lightGrey
+                  : AppColors.error,
             ),
             borderRadius: BorderRadius.all(Radius.circular(10.r)),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: !widget.hasBorder || widget.readOnly ? AppColors.lightGrey : AppColors.error,
+              color: !widget.hasBorder || widget.readOnly
+                  ? AppColors.lightGrey
+                  : AppColors.error,
             ),
             borderRadius: BorderRadius.all(Radius.circular(10.r)),
           ),
