@@ -23,13 +23,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _isPasswordVisible = false;
-  _togglePasswordVisibility() {
-    setState(() {
-      _isPasswordVisible = !_isPasswordVisible;
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -74,34 +67,30 @@ class _LoginScreenState extends State<LoginScreen> {
               //password text field
               AppTextField(
                 hintText: 'Your Password',
-                prefixIcon: GestureDetector(
-                  onTap: _togglePasswordVisibility,
-                  child: Icon(
-                    _isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.lock_outline_rounded,
-                    color: AppColors.grey,
-                  ),
+                prefixIcon: const Icon(
+                  Icons.lock_outline_rounded,
+                  color: AppColors.grey,
                 ),
                 isPassword: true,
                 controller: passwordController,
               ),
               const VerticalSpacing(50),
               //login button
-              authProvider.signInLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.black),
-                      ),
-                    )
-                  : AppElevatedButton.large(
-                      onPressed: () async {
-                        final email = emailController.text;
-                        final password = passwordController.text;
-                        authProvider.signIn(context, email, password);
-                      },
-                      text: 'Login',
-                    ),
+              // authProvider.signInLoading
+              //     ? const Center(
+              //         child: CircularProgressIndicator(
+              //           valueColor: AlwaysStoppedAnimation(Colors.black),
+              //         ),
+              //       )
+              //     :
+              AppElevatedButton.large(
+                onPressed: () async {
+                  final email = emailController.text;
+                  final password = passwordController.text;
+                  authProvider.signIn(context, email, password);
+                },
+                text: 'Login',
+              ),
               const VerticalSpacing(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

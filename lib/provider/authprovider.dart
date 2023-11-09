@@ -41,7 +41,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   //save the driver information data
-  saveDriverDate(String driverEmail, String driverName, String token) async {
+  saveDriverData(String driverEmail, String driverName, String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
     await prefs.setString('driver_email', driverEmail);
@@ -51,13 +51,21 @@ class AuthProvider with ChangeNotifier {
 
   //login function
   signIn(BuildContext context, String email, String password) async {
+    print('signing method in provider service');
     _signInLoading = true;
     final responseData = await _authService.signIn(email, password);
-    if (responseData == 200) {
-      _driverName = responseData['driver']['name'];
-      _driverEmail = responseData['driver']['email'];
-      _token = responseData['token'];
-      await saveDriverDate(driverEmail!, driverName!, token!);
+
+    final loginResponse = DriverModel.fromJson(responseData);
+    print(responseData);
+    if (loginResponse.message == 'success') {
+      print('data gotten');
+      _driverName = loginResponse.data.userDetails.firstName;
+      print(' driver name $_driverName');
+      _driverEmail = loginResponse.data.userDetails.email;
+      print(_driverEmail);
+      _token = loginResponse.data.token;
+      print(_token);
+      await saveDriverData(_driverEmail!, _driverName!, _token!);
       //navigate to home page
       Future.delayed(Duration.zero, () {
         Navigator.pushReplacement(
@@ -65,7 +73,9 @@ class AuthProvider with ChangeNotifier {
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
       });
+      _signInLoading = false;
     } else {
+      print('error');
       setError(responseData['message']);
       _signInLoading = false;
     }

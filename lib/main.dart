@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('this is from the main class $initialdriverEmail ');
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,
