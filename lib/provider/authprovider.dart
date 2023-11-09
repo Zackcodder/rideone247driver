@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ride_on_driver/model/driver_model.dart';
+import 'package:ride_on_driver/model/login_model.dart';
+import 'package:ride_on_driver/model/signup_model.dart';
+import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/services/authentication_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
@@ -7,8 +9,12 @@ import 'package:ride_on_driver/screens/home_screen.dart';
 class AuthProvider with ChangeNotifier {
   bool _signInLoading = false;
   bool get signInLoading => _signInLoading;
+  bool _signUpLoading = false;
+  bool get signUpLoading => _signUpLoading;
   DriverModel? _driver;
   DriverModel? get driver => _driver;
+  SignUpResponse? _driverSignUp;
+  SignUpResponse? get driverSignUp => _driverSignUp;
   String? _driverName;
   String? get driverName => _driverName;
   String? _driverEmail;
@@ -106,5 +112,32 @@ class AuthProvider with ChangeNotifier {
       _signInLoading = false;
     }
     _signInLoading = false;
+  }
+
+  //SignUp
+  signUp(BuildContext context, String firstName, String lastName, String phone,
+      String email, String password, String gender, String role) async {
+    print('signing method in provider service');
+    _signUpLoading = true;
+    final responseData = await _authService.signUp(
+        firstName, lastName, phone, email, password, gender, role);
+
+    final signUpResponse = SignUpResponse.fromJson(responseData);
+    print(responseData);
+    if (signUpResponse.message == 'success') {
+      //navigate to home page
+      Future.delayed(Duration.zero, () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      });
+      _signUpLoading = false;
+    } else {
+      print('error');
+      setError(responseData['message']);
+      _signUpLoading = false;
+    }
+    _signUpLoading = false;
   }
 }
