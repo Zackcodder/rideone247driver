@@ -14,22 +14,32 @@ void main() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? token = prefs.getString('auth_token');
   final String? driverName = prefs.getString('drive_name');
+  final String? driverLastName = prefs.getString('drive_lastname');
   final String? driverEmail = prefs.getString('driver_email');
-  runApp(MyApp(token, driverName, driverEmail));
+  // final int? walletBalance = prefs.getInt('wallet_balance');
+  runApp(MyApp(
+    token,
+    driverName,
+    driverEmail,
+    driverLastName,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final String? initialToken;
   final String? initialdriverName;
+  final String? initialdriverLastName;
+  // final int? initialwalletBalance;
   final String? initialdriverEmail;
-  const MyApp(
-      this.initialToken, this.initialdriverEmail, this.initialdriverName,
+  const MyApp(this.initialToken, this.initialdriverEmail,
+      this.initialdriverLastName, this.initialdriverName,
+      // this.initialwalletBalance,
       {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print('this is from the main class $initialdriverEmail ');
+    print('this is from the main class $initialdriverName ');
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,
@@ -40,7 +50,12 @@ class MyApp extends StatelessWidget {
           providers: [
             ChangeNotifierProvider(
               create: (context) => AuthProvider(
-                  initialdriverName, initialdriverEmail, initialToken),
+                initialdriverName,
+                initialdriverEmail,
+                initialToken,
+                initialdriverLastName,
+                // initialwalletBalance as int,
+              ),
             )
           ],
           child: MaterialApp(

@@ -13,12 +13,16 @@ class AuthProvider with ChangeNotifier {
   String? get driverName => _driverName;
   String? _driverEmail;
   String? get driverEmail => _driverEmail;
+  String? _driverLastName;
+  String? get driverLastName => _driverLastName;
   String? _error;
   String? get error => _error;
   String? _token;
   String? get token => _token;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  int? _walletBalance;
+  int? get walletBalance => _walletBalance;
 
   final AuthService _authService = AuthService();
 
@@ -34,18 +38,32 @@ class AuthProvider with ChangeNotifier {
 
   //load the token and user name from the storage
 
-  AuthProvider(String? driverName, String? driverEmail, String? token) {
+  AuthProvider(
+    String? driverName,
+    String? driverLastName,
+    String? driverEmail,
+    String? token,
+  ) {
     _driverName = driverName;
     _driverEmail = driverEmail;
+    _driverLastName = driverLastName;
+    // _walletBalance = walletBalance;
     _token = token;
   }
 
   //save the driver information data
-  saveDriverData(String driverEmail, String driverName, String token) async {
+  saveDriverData(
+    String driverEmail,
+    String driverName,
+    String driverLastName,
+    String token,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
     await prefs.setString('driver_email', driverEmail);
     await prefs.setString('driver_name', driverName);
+    await prefs.setString('driver_lastname', driverLastName);
+    // await prefs.setInt('wallet_balance', walletBalance);
     notifyListeners();
   }
 
@@ -63,9 +81,17 @@ class AuthProvider with ChangeNotifier {
       print(' driver name $_driverName');
       _driverEmail = loginResponse.data.userDetails.email;
       print(_driverEmail);
+      _driverLastName = loginResponse.data.userDetails.lastName;
+      _walletBalance = loginResponse.data.userDetails.walletBalance;
+
       _token = loginResponse.data.token;
       print(_token);
-      await saveDriverData(_driverEmail!, _driverName!, _token!);
+      await saveDriverData(
+        _driverEmail!,
+        _driverName!,
+        _token!,
+        _driverLastName!,
+      );
       //navigate to home page
       Future.delayed(Duration.zero, () {
         Navigator.pushReplacement(
