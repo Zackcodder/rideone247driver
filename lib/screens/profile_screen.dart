@@ -101,13 +101,11 @@ class _ClippedViewState extends State<ClippedView> {
 
   String? _driverName;
   String? _driverLastName;
-  String? _walletBalance;
   loadDriverDataFromSharedPreference() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _driverLastName = prefs.getString('driver_lastname');
       _driverName = prefs.getString('driver_name');
-      _walletBalance = prefs.getString('wallet_balance');
     });
   }
 

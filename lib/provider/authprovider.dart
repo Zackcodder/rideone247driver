@@ -44,32 +44,24 @@ class AuthProvider with ChangeNotifier {
 
   //load the token and user name from the storage
 
-  AuthProvider(
-    String? driverName,
-    String? driverLastName,
-    String? driverEmail,
-    String? token,
-  ) {
+  AuthProvider(String? driverName, String? driverLastName, String? driverEmail,
+      String? token, int? walletBalance) {
     _driverName = driverName;
     _driverEmail = driverEmail;
     _driverLastName = driverLastName;
-    // _walletBalance = walletBalance;
+    _walletBalance = walletBalance;
     _token = token;
   }
 
   //save the driver information data
-  saveDriverData(
-    String driverEmail,
-    String driverName,
-    String driverLastName,
-    String token,
-  ) async {
+  saveDriverData(String driverEmail, String driverName, String driverLastName,
+      String token, int walletBalance) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
     await prefs.setString('driver_email', driverEmail);
     await prefs.setString('driver_name', driverName);
     await prefs.setString('driver_lastname', driverLastName);
-    // await prefs.setInt('wallet_balance', walletBalance);
+    await prefs.setInt('wallet_balance', walletBalance);
     notifyListeners();
   }
 
@@ -88,16 +80,14 @@ class AuthProvider with ChangeNotifier {
       _driverEmail = loginResponse.data.userDetails.email;
       print(_driverEmail);
       _driverLastName = loginResponse.data.userDetails.lastName;
+      print(_driverLastName);
       _walletBalance = loginResponse.data.userDetails.walletBalance;
+      print('driver wallet balance $_walletBalance');
 
       _token = loginResponse.data.token;
       print(_token);
-      await saveDriverData(
-        _driverEmail!,
-        _driverName!,
-        _token!,
-        _driverLastName!,
-      );
+      await saveDriverData(_driverEmail!, _driverName!, _token!,
+          _driverLastName!, _walletBalance!);
       //navigate to home page
       Future.delayed(Duration.zero, () {
         Navigator.pushReplacement(
