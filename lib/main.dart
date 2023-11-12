@@ -16,24 +16,22 @@ void main() async {
   final String? driverName = prefs.getString('drive_name');
   final String? driverLastName = prefs.getString('drive_lastname');
   final String? driverEmail = prefs.getString('driver_email');
-  // final int? walletBalance = prefs.getInt('wallet_balance');
-  runApp(MyApp(
-    token,
-    driverName,
-    driverEmail,
-    driverLastName,
-  ));
+  final int? walletBalance = prefs.getInt('wallet_balance');
+  runApp(MyApp(token, driverName, driverEmail, driverLastName, walletBalance));
 }
 
 class MyApp extends StatelessWidget {
   final String? initialToken;
   final String? initialdriverName;
   final String? initialdriverLastName;
-  // final int? initialwalletBalance;
+  final int? initialwalletBalance;
   final String? initialdriverEmail;
-  const MyApp(this.initialToken, this.initialdriverEmail,
-      this.initialdriverLastName, this.initialdriverName,
-      // this.initialwalletBalance,
+  const MyApp(
+      this.initialToken,
+      this.initialdriverEmail,
+      this.initialdriverLastName,
+      this.initialdriverName,
+      this.initialwalletBalance,
       {Key? key})
       : super(key: key);
 
@@ -54,7 +52,7 @@ class MyApp extends StatelessWidget {
                 initialdriverEmail,
                 initialToken,
                 initialdriverLastName,
-                // initialwalletBalance as int,
+                initialwalletBalance,
               ),
             )
           ],

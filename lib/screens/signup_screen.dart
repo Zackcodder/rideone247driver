@@ -58,6 +58,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   color: AppColors.grey,
                 ),
               ),
+              const VerticalSpacing(20),
               //last name
               AppTextField(
                 controller: lastNameController,
@@ -110,7 +111,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   Icons.male,
                   color: AppColors.grey,
                 ),
-                isPassword: true,
               ),
               const VerticalSpacing(50),
               //signup button
