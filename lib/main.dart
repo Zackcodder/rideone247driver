@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
+import 'package:ride_on_driver/services/geo_locator_service.dart';
+import 'package:ride_on_driver/services/google_map_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/constants/strings.dart';
@@ -54,7 +56,9 @@ class MyApp extends StatelessWidget {
                 initialdriverLastName,
                 initialwalletBalance,
               ),
-            )
+            ),
+            ChangeNotifierProvider(create: (context) => GoogleMapService()),
+            ChangeNotifierProvider(create: (_) => GeoLocatorService()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

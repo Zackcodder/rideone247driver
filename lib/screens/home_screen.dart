@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
-import 'package:ride_on_driver/provider/authprovider.dart';
+// import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/screens/active_trip_detail_view.dart';
 import 'package:ride_on_driver/screens/profile_screen.dart';
 import 'package:ride_on_driver/screens/requests_view.dart';
 import 'package:ride_on_driver/widgets/app_logo.dart';
 import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/custom_tabbar.dart';
 import 'trips_view.dart';
@@ -38,21 +38,9 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     super.initState();
-    loadDriverDataFromSharedPreference();
     WidgetsBinding.instance.addObserver(this);
     currentTabNotifier = ValueNotifier(tabs.last);
     tabController = TabController(initialIndex: 1, length: 2, vsync: this);
-  }
-
-  String? _driverName;
-  String? _driverEmail;
-
-  loadDriverDataFromSharedPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _driverEmail = prefs.getString('driver_email');
-      _driverName = prefs.getString('driver_name');
-    });
   }
 
   @override
@@ -71,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    // final authProvider = Provider.of<AuthProvider>(context);
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;
