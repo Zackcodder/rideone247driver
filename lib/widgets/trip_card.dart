@@ -49,30 +49,34 @@ class TripCard extends StatelessWidget {
                 ],
               ),
               const HorizontalSpacing(10),
+              ///trip start and end location
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    model.start,
+                    'start',
                     style: context.textTheme.bodySmall,
                   ),
                   const VerticalSpacing(10),
                   Text(
-                    model.end,
+                    'end',
                     style: context.textTheme.bodySmall,
                   ),
                 ],
               ).expand(),
               const HorizontalSpacing(10),
+              ///trip cost, date and rating
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  ///trip date
                   Text(
-                    model.date,
+                    'date',
                     style: context.textTheme.bodySmall,
                   ),
+                  ///trip rating
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(
@@ -84,6 +88,7 @@ class TripCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  ///trip cost
                   SizedBox(
                     width: 50.w,
                     height: 20.h,

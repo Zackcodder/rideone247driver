@@ -15,6 +15,7 @@ class AppTextField extends StatefulWidget {
     this.isPassword = false,
     this.controller,
     this.validator,
+  this.capitalization = TextCapitalization.none,
     this.keyboardType = TextInputType.text,
     this.dense = true,
     this.onTap,
@@ -34,6 +35,7 @@ class AppTextField extends StatefulWidget {
   final bool autoFocus;
   final bool readOnly;
   final TextEditingController? controller;
+  final TextCapitalization capitalization;
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
   final VoidCallback? onTap;

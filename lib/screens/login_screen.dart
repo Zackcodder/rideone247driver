@@ -75,14 +75,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: passwordController,
               ),
               const VerticalSpacing(50),
-              //login button
-              authProvider.signInLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.black),
-                      ),
-                    )
-                  : AppElevatedButton.large(
+              ///login button
+              // authProvider.signInLoading == true
+              //     ? const Center(
+              //         child: CircularProgressIndicator(
+              //           valueColor: AlwaysStoppedAnimation(Colors.black),
+              //         ),
+              //       )
+              //     :
+              AppElevatedButton.large(
                       onPressed: () async {
                         final email = emailController.text;
                         final password = passwordController.text;

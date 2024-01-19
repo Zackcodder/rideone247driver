@@ -80,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen>
             ).clip(radius: 100),
           ).onTap(() => context.push(const ProfileScreen())),
           actions: [
+            ///toggle button tp go online and off line
             ValueListenableBuilder(
                 valueListenable: isActiveNotifier,
                 builder: (context, isActive, _) {

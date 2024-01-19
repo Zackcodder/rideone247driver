@@ -2,74 +2,108 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class GoogleMapService with ChangeNotifier {
-  GoogleMapController? mapController;
-  Set<Marker> markers = {};
-  Set<Circle> circles = {};
-  LatLng initialCameraPosition = LatLng(0.0, 0.0);
+import 'geo_locator_service.dart';
 
-  GoogleMapService() {
-    // Default to a specific location if the initial position is not available yet
-    _updateInitialCameraPosition();
+class GoogleMapService{
+final GeoLocationService _geoLocationService = GeoLocationService();
+//getting camera position
+CameraPosition? cameraPosition;
+CameraUpdate get cameraUpdate {
+  return CameraUpdate.newCameraPosition(cameraPosition!);
+}
+
+/// returns camera position based on passed latitude and longitude
+// CameraPosition cameraPos(LatLng pos) => CameraPosition(target: pos, zoom: 18);
+
+LatLngBounds? bounds;
+setBounds(LatLng southwest, LatLng northeast) =>
+    bounds = LatLngBounds(southwest: southwest, northeast: northeast);
+
+Future<LatLng?> get currentLocationLatLng async {
+  final position = await _geoLocationService.getCurrentPosition();
+  if (position != null) {
+    return LatLng(position.latitude, position.longitude);
   }
+  return null;
+}
 
-  // on map create for all needed feature
-  onMapCreated(GoogleMapController controller) async {
-    mapController = controller;
-    // You can perform additional initialization here if needed
+CameraUpdate get latlngBoundsUpdate =>
+    CameraUpdate.newLatLngBounds(bounds!, 90);
 
-    // final position = await currentPosition;
+static CameraPosition googlePlex =
+const CameraPosition(target: LatLng(6.5244, 3.3792), zoom: 16);
 
-    // mapController?.animateCamera(
-    //     CameraUpdate.newLatLng(convertPositionToLatLng(position)));
-  }
+convertPositionToLatLng(Position position) =>
+    LatLng(position.latitude, position.longitude);
 
-  //markers
-  addMarker(LatLng position, String markerId, String title) {
-    markers.add(
-      Marker(
-        markerId: MarkerId(markerId),
-        position: position,
-        infoWindow: InfoWindow(title: title),
-      ),
-    );
-    notifyListeners();
-  }
+// for circles
+final Set<Circle> _circles = <Circle>{};
+addCircle(Circle circles) => _circles.add(circles);
+clearCircles() => _circles.clear();
+Set<Circle> mainPageCircles(Position? pos) => pos == null
+    ? {}
+    : {
+  Circle(
+      circleId: const CircleId('Current'),
+      strokeColor: Colors.blue.withOpacity(0.2),
+      strokeWidth: 1,
+      radius: 150,
+      center: convertPositionToLatLng(pos),
+      fillColor: Colors.blue.withOpacity(0.2))
+};
 
-  //circle
-  addCircle(LatLng center, double radius, String circleId) {
-    circles.add(
-      Circle(
-        circleId: CircleId(circleId),
-        center: center,
-        radius: radius,
-        fillColor: Colors.blue.withOpacity(0.2),
-        strokeColor: Colors.blue,
-        strokeWidth: 2,
-      ),
-    );
-    notifyListeners();
-  }
+// for markers
+Set<Marker> _markers = <Marker>{};
+Set<Marker> get markers => _markers;
+clearMarkers() => _markers.clear();
+static const Marker userMarker = Marker(
+  markerId: MarkerId('Rider'),
+  infoWindow: InfoWindow(title: 'Rider'),
+  icon: BitmapDescriptor.defaultMarker,
+  position: LatLng(37.43296265331129, -122.08832357078792),
+);
 
-  Future<void> _updateInitialCameraPosition() async {
-    try {
-      final position = await Geolocator.getCurrentPosition();
-      // ignore: unnecessary_null_comparison
-      if (position != null) {
-        initialCameraPosition = LatLng(position.latitude, position.longitude);
-        notifyListeners();
-      }
-    } catch (e) {
-      print("Error getting current position: $e");
-    }
-  }
-
-  CameraPosition getInitialCameraPosition(double zoom) {
-    return CameraPosition(
-      target: initialCameraPosition,
-      zoom: zoom,
-    );
-  }
-
-  // Add other methods as needed for your Google Map functionality
+///for polylines
+// static final PolylinePoints _polylinePoints = PolylinePoints();
+// static final ValueNotifier<Map<PolylineId, Polyline>> _polyLines =
+// ValueNotifier({});
+// static ValueNotifier<Map<PolylineId, Polyline>> get polyLines => _polyLines;
+// static createPolyLine(String polylineId, PointLatLng pickupLocation,
+//     PointLatLng destinationLocation) async {
+//   PolylineId pId = PolylineId(polylineId);
+//
+//   Polyline polyLine = Polyline(
+//     polylineId: pId,
+//     color: Colors.orange,
+//     points:
+//     await _getRouteBetweenLocations(pickupLocation, destinationLocation),
+//     jointType: JointType.round,
+//     width: 3,
+//     startCap: Cap.roundCap,
+//     endCap: Cap.roundCap,
+//     geodesic: true,
+//   );
+//   _polyLines.value = {};
+//   _polyLines.value = {pId: polyLine};
+// }
+//
+// clearPolyLines() => _polyLines.value.clear();
+//
+// static Future<List<LatLng>> _getRouteBetweenLocations(
+// PointLatLng pickupLocation, PointLatLng destinationLocation) async {
+// PolylineResult result = await _polylinePoints.getRouteBetweenCoordinates(
+// LocationService.mapKey,
+// pickupLocation,
+// destinationLocation,
+// travelMode: TravelMode.driving,
+// );
+// List<LatLng> polylineCoordinates = [];
+//
+// if (result.points.isNotEmpty) {
+// for (var point in result.points) {
+// polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+// }
+// }
+// return polylineCoordinates;
+// }
 }

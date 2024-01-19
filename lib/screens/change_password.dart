@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 
 import '../core/extensions/build_context_extensions.dart';
 import '../core/extensions/widget_extensions.dart';
+import '../provider/authprovider.dart';
 import '../widgets/app_elevated_button.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/app_text_field.dart';
 import '../widgets/spacing.dart';
 import 'home_screen.dart';
 
-class ChangePasswordScreen extends StatelessWidget {
+class ChangePasswordScreen extends StatefulWidget {
+  static String id = 'change_password';
   const ChangePasswordScreen({super.key});
 
   @override
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+}
+
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -33,6 +44,27 @@ class ChangePasswordScreen extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Otp label',
+                  style: context.textTheme.bodyMedium,
+                ),
+              ).padOnly(left: 20.w),
+              const VerticalSpacing(10),
+              //otp text field
+              AppTextField(
+                keyboardType: TextInputType.number,
+                prefixIcon: const Icon(
+                  Icons.pin,
+                  color: Colors.grey,
+                ),
+                controller: _otpController,
+                hintText: 'Enter otp sent to your mail',
+              ),
+              const VerticalSpacing(20),
+              //new password
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -41,34 +73,23 @@ class ChangePasswordScreen extends StatelessWidget {
                 ),
               ).padOnly(left: 20.w),
               const VerticalSpacing(10),
-              const AppTextField(
+              AppTextField(
+                controller: _newPasswordController,
                 hintText: '*********',
                 isPassword: true,
-                prefixIcon: Icon(
-                  Icons.lock_outline,
-                  color: Colors.grey,
-                ),
-              ),
-              const VerticalSpacing(50),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Confirm Password',
-                  style: context.textTheme.bodyMedium,
-                ),
-              ).padOnly(left: 20.w),
-              const VerticalSpacing(10),
-              const AppTextField(
-                hintText: '*********',
-                isPassword: true,
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.lock_outline,
                   color: Colors.grey,
                 ),
               ),
               const Spacer(),
               AppElevatedButton.large(
-                onPressed: () => context.push(const HomeScreen()),
+                onPressed: () async {
+                  final otp = _otpController.text;
+                  final newPassword = _newPasswordController.text;
+                  authProvider.resetPassword(context, otp, newPassword);
+                },
+                // onPressed: () => context.push(const HomeScreen()),
                 text: 'Reset Password',
               ),
               const Spacer(),

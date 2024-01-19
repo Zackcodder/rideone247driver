@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
+import 'package:ride_on_driver/provider/map_provider.dart';
+import 'package:ride_on_driver/provider/ride_request_provider.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
@@ -57,8 +59,8 @@ class MyApp extends StatelessWidget {
                 initialwalletBalance,
               ),
             ),
-            ChangeNotifierProvider(create: (context) => GoogleMapService()),
-            ChangeNotifierProvider(create: (_) => GeoLocatorService()),
+            ChangeNotifierProvider(create: (context) => MapView()),
+        ChangeNotifierProvider(create: (context) => RideRequestProvider()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

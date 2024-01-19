@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 
 // import '../core/constants/assets.dart';
 import '../core/extensions/build_context_extensions.dart';
 import '../core/extensions/widget_extensions.dart';
+import '../provider/authprovider.dart';
 import '../widgets/app_elevated_button.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/app_text_field.dart';
 import '../widgets/spacing.dart';
 import 'mail_sent_screen.dart';
 
-class ForgetPasswordScreen extends StatelessWidget {
+class ForgetPasswordScreen extends StatefulWidget {
+  static String id = 'forgot_password';
   const ForgetPasswordScreen({super.key});
 
   @override
+  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+}
+
+class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -42,16 +52,20 @@ class ForgetPasswordScreen extends StatelessWidget {
                 ),
               ).padOnly(left: 20.w),
               const VerticalSpacing(10),
-              const AppTextField(
+               AppTextField(
+                controller: _emailController,
                 hintText: 'Cristianoronaldo@gmail.com',
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.mail_outline,
                   color: Colors.grey,
                 ),
               ),
               const Spacer(),
               AppElevatedButton.large(
-                onPressed: () => context.push(const MailSentScreen()),
+                onPressed: () async {
+                  final email = _emailController.text;
+                  authProvider.forgotPassword(context, email);
+                },
                 text: 'Reset Password',
               ),
               const Spacer(),

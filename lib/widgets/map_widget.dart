@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
 import 'package:ride_on_driver/services/google_map_service.dart';
 
+import '../provider/map_provider.dart';
+
 class MapWidget extends StatefulWidget {
   const MapWidget({super.key});
 
@@ -14,37 +16,40 @@ class MapWidget extends StatefulWidget {
 }
 
 class MapWidgetState extends State<MapWidget> {
+  late GoogleMapController mapController;
   final Completer<GoogleMapController> _controller = Completer();
+  // PolylinePoints _polylinePoints = PolylinePoints();
 
-  // static const CameraPosition _kLake = CameraPosition(
-  //     bearing: 192.8334901395799,
-  //     target: LatLng(37.43296265331129, -122.08832357078792),
-  //     tilt: 59.440717697143555,
-  //     zoom: 19.151926040649414);
+  // List<LatLng> polylineCoordinates = [];
+  //
+  // Map<PolylineId, Polyline> polyLines = {};
+  //
+  // late MapView _mapViewProvider;
 
   @override
   Widget build(BuildContext context) {
-    final googleMapService = context.read<GoogleMapService>();
-    final geoLocatorService = context.read<GeoLocatorService>();
+    final mapProvider = Provider.of<MapView>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: googleMapService.getInitialCameraPosition(14.0),
-        onMapCreated: googleMapService.onMapCreated,
-        // (GoogleMapController controller) {
-        //   _controller.complete(controller);
-        // },
+        myLocationButtonEnabled: false,
+        myLocationEnabled: true,
+        zoomGesturesEnabled: true,
         mapToolbarEnabled: false,
         zoomControlsEnabled: true,
-        markers: googleMapService.markers,
-        circles: googleMapService.circles,
+        mapType: MapType.normal,
+        markers: mapProvider.marker,
+        circles: mapProvider.circle,
+        initialCameraPosition: GoogleMapService.googlePlex,
+        onMapCreated: (GoogleMapController controller) async {
+          _controller.complete(controller);
+          mapController = controller;
+          final position = await mapProvider.currentPosition;
+          mapController.animateCamera(CameraUpdate.newLatLng(
+              mapProvider.convertPositionToLatLng(position)));
+        },
       ),
     );
   }
 
-  // Future<void> _goToTheLake() async {
-  //   final GoogleMapController controller = await _controller.future;
-  //   controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  // }
 }

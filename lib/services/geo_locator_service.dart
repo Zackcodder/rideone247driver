@@ -1,123 +1,146 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 
-class GeoLocatorService with ChangeNotifier {
-  // double _latitude;
-  // double _longitude;
-
-  // double get latitude => _latitude ?? 0.0;
-  // double get longitude => _longitude ?? 0.0;
-
-  // GeoLocatorService() {
-  //   _latitude = 0.0;
-  //   _longitude = 0.0;
-  //   _getCurrentLocation();
-  // }
-
-  // Future<void> _getCurrentLocation() async {
-  //   try {
-  //     Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high,
-  //     );
-
-  //     _latitude = position.latitude;
-  //     _longitude = position.longitude;
-  //     notifyListeners();
-  //   } catch (e) {
-  //     print("Error getting location: $e");
-  //   }
-  // }
-
-  // permission setting
+class GeoLocationService {
   bool? serviceEnabled;
   LocationPermission? permission;
 
+  // returns true if app has location permission
   bool get hasPermission =>
       serviceEnabled == true &&
-      (permission == LocationPermission.always ||
-          permission == LocationPermission.whileInUse);
+          (permission == LocationPermission.always ||
+              permission == LocationPermission.whileInUse);
 
-  Future<void> checkPermission() async {
+// check if the user already granted permissions to acquire the device's location
+  checkPermission() async {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     permission = await Geolocator.checkPermission();
   }
 
-  Future<void> requestPermission() async {
+// request permission to access the device's location
+  requestPermission() async {
     permission = await Geolocator.requestPermission();
   }
 
-  Future<void> openLocationSettings() async {
+// open location settings on user's device's
+  openLocationSettings() async {
+    // open location settings for android
     await Geolocator.openLocationSettings();
   }
 
-  Future<void> openAppSettings() async {
+// open app settings on user's device's
+  openAppSettings() async {
+    // open app settings for android
     await Geolocator.openAppSettings();
   }
 
-  Future<Object?> getCurrentPosition({
+  /// returns the position of the device
+  /// forceUserCurrentLocation = false would get Last Known positon
+  /// forceUserCurrentLocation = true would return current positon. This is slower
+  getCurrentPosition({
     bool forceUseCurrentLocation = true,
     bool asPosition = true,
   }) async {
-    try {
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled!) {
-        Fluttertoast.showToast(
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled!) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: 'Location service disabled. Please enable it.',
+          msg: 'Location service disable. Please enable',
           gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white,
-        );
-        return null;
-      }
-
-      await checkPermission();
+          textColor: Colors.white);
+      return null;
+    }
+    await checkPermission();
+    if (permission == LocationPermission.denied) {
+      await requestPermission();
       if (permission == LocationPermission.denied) {
-        await requestPermission();
-        if (permission == LocationPermission.denied) {
-          Fluttertoast.showToast(
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        Fluttertoast.showToast(
             fontSize: 18,
             toastLength: Toast.LENGTH_LONG,
             backgroundColor: Colors.red.withOpacity(0.7),
-            msg: 'Location permission denied.',
+            msg: 'Location permission denied',
             gravity: ToastGravity.BOTTOM,
-            textColor: Colors.white,
-          );
-          return null;
-        }
+            textColor: Colors.white);
+        return null;
       }
+    }
 
-      if (permission == LocationPermission.deniedForever) {
-        Fluttertoast.showToast(
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      // await Geolocator.openAppSettings();
+      Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: 'Location permission denied.',
+          msg: 'location permission denied',
           gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white,
-        );
-        await openLocationSettings();
-        return null;
-      }
-
-      Position? position;
-      if (forceUseCurrentLocation) {
-        position = await Geolocator.getCurrentPosition();
-      } else {
-        position = await Geolocator.getLastKnownPosition();
-        position ??= await Geolocator.getCurrentPosition();
-      }
-      return asPosition ? position : [position.latitude, position.longitude];
-    } catch (e) {
-      print("Error getting location: $e");
+          textColor: Colors.white);
+      await Geolocator.openLocationSettings();
       return null;
     }
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position? position;
+
+    if (forceUseCurrentLocation) {
+      position = await Geolocator.getCurrentPosition();
+    } else {
+      position = await Geolocator.getLastKnownPosition();
+      position ??= await Geolocator.getCurrentPosition();
+    }
+    if (asPosition) {
+      return position;
+    }
+    return [position.latitude, position.longitude];
   }
 
+  /// listens to locations. fired whenever there is a change
   Stream<Position> getPositionStream() {
     return Geolocator.getPositionStream();
   }
-  // You can add other methods here for handling location-related functionalities
+
+  //calculate driver distance
+  double degreesToRadians(double degrees) {
+    return degrees * (pi / 180);
+  }
+
+  Future<double> calculateDistance(
+      double startLatitude,
+      double startLongitude,
+      double endLatitude,
+      double endLongitude,
+      ) async {
+    const int earthRadius = 6371; // Radius of the Earth in kilometers
+    double lat1 = degreesToRadians(
+        startLatitude); // Using the radians method from math library
+    double lon1 = degreesToRadians(
+        startLongitude); // Using the radians method from math library
+    double lat2 = degreesToRadians(
+        endLatitude); // Using the radians method from math library
+    double lon2 = degreesToRadians(
+        endLongitude); // Using the radians method from math library
+
+    double dlat = lat2 - lat1;
+    double dlon = lon2 - lon1;
+
+    double a =
+        pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
+    double c = 2 * asin(sqrt(a));
+
+    double distance = earthRadius * c;
+    return distance; // Distance in kilometers
+  }
 }

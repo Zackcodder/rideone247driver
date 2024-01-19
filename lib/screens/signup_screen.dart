@@ -105,6 +105,7 @@ class _SignupScreenState extends State<SignupScreen> {
               const VerticalSpacing(20),
               //gender
               AppTextField(
+                capitalization: TextCapitalization.characters,
                 controller: genderController,
                 hintText: 'Please Enter Your Gender',
                 prefixIcon: const Icon(
@@ -114,7 +115,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               const VerticalSpacing(50),
               //signup button
-              authProvider.signUpLoading
+              authProvider.signUpLoading == true
                   ? const Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(Colors.black),
@@ -131,6 +132,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         const String role = 'driver';
                         authProvider.signUp(context, firstName, lastName, phone,
                             password, email, gender, role);
+                        setState(() {
+                        });
                       },
                       text: 'Sign Up',
                     ),
