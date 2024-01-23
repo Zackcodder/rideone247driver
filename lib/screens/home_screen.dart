@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
+import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
@@ -15,6 +16,7 @@ import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
+import '../provider/ride_request_provider.dart';
 import '../widgets/custom_tabbar.dart';
 import 'trips_view.dart';
 
@@ -41,6 +43,10 @@ class _HomeScreenState extends State<HomeScreen>
     WidgetsBinding.instance.addObserver(this);
     currentTabNotifier = ValueNotifier(tabs.last);
     tabController = TabController(initialIndex: 1, length: 2, vsync: this);
+    // RideRequestProvider();
+    // // Initialize RideRequestProvider here or use Provider.of<>() if it's already initialized.
+    // Provider.of<RideRequestProvider>(context, listen: false).initSocket();
+    // Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
   }
 
   @override

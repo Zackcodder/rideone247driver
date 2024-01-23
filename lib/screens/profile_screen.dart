@@ -137,7 +137,10 @@ class _ClippedViewState extends State<ClippedView> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () => context.pushReplacement(const LoginScreen()),
+                  onPressed: (){
+                    authProvider.logout(context);
+                  },
+                  //=> context.pushReplacement(const LoginScreen()),
                   icon: const Icon(
                     Icons.logout,
                     color: Colors.white,

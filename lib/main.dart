@@ -8,7 +8,9 @@ import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
 import 'package:ride_on_driver/services/google_map_service.dart';
+import 'package:ride_on_driver/services/socket_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 import 'core/constants/strings.dart';
 import 'core/theme/app_theme.dart';
@@ -16,25 +18,26 @@ import 'core/theme/app_theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final String? token = prefs.getString('auth_token');
   final String? driverName = prefs.getString('drive_name');
   final String? driverLastName = prefs.getString('drive_lastname');
   final String? driverEmail = prefs.getString('driver_email');
+  final String? token = prefs.getString('auth_token');
   final int? walletBalance = prefs.getInt('wallet_balance');
-  runApp(MyApp(token, driverName, driverEmail, driverLastName, walletBalance));
+  runApp(MyApp(driverName, driverEmail, driverLastName, token, walletBalance));
 }
 
 class MyApp extends StatelessWidget {
-  final String? initialToken;
   final String? initialdriverName;
   final String? initialdriverLastName;
-  final int? initialwalletBalance;
   final String? initialdriverEmail;
+  final String? initialToken;
+  final int? initialwalletBalance;
+
   const MyApp(
-      this.initialToken,
-      this.initialdriverEmail,
-      this.initialdriverLastName,
       this.initialdriverName,
+      this.initialdriverLastName,
+      this.initialdriverEmail,
+      this.initialToken,
       this.initialwalletBalance,
       {Key? key})
       : super(key: key);
@@ -53,14 +56,14 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
               create: (context) => AuthProvider(
                 initialdriverName,
+                initialdriverLastName,
                 initialdriverEmail,
                 initialToken,
-                initialdriverLastName,
                 initialwalletBalance,
               ),
             ),
             ChangeNotifierProvider(create: (context) => MapView()),
-        ChangeNotifierProvider(create: (context) => RideRequestProvider()),
+        ChangeNotifierProvider(create: (context) => RideRequestProvider(initialToken ?? '')),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

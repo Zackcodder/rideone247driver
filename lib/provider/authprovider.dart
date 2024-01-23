@@ -53,20 +53,20 @@ class AuthProvider with ChangeNotifier {
   AuthProvider(String? driverName, String? driverLastName, String? driverEmail,
       String? token, int? walletBalance) {
     _driverName = driverName;
-    _driverEmail = driverEmail;
     _driverLastName = driverLastName;
-    _walletBalance = walletBalance;
+    _driverEmail = driverEmail;
     _token = token;
+    _walletBalance = walletBalance;
   }
 
   //save the driver information data
-  saveDriverData(String driverEmail, String driverName, String driverLastName,
+  saveDriverData(String driverName, String driverLastName, String driverEmail,
       String token, int walletBalance) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('auth_token', token);
-    await prefs.setString('driver_email', driverEmail);
     await prefs.setString('driver_name', driverName);
     await prefs.setString('driver_lastname', driverLastName);
+    await prefs.setString('driver_email', driverEmail);
+    await prefs.setString('auth_token', token);
     await prefs.setInt('wallet_balance', walletBalance);
     notifyListeners();
   }
@@ -81,7 +81,6 @@ class AuthProvider with ChangeNotifier {
       final loginResponse = DriverModel.fromJson(responseData);
       print(responseData);
       if (loginResponse.message == 'success') {
-        _signInLoading = false;
         print('data gotten');
         _driverName = loginResponse.data.userDetails.firstName;
         print(' driver name $_driverName');
@@ -102,8 +101,8 @@ class AuthProvider with ChangeNotifier {
 
         // Authenticate the socket connection
         _socketService.authenticate();
-        await saveDriverData(_driverEmail!, _driverName!, _token!,
-            _driverLastName!, _walletBalance!);
+        await saveDriverData( _driverName!, _driverLastName!,_driverEmail!,_token!, _walletBalance!);
+        _signInLoading = false;
         //navigate to home page
         Future.delayed(Duration.zero, () {
           Navigator.pushReplacement(
@@ -116,7 +115,6 @@ class AuthProvider with ChangeNotifier {
         setError(responseData['message']);
         _signInLoading = false;
       }
-      _signInLoading = false;
     }catch(e){
       print('printing the eroor in provide login $e');
     }
@@ -198,5 +196,35 @@ class AuthProvider with ChangeNotifier {
     } else {
       setError(responseData['message']);
     }
+  }
+
+  ///logout
+   logout(BuildContext context) async {
+    // Clear user-related data
+    _driverName = null;
+    _driverEmail = null;
+    _driverLastName = null;
+    _token = null;
+    _walletBalance = null;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    await prefs.remove('driver_email');
+    await prefs.remove('driver_name');
+    await prefs.remove('driver_lastname');
+    await prefs.remove('wallet_balance');
+
+    // Disconnect the socket
+    _socketService.disconnectSocket();
+    ///navigate to login page
+    Future.delayed(Duration.zero, () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    });
+
+    // Notify listeners
+    notifyListeners();
   }
 }

@@ -15,6 +15,12 @@ class TripListViewer extends StatefulWidget {
 }
 
 class _TripListViewerState extends State<TripListViewer> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Listen for ride requests using Provider
@@ -24,8 +30,8 @@ class _TripListViewerState extends State<TripListViewer> {
       children: [
         rideRequestProvider.rideRequests.isEmpty ?
             const Text('No Ride request at the moment') :
-            rideRequestProvider.rideRequestLoading == true ?
-                CircularProgressIndicator():
+            // rideRequestProvider.rideRequestLoading == true ?
+            //     CircularProgressIndicator():
         Consumer<RideRequestProvider>(
             builder: (context, rideRequestProvider, child) {
           return ListView.builder(

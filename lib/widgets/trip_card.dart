@@ -55,12 +55,12 @@ class TripCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'start',
+                    model.paymentMethod,
                     style: context.textTheme.bodySmall,
                   ),
                   const VerticalSpacing(10),
                   Text(
-                    'end',
+                    model.id,
                     style: context.textTheme.bodySmall,
                   ),
                 ],

@@ -26,7 +26,7 @@ class ActiveTripDetailView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const BlackContainer(text: 'Showing trip details'),
-              TripCard(model: activeTripList.first).padAll(20.w),
+              // TripCard(model: activeTripList.first).padAll(20.w),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
                 leading: Image.asset(Assets.assetsImagesDriverProfile).clip(radius: 100),
