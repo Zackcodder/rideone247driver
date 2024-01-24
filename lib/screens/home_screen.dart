@@ -43,10 +43,7 @@ class _HomeScreenState extends State<HomeScreen>
     WidgetsBinding.instance.addObserver(this);
     currentTabNotifier = ValueNotifier(tabs.last);
     tabController = TabController(initialIndex: 1, length: 2, vsync: this);
-    // RideRequestProvider();
-    // // Initialize RideRequestProvider here or use Provider.of<>() if it's already initialized.
-    // Provider.of<RideRequestProvider>(context, listen: false).initSocket();
-    // Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
+    Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
   }
 
   @override
