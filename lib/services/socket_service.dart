@@ -1,18 +1,10 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../model/trip.dart';
-import '../provider/authprovider.dart';
-
 class SocketService {
   final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
   static final SocketService _singleton = SocketService._internal();
-  // late AuthProvider _authProvider;
 
-  // Constructor that takes AuthProvider as a parameter
-  // SocketService(this._authProvider);
   String? _token;
-  //= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWFhNWRiYWIyZThmMjAwMjFmY2FjODMiLCJyb2xlIjoiRFJJVkVSIiwiaWF0IjoxNzA2MDAxNzgyLCJleHAiOjE3MDg1OTM3ODJ9.EcvWSozKVTO_u9irbqX3ITZm0wHDcGen7YqOWAFlxac";
-
   late IO.Socket socket;
 
   factory SocketService() {
@@ -83,7 +75,7 @@ class SocketService {
     });
   }
 
-  void endTrip({required String id, required String tripId}) {
+  endTrip({required String id, required String tripId}) {
     socket.emit("END_TRIP", {
       'id': id,
       'tripId': tripId,

@@ -36,17 +36,20 @@ class TripsView extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        ///start trip location icon
                         Icon(
                           Icons.location_on,
                           color: AppColors.black,
                           size: 20.w,
                         ),
+                        ///line
                         CustomPaint(
                           size: Size(1, 30.h),
                           painter: const DashedLineVerticalPainter(
                             color: AppColors.black,
                           ),
                         ),
+                        ///destination icon
                         Icon(
                           Icons.send_outlined,
                           color: AppColors.black,

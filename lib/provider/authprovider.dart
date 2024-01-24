@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 
 import '../screens/mail_sent_screen.dart';
+import '../services/driver_services.dart';
 import '../services/socket_service.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -37,6 +38,7 @@ class AuthProvider with ChangeNotifier {
 
   final AuthService _authService = AuthService();
   final SocketService _socketService = SocketService();
+  final DriverService _driverService = DriverService();
 
   setError(String message) {
     _error = message;
@@ -101,6 +103,9 @@ class AuthProvider with ChangeNotifier {
 
         // Authenticate the socket connection
         _socketService.authenticate();
+
+        // Start location updates when user logs in
+        _driverService.startLocationUpdates();
         await saveDriverData( _driverName!, _driverLastName!,_driverEmail!,_token!, _walletBalance!);
         _signInLoading = false;
         //navigate to home page
@@ -110,13 +115,17 @@ class AuthProvider with ChangeNotifier {
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         });
+        notifyListeners();
       } else {
+        _signInLoading = false;
+        notifyListeners();
         print('error');
         setError(responseData['message']);
-        _signInLoading = false;
       }
     }catch(e){
+    _signInLoading = false;
       print('printing the eroor in provide login $e');
+      notifyListeners();
     }
   }
 
@@ -139,12 +148,15 @@ class AuthProvider with ChangeNotifier {
         );
       });
       _signUpLoading = false;
+      notifyListeners();
     } else {
+      _signUpLoading = false;
       print('error');
       setError(responseData['message']);
-      _signUpLoading = false;
+      notifyListeners();
     }
     _signUpLoading = false;
+    notifyListeners();
   }
 
   //sending of otp
@@ -216,6 +228,9 @@ class AuthProvider with ChangeNotifier {
 
     // Disconnect the socket
     _socketService.disconnectSocket();
+
+    // Stop location updates when user logs out
+    _driverService.stopLocationUpdates();
     ///navigate to login page
     Future.delayed(Duration.zero, () {
       Navigator.pushReplacement(

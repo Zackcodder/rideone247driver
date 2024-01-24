@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const VerticalSpacing(50),
               ///login button
-              authProvider.signInLoading == true
+              authProvider.signInLoading
                   ? const Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(Colors.black),
@@ -85,10 +85,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   :
               AppElevatedButton.large(
                       onPressed: () async {
-                        final email = emailController.text;
+
+
+                        if(mounted){
+                          setState(() {
+                            authProvider.signInLoading;
+                          });
+                          final email = emailController.text;
                         final password = passwordController.text;
                         authProvider.signIn(context, email, password);
-                      },
+                        }
+                         },
                       text: 'Login',
                     ),
               const VerticalSpacing(10),
