@@ -8,6 +8,7 @@ class UserDetails {
   final bool isAvailable;
   final bool isApproved;
   final int walletBalance;
+  final String id;
 
   UserDetails({
     required this.firstName,
@@ -19,6 +20,7 @@ class UserDetails {
     required this.isAvailable,
     required this.isApproved,
     required this.walletBalance,
+    required this.id,
   });
 
   factory UserDetails.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class UserDetails {
       isAvailable: json['isAvailable'],
       isApproved: json['isApproved'],
       walletBalance: json['walletBalance'],
+      id: json['_id']
     );
   }
 }
