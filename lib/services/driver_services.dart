@@ -27,10 +27,10 @@ class DriverService {
   bool online = true;
 
   // Call this method to start updating the driver's location periodically.
-  void startLocationUpdates() {
+   startLocationUpdates() {
     // Start a repeating timer that calls the updateLocation method every 5 seconds.
     locationUpdateTimer =
-        Timer.periodic(const Duration(seconds: 180), (timer) {
+        Timer.periodic(const Duration(seconds: 5), (timer) {
           updateDriverLiveStatus(online);
           updateLocation(); // Call the method to send location updates via socket
         });
@@ -52,8 +52,5 @@ class DriverService {
     );
   }
 
-  // Listen for driver location updates via socket
-  void listenForDriverLocationUpdates() {
-    _socketService.driverLocationUpdate();
-  }
+
 }

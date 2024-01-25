@@ -3,18 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
 import 'package:provider/provider.dart';
-// import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
-// import 'package:ride_on_driver/provider/authprovider.dart';
+import 'package:ride_on_driver/provider/driver_provider.dart';
 import 'package:ride_on_driver/screens/active_trip_detail_view.dart';
 import 'package:ride_on_driver/screens/profile_screen.dart';
 import 'package:ride_on_driver/screens/requests_view.dart';
 import 'package:ride_on_driver/widgets/app_logo.dart';
 import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 
 import '../provider/ride_request_provider.dart';
 import '../widgets/custom_tabbar.dart';
@@ -44,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen>
     currentTabNotifier = ValueNotifier(tabs.last);
     tabController = TabController(initialIndex: 1, length: 2, vsync: this);
     Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
+    Provider.of<DriverProvider>(context, listen: false).listenForDriverLocationUpdates();
   }
 
   @override

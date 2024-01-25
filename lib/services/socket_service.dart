@@ -93,8 +93,9 @@ class SocketService {
 
   ///Driver location update
   driverLocationUpdate(){
+    print('printing the driver locations reponse');
     socket.on("DRIVER_LOCATION_UPDATED", (data) {
-      print(data);
+      print('res from updating driver location $data');
     });
   }
   ///update driver availability
