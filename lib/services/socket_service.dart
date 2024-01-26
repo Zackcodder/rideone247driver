@@ -1,10 +1,13 @@
+import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
   final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
   static final SocketService _singleton = SocketService._internal();
 
+
   String? _token;
+  String? _id;
   late IO.Socket socket;
 
   factory SocketService() {
@@ -41,7 +44,6 @@ class SocketService {
     print('socket working with toke $_token');
   }
 
-
   updateLocation(
       {required String id,
       required String role,
@@ -55,7 +57,7 @@ class SocketService {
     });
   }
 
-   acceptRide(
+  acceptRide(
       {required String id,
       required String lon,
       required String lat,
@@ -92,20 +94,16 @@ class SocketService {
   }
 
   ///Driver location update
-  driverLocationUpdate(){
+  driverLocationUpdate() {
     print('printing the driver locations reponse');
     socket.on("DRIVER_LOCATION_UPDATED", (data) {
       print('res from updating driver location $data');
     });
   }
+
   ///update driver availability
-  driverOnlineStatus(
-      {required String id,
-        required bool availability}) {
-    socket.emit("UPDATE_AVAILABILITY", {
-      'id': id,
-      availability: false
-    });
+  driverOnlineStatus({required String id, required bool availability}) {
+    socket.emit("UPDATE_AVAILABILITY", {'id': id, availability: false});
   }
 
   listenForRideRequest(void Function(dynamic) callback) {

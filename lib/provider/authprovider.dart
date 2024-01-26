@@ -31,6 +31,8 @@ class AuthProvider with ChangeNotifier {
   String? get error => _error;
   String? _token;
   String? get token => _token;
+  String? _id;
+  String? get id => _id;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   int? _walletBalance;
@@ -39,7 +41,6 @@ class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
   final SocketService _socketService = SocketService();
   final DriverService _driverService = DriverService();
-
   setError(String message) {
     _error = message;
     notifyListeners();
@@ -52,24 +53,27 @@ class AuthProvider with ChangeNotifier {
 
   //load the token and user name from the storage
 
+
   AuthProvider(String? driverName, String? driverLastName, String? driverEmail,
-      String? token, int? walletBalance) {
+      String? token, int? walletBalance, String? id) {
     _driverName = driverName;
     _driverLastName = driverLastName;
     _driverEmail = driverEmail;
     _token = token;
     _walletBalance = walletBalance;
+    _id = id;
   }
 
   //save the driver information data
   saveDriverData(String driverName, String driverLastName, String driverEmail,
-      String token, int walletBalance) async {
+      String token, int walletBalance, String id) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('driver_name', driverName);
     await prefs.setString('driver_lastname', driverLastName);
     await prefs.setString('driver_email', driverEmail);
     await prefs.setString('auth_token', token);
     await prefs.setInt('wallet_balance', walletBalance);
+    await prefs.setString('id', id);
     notifyListeners();
   }
 
@@ -98,15 +102,18 @@ class AuthProvider with ChangeNotifier {
 
         _token = loginResponse.data.token;
         print(_token);
+        _id = loginResponse.data.userDetails.id;
+        print('driver id $_id');
         // Initialize the socket with the user token
         _socketService.initSocket(_token!);
+        _socketService.initSocket(_id!);
 
         // Authenticate the socket connection
         _socketService.authenticate();
 
         // Start location updates when user logs in
         _driverService.startLocationUpdates();
-        await saveDriverData( _driverName!, _driverLastName!,_driverEmail!,_token!, _walletBalance!);
+        await saveDriverData( _driverName!, _driverLastName!,_driverEmail!,_token!, _walletBalance!, _id!);
         _signInLoading = false;
         //navigate to home page
         Future.delayed(Duration.zero, () {
