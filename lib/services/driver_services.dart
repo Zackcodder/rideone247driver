@@ -60,6 +60,7 @@ class DriverService {
      print('Latitude: ${position[0]}');
      print('Longitude: ${position[1]}');
      _socketService.driverLocationUpdate();
+
   }
 
 
