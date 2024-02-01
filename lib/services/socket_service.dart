@@ -5,7 +5,6 @@ class SocketService {
   final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
   static final SocketService _singleton = SocketService._internal();
 
-
   String? _token;
   String? _id;
   late IO.Socket socket;
@@ -88,32 +87,41 @@ class SocketService {
     print("listening for success");
     socket.on("SUCCESS", (data) {
       print(data);
-      print("sucess getting trip data: $data");
+      // print("sucess getting trip data: $data");
       // Handle success as needed
     });
   }
 
   ///Driver location update
   driverLocationUpdate() {
-    print('printing the driver locations reponse');
     socket.on("DRIVER_LOCATION_UPDATED", (data) {
-      print('res from updating driver location $data');
+      print(data);
     });
   }
 
   ///update driver availability
   driverOnlineStatus({required String id, required bool availability}) {
-    socket.emit("UPDATE_AVAILABILITY", {'id': id, availability: false});
+    socket.emit(
+      "UPDATE_AVAILABILITY",
+      {'id': id, availability: false},
+    );
   }
 
-  listenForRideRequest(void Function(dynamic) callback) {
+  ///listen for ride request
+  listenForRideRequest() {
     print('listneing for trip request');
     socket.on("RIDE_REQUEST", (data) {
       print('Received Ride Request: $data');
-      // Call the provided callback with the received data
-      callback(data);
     });
   }
+  // listenForRideRequest( Function(dynamic) callback) {
+  //   print('listneing for trip request');
+  //   socket.on("RIDE_REQUEST", (data) {
+  //     print('Received Ride Request: $data');
+  //     // Call the provided callback with the received data
+  //     callback(data);
+  //   });
+  // }
 
   void listenForTripEnd() {
     socket.on("TRIP_ENDED", (data) {
