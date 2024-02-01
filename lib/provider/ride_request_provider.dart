@@ -14,14 +14,10 @@ class RideRequestProvider with ChangeNotifier {
   List<Trip> _rideRequests = [];
 
   RideRequestProvider(String token) {
-    // Initialize the socket service and listen for ride requests
-    _socketService.initSocket(token);
-    // _socketService.listenForRideRequest((data) {
-    //   // Handle the incoming ride request data
-    //   print('Ride Request Received: $data');
-    // });
     listenForRideRequests();
+    _socketService.initSocket(token);
   }
+
 
   List<Trip> get rideRequests => _rideRequests;
   bool get hasRideRequests => _rideRequests.isNotEmpty;
@@ -33,19 +29,21 @@ class RideRequestProvider with ChangeNotifier {
         Timer.periodic(const Duration(seconds: 5), (timer) {
           print('staring another whala hahahahaha');
           /// Listen for ride requests and handle them
-          _socketService.listenForRideRequest((data) {
-            Trip newRequest = Trip.fromJson(data);
-            print('showing result of wahala $newRequest');
-            _rideRequests.add(newRequest);
-
-            /// Notify listeners that the ride requests list has been updated
-            notifyListeners();
-            _rideRequestLoading = false;
-          });
-          _socketService.listenForSuccess();
+          _socketService.listenForRideRequest();
+          // _socketService.listenForRideRequest((data) {
+          //   // Handle the ride request data within RideRequestProvider
+          //   Trip newRequest = Trip.fromJson(data);
+          //   _rideRequests.add(newRequest);
+          //
+          //   // Notify listeners that the ride requests list has been updated
+          //   notifyListeners();
+          //   _rideRequestLoading = false;
+          // });
+          // _socketService.listenForSuccess();
 
           /// Listen for socket errors
-          _socketService.listenForError();
+          // _socketService.listenForError();
           });
+    // notifyListeners();
   }
 }

@@ -28,9 +28,11 @@ class DriverService {
    startLocationUpdates() {
     /// Start a repeating timer that calls the updateLocation method every 5 seconds.
     locationUpdateTimer =
-        Timer.periodic(const Duration(seconds: 5), (timer) {
+        Timer.periodic(const Duration(seconds: 60), (timer) {
           updateDriverLiveStatus(online);
           updateLocation();
+          _socketService.driverLocationUpdate();
+
           // _socketService.driverLocationUpdate();/// Call the method to send location updates via socket
         });
   }
@@ -41,9 +43,8 @@ class DriverService {
   }
 
   /// Update location using socket
-  /// String driverId
    updateLocation() async {
-     print('starting oooo');
+     // print('starting oooo');
 
      // String? id = Provider.of<AuthProvider>(context, listen: false).id;
     final position = await _geoLocationService.getCurrentPosition(asPosition: false);
@@ -56,10 +57,11 @@ class DriverService {
       lat: position[0].toString(),
       lon: position[1].toString(),
     );
-     print('ID: $id');
-     print('Latitude: ${position[0]}');
-     print('Longitude: ${position[1]}');
+     // print('ID: $id');
+     // print('Latitude: ${position[0]}');
+     // print('Longitude: ${position[1]}');
      _socketService.driverLocationUpdate();
+
   }
 
 

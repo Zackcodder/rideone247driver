@@ -1,4 +1,3 @@
-// trip.dart
 class Trip {
   final String id;
   final String start;
@@ -31,18 +30,18 @@ class Trip {
   // Add a factory method to convert JSON data to a Trip object
   factory Trip.fromJson(Map<String, dynamic> json) {
     return Trip(
-      id: json['id'],
-      start: json['start'],
-      end: json['end'],
-      cost: json['cost'],
-      rating: json['rating'],
-      date: json['date'],
-      pickUpLon: json['pickUpLon'],
-      pickUpLat: json['pickUpLat'],
-      dropOffLon: json['dropOffLon'],
-      dropOffLat: json['dropOffLat'],
-      paymentMethod: json['paymentMethod'],
-      dispatch: json['dispatch'],
+      id: json['tripId'] ?? '',
+      start: json['start'] ?? '',
+      end: json['end'] ?? '',
+      cost: json['cost'] ?? 0,
+      rating: json['rating'] ?? 0.0,
+      date: json['date'] ?? '',
+      pickUpLon: json['pickUpLon'] ?? 0.0,
+      pickUpLat: json['pickUpLat'] ?? 0.0,
+      dropOffLon: json['dropOffLon'] ?? 0.0,
+      dropOffLat: json['dropOffLat'] ?? 0.0,
+      paymentMethod: json['paymentMethod'] ?? '',
+      dispatch: json['dispatch'] ?? false,
     );
   }
 }

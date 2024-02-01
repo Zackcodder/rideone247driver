@@ -15,7 +15,6 @@ class TripListViewer extends StatefulWidget {
 }
 
 class _TripListViewerState extends State<TripListViewer> {
-
   @override
   void initState() {
     super.initState();
@@ -25,27 +24,54 @@ class _TripListViewerState extends State<TripListViewer> {
   Widget build(BuildContext context) {
     // Listen for ride requests using Provider
     final rideRequestProvider = Provider.of<RideRequestProvider>(context);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        rideRequestProvider.rideRequests.isEmpty ?
-            const Text('No Ride request at the moment') :
-            // rideRequestProvider.rideRequestLoading == true ?
-            //     CircularProgressIndicator():
-        Consumer<RideRequestProvider>(
-            builder: (context, rideRequestProvider, child) {
+    return Consumer<RideRequestProvider>(
+      builder: (context, rideRequestProvider, child) {
+        if (rideRequestProvider.rideRequestLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (rideRequestProvider.hasRideRequests) {
           return ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            physics: const BouncingScrollPhysics(),
             itemCount: rideRequestProvider.rideRequests.length,
             itemBuilder: (context, index) {
-              return TripCard(
-                model: rideRequestProvider.rideRequests[index],
-                onTap: widget.onCardTap,
+              return ListTile(
+                title: Text(
+                    'Ride ID: ${rideRequestProvider.rideRequests[index].id}'),
+                subtitle: Text(
+                    'Pickup Location: ${rideRequestProvider.rideRequests[index].pickUpLat}, ${rideRequestProvider.rideRequests[index].pickUpLon},'),
+                // Add more details as needed
               );
             },
           );
-          }),
-      ],
+        } else {
+          return const Center(
+            child: Text('No ride requests at the moment.'),
+          );
+        }
+      },
     );
-}}
+    // Column(
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: [
+    //     rideRequestProvider.rideRequests.isEmpty ?
+    //         const Text('No Ride request at the moment') :
+    //         // rideRequestProvider.rideRequestLoading == true ?
+    //         //     CircularProgressIndicator():
+    //     Consumer<RideRequestProvider>(
+    //         builder: (context, rideRequestProvider, child) {
+    //       return ListView.builder(
+    //         padding: EdgeInsets.symmetric(horizontal: 20.w),
+    //         physics: const BouncingScrollPhysics(),
+    //         itemCount: rideRequestProvider.rideRequests.length,
+    //         itemBuilder: (context, index) {
+    //           return TripCard(
+    //             model: rideRequestProvider.rideRequests[index],
+    //             onTap: widget.onCardTap,
+    //           );
+    //         },
+    //       );
+    //       }),
+    //   ],
+    // );
+  }
+}

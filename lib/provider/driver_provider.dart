@@ -27,31 +27,33 @@ class DriverProvider with ChangeNotifier{
       print('res from updating driver location $data');
     });
     listenForDriverLocationUpdates();
+    notifyListeners();
   }
 
   ///update driver location
-  updateLocation(
-        {required String id,
-          required BuildContext context,
-        required String role,
-        required String lat,
-        required String lon}) async {
-
-    String? id = Provider.of<AuthProvider>(context, listen: false).id;
-    final position = await _geoLocationService.getCurrentPosition(asPosition: false);
-    _socketService.socket.emit("UPDATE_LOCATION", {
-        'id': id,
-        'role': 'DRIVER',
-      lat: position[0].toString(),
-      lon: position[1].toString(),
-      });
-    }
+  // updateLocation(
+  //       {required String id,
+  //         required BuildContext context,
+  //       required String role,
+  //       required String lat,
+  //       required String lon}) async {
+  //
+  //   String? id = Provider.of<AuthProvider>(context, listen: false).id;
+  //   final position = await _geoLocationService.getCurrentPosition(asPosition: false);
+  //   _socketService.socket.emit("UPDATE_LOCATION", {
+  //       'id': id,
+  //       'role': 'DRIVER',
+  //     lat: position[0].toString(),
+  //     lon: position[1].toString(),
+  //     });
+  //   notifyListeners();
+  //   }
 
   // Listen for driver location updates via socket
   listenForDriverLocationUpdates() {
     _driverService.startLocationUpdates();
-    _socketService.driverLocationUpdate();
-    _socketService.listenForSuccess();
+    // _socketService.driverLocationUpdate();
+    // _socketService.listenForSuccess();
   }
 
 }
