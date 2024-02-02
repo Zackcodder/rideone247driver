@@ -105,8 +105,7 @@ class AuthProvider with ChangeNotifier {
         _id = loginResponse.data.userDetails.id;
         print('driver id $_id');
         // Initialize the socket with the user token
-        _socketService.initSocket(_token!);
-        _socketService.initSocket(_id!);
+        _socketService.initSocket(_token!, _id!);
 
         // Authenticate the socket connection
         _socketService.authenticate();

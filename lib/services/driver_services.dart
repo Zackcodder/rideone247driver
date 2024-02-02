@@ -11,12 +11,11 @@ class DriverService {
   final GeoLocationService _geoLocationService = GeoLocationService();
   final SocketService _socketService = SocketService();
   final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
-  updateDriverLiveStatus(bool online) async {
+  updateDriverLiveStatus() async {
     final position = await _geoLocationService.getCurrentPosition(asPosition: false);
 
-    String status = online ? 'online' : 'offline';
     final response = await http.get(Uri.parse(
-        '$baseUrl?updatedriverstatus=$status&CurrentLongitude=${position[1]}&CurrentLatitude=${position[0]}'));
+        '$baseUrl?CurrentLongitude=${position[1]}&CurrentLatitude=${position[0]}'));
   }
 
   /// Define a Timer variable to schedule the periodic updates.
@@ -28,8 +27,8 @@ class DriverService {
    startLocationUpdates() {
     /// Start a repeating timer that calls the updateLocation method every 5 seconds.
     locationUpdateTimer =
-        Timer.periodic(const Duration(seconds: 60), (timer) {
-          updateDriverLiveStatus(online);
+        Timer.periodic(const Duration(seconds: 62), (timer) {
+          updateDriverLiveStatus();
           updateLocation();
           _socketService.driverLocationUpdate();
 
@@ -58,8 +57,8 @@ class DriverService {
       lon: position[1].toString(),
     );
      // print('ID: $id');
-     // print('Latitude: ${position[0]}');
-     // print('Longitude: ${position[1]}');
+     print('Latitude: ${position[0]}');
+     print('Longitude: ${position[1]}');
      _socketService.driverLocationUpdate();
 
   }

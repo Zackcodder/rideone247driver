@@ -15,7 +15,7 @@ class SocketService {
 
   SocketService._internal();
 
-  void initSocket(String _token) {
+  void initSocket(String _token, String _id) {
     print('starting socket class');
     try {
       socket = IO.io(baseUrl, <String, dynamic>{
@@ -69,7 +69,7 @@ class SocketService {
     });
   }
 
-  void startTrip({required String id, required String tripId}) {
+  startTrip({required String id, required String tripId}) {
     socket.emit("START_TRIP", {
       'id': id,
       'tripId': tripId,
@@ -103,8 +103,11 @@ class SocketService {
   driverOnlineStatus({required String id, required bool availability}) {
     socket.emit(
       "UPDATE_AVAILABILITY",
-      {'id': id, availability: false},
+      {'id': id, 'availability': availability},
     );
+    print('printing from socket $id');
+    print('printing from status socket $availability');
+    listenForSuccess();
   }
 
   ///listen for ride request
