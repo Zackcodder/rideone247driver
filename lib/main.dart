@@ -24,7 +24,7 @@ void main() async {
   final String? driverEmail = prefs.getString('driver_email');
   final String? token = prefs.getString('auth_token');
   final int? walletBalance = prefs.getInt('wallet_balance');
-  final String? id = prefs.getString('user_id');
+  final String? id = prefs.getString('id');
   runApp(MyApp(driverName, driverEmail, driverLastName, token, walletBalance, id));
 }
 
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('this is from the main class $initialdriverName ');
+    print('this is from the main class $initialId ');
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,
@@ -69,8 +69,8 @@ class MyApp extends StatelessWidget {
               ),
             ),
             ChangeNotifierProvider(create: (context) => MapView()),
-        ChangeNotifierProvider(create: (context) => RideRequestProvider(initialToken ?? '')),
-        ChangeNotifierProvider(create: (context) => DriverProvider(initialToken ?? '',)),
+        ChangeNotifierProvider(create: (context) => RideRequestProvider(initialToken ?? '', initialId ??'')),
+        ChangeNotifierProvider(create: (context) => DriverProvider(initialToken ?? '', initialId ?? '')),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

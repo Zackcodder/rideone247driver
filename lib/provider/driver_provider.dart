@@ -16,8 +16,8 @@ class DriverProvider with ChangeNotifier{
   final GeoLocationService _geoLocationService = GeoLocationService();
 
 
-  DriverProvider(String id) {
-    _socketService.initSocket(id);
+  DriverProvider( String token, String id) {
+    _socketService.initSocket(id, token);
     // Initialize the socket service and listen for ride requests
     // _socketService.listenForRideRequest((data) {
     //   // Handle the incoming ride request data

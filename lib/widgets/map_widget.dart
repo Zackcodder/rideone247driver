@@ -36,7 +36,7 @@ class MapWidgetState extends State<MapWidget> {
         myLocationEnabled: true,
         zoomGesturesEnabled: true,
         mapToolbarEnabled: false,
-        zoomControlsEnabled: true,
+        zoomControlsEnabled: false,
         mapType: MapType.normal,
         markers: mapProvider.marker,
         circles: mapProvider.circle,
