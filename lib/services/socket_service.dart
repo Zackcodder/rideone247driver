@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import '../model/trip.dart';
 
 class SocketService {
   final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
@@ -111,20 +116,63 @@ class SocketService {
   }
 
   ///listen for ride request
-  listenForRideRequest() {
-    print('listneing for trip request');
+  Future<Trip?> listenForRideRequest() async {
+    print('listening for trip request');
+
+    Completer<Trip?> completer = Completer<Trip?>();
+    // Make sure to unsubscribe before subscribing again
+    // socket.off("RIDE_REQUEST");
+
     socket.on("RIDE_REQUEST", (data) {
       print('Received Ride Request: $data');
+
+      try {
+        // Parse the JSON data into a Dart map
+        Map<String, dynamic> rideRequest = json.decode(data);
+
+        // Create a Trip object from the parsed data
+        Trip newRequest = Trip.fromJson(rideRequest);
+
+        // Complete the Future with the Trip object
+        completer.complete(newRequest);
+      } catch (e) {
+        // Handle any errors during parsing
+        completer.completeError(e);
+      }
     });
+
+    return completer.future;
   }
-  // listenForRideRequest( Function(dynamic) callback) {
+
+  //  listenForRideRequest() {
+  //   print('listening for trip request');
+  //
+  //   socket.on("RIDE_REQUEST", (data) {
+  //     print('Received Ride Request: $data');
+  //
+  //     // Parse the JSON data into a Dart map
+  //     Map<String, dynamic> rideRequest = json.decode(data);
+  //
+  //     // Access individual properties
+  //     String tripId = rideRequest['tripId'];
+  //     String riderId = rideRequest['riderId'];
+  //     double pickUpLon = rideRequest['pickUpLon'];
+  //     double pickUpLat = rideRequest['pickUpLat'];
+  //     // Access other properties as needed
+  //
+  //     // Now you can use these variables in your code
+  //     print('Trip ID: $tripId, Rider ID: $riderId, Pick Up Lon: $pickUpLon, Pick Up Lat: $pickUpLat');
+  //   });
+  // }
+  // listenForRideRequest() {
   //   print('listneing for trip request');
   //   socket.on("RIDE_REQUEST", (data) {
   //     print('Received Ride Request: $data');
-  //     // Call the provided callback with the received data
-  //     callback(data);
   //   });
   // }
+
+
+
 
   void listenForTripEnd() {
     socket.on("TRIP_ENDED", (data) {

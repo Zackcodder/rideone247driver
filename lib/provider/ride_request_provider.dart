@@ -25,28 +25,40 @@ class RideRequestProvider with ChangeNotifier {
   //driver trip
   Timer? checkForRideRequestTimer;
   listenForRideRequests() async {
-    print('staring another wahala ');
-    checkForRideRequestTimer =
-        Timer.periodic(const Duration(seconds: 5), (timer) async{
-      print('staring another wahala haha haha ha');
+    print('starting another wahala ');
 
-      /// Listen for ride requests and handle them
-      // _socketService.listenForRideRequest();
+    checkForRideRequestTimer = Timer.periodic(const Duration(seconds: 55), (timer) async {
+      print('starting another wahala haha haha ha');
 
-      /// Listen for ride requests and handle them
-      final data = await _socketService.listenForRideRequest();
+      try {
+        // Listen for ride requests and handle them
+        Trip? newRequest = await _socketService.listenForRideRequest();
 
-      if (data != null) {
-        // Handle the ride request data, for example, add it to a list
-        Trip newRequest = Trip.fromJson(data);
-        _rideRequests.add(newRequest);
+        if (newRequest != null) {
+          // Handle the ride request data, for example, add it to a list
+          _rideRequests.add(newRequest);
+          print('this is a trip details: ${newRequest.dropOffLon}');
 
-        // Notify listeners that the ride requests list has been updated
-        notifyListeners();
+          // Notify listeners that the ride requests list has been updated
+          notifyListeners();
+        }
+      } catch (e) {
+        // Handle any errors
+        print('Error processing ride request data: $e');
       }
-        });
-    // notifyListeners();
+    });
   }
+
+  // listenForRideRequests() async {
+  //   print('staring another wahala ');
+  //   checkForRideRequestTimer =
+  //       Timer.periodic(const Duration(seconds: 55), (timer) async{
+  //     print('staring another wahala haha haha ha');
+  //     /// Listen for ride requests and handle them
+  //     _socketService.listenForRideRequest();
+  //
+  //       });
+  // }
 
   ///updating driver online status
   updateDriverStatus(BuildContext context,String id, bool availability) async {
@@ -58,13 +70,4 @@ class RideRequestProvider with ChangeNotifier {
     print('this is the id $id');
     _socketService.listenForSuccess();
   }
-  // updateDriverStatus(BuildContext context,String id, bool availability) async {
-  //   String? id = Provider.of<AuthProvider>(context, listen: false).id;
-  //   _socketService.driverOnlineStatus(
-  //     id:  id!,
-  //     availability: true,
-  //   );
-  //   print('this is the status $availability');
-  //   print('this is the id $id');
-  // }
 }

@@ -8,12 +8,35 @@ import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/dummy_data/active_trips.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 import 'package:ride_on_driver/widgets/trip_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/currency_widget.dart';
 import '../widgets/rider_box.dart';
 
-class ActiveTripDetailView extends StatelessWidget {
+class ActiveTripDetailView extends StatefulWidget {
   const ActiveTripDetailView({super.key});
+
+  @override
+  State<ActiveTripDetailView> createState() => _ActiveTripDetailViewState();
+}
+
+class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadDriverDataFromSharedPreference();
+  }
+
+  String? _driverName;
+  String? _driverLastName;
+  loadDriverDataFromSharedPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _driverLastName = prefs.getString('driver_lastname');
+      _driverName = prefs.getString('driver_name');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +54,7 @@ class ActiveTripDetailView extends StatelessWidget {
                 contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
                 leading: Image.asset(Assets.assetsImagesDriverProfile).clip(radius: 100),
                 title: Text(
-                  'Collins Okpe',
+                  '$_driverName $_driverLastName'??'',
                   style: context.textTheme.bodyMedium,
                 ),
                 subtitle: Column(
