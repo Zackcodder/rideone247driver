@@ -21,7 +21,7 @@ import '../widgets/custom_tabbar.dart';
 import 'trips_view.dart';
 
 // ValueNotifier isActiveNotifier = ValueNotifier(true);
-ValueNotifier<bool> isActiveNotifier = ValueNotifier<bool>(true);
+ValueNotifier<bool> isActiveNotifier = ValueNotifier<bool>(false);
 
 ValueNotifier isRideActiveNotifier = ValueNotifier(false);
 
@@ -65,8 +65,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final rideDetails =
-    Provider.of<AuthProvider>(context, listen: false);
     // final authProvider = Provider.of<AuthProvider>(context);
     return WillPopScope(
       onWillPop: () async {

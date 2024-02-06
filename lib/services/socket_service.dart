@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import '../model/trip.dart';
 
 class SocketService {
   final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
@@ -56,33 +61,6 @@ class SocketService {
     });
   }
 
-  acceptRide(
-      {required String id,
-      required String lon,
-      required String lat,
-      required String tripId}) {
-    socket.emit("REQUEST_ACCEPTED", {
-      'id': id,
-      'lon': lon,
-      'lat': lat,
-      'tripId': tripId,
-    });
-  }
-
-  startTrip({required String id, required String tripId}) {
-    socket.emit("START_TRIP", {
-      'id': id,
-      'tripId': tripId,
-    });
-  }
-
-  endTrip({required String id, required String tripId}) {
-    socket.emit("END_TRIP", {
-      'id': id,
-      'tripId': tripId,
-    });
-  }
-
   listenForSuccess() {
     print("listening for success");
     socket.on("SUCCESS", (data) {
@@ -111,21 +89,64 @@ class SocketService {
   }
 
   ///listen for ride request
-  listenForRideRequest() {
-    print('listneing for trip request');
+  Future<Trip?> listenForRideRequest() async {
+    print('listening for trip request');
+
+    Completer<Trip?> completer = Completer<Trip?>();
+    // Make sure to unsubscribe before subscribing again
+    // socket.off("RIDE_REQUEST");
+
     socket.on("RIDE_REQUEST", (data) {
       print('Received Ride Request: $data');
+
+      try {
+        // Parse the JSON data into a Dart map
+        Map<String, dynamic> rideRequest = json.decode(data);
+
+        // Create a Trip object from the parsed data
+        Trip newRequest = Trip.fromJson(rideRequest);
+
+        // Complete the Future with the Trip object
+        completer.complete(newRequest);
+      } catch (e) {
+        // Handle any errors during parsing
+        completer.completeError(e);
+      }
+    });
+
+    return completer.future;
+  }
+
+
+  acceptRide(
+      {required String id,
+        required String lon,
+        required String lat,
+        required String tripId}) {
+    print('starting accetp trip in socket');
+    socket.emit("REQUEST_ACCEPTED", {
+      'id': '634a1ba1-2388-4ad6-a77d-93e134cecc72',
+      'lon': '8.500123499999999',
+      'lat': '4.5827404',
+      'tripId': '65aa5dbab2e8f20021fcac83',
+    });
+    print('printing  response in socket');
+    listenForSuccess();
+  }
+
+  startTrip({required String id, required String tripId}) {
+    socket.emit("START_TRIP", {
+      'id': id,
+      'tripId': tripId,
     });
   }
-  // listenForRideRequest( Function(dynamic) callback) {
-  //   print('listneing for trip request');
-  //   socket.on("RIDE_REQUEST", (data) {
-  //     print('Received Ride Request: $data');
-  //     // Call the provided callback with the received data
-  //     callback(data);
-  //   });
-  // }
 
+  endTrip({required String id, required String tripId}) {
+    socket.emit("END_TRIP", {
+      'id': id,
+      'tripId': tripId,
+    });
+  }
   void listenForTripEnd() {
     socket.on("TRIP_ENDED", (data) {
       print(data);

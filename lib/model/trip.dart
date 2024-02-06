@@ -11,6 +11,8 @@ class Trip {
   final int cost;
   final String paymentMethod;
   final bool dispatch;
+  final String riderId;
+  final String driverId;
 
   Trip({
     required this.id,
@@ -25,6 +27,8 @@ class Trip {
     required this.rating,
     required this.paymentMethod,
     required this.dispatch,
+    required this.riderId,
+    required this.driverId,
   });
 
   // Add a factory method to convert JSON data to a Trip object
@@ -41,6 +45,8 @@ class Trip {
       dropOffLon: json['dropOffLon'] ?? 0.0,
       dropOffLat: json['dropOffLat'] ?? 0.0,
       paymentMethod: json['paymentMethod'] ?? '',
+      riderId: json['riderId'] ?? '',
+      driverId: json['driverId'] ?? '',
       dispatch: json['dispatch'] ?? false,
     );
   }
