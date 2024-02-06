@@ -61,33 +61,6 @@ class SocketService {
     });
   }
 
-  acceptRide(
-      {required String id,
-      required String lon,
-      required String lat,
-      required String tripId}) {
-    socket.emit("REQUEST_ACCEPTED", {
-      'id': id,
-      'lon': lon,
-      'lat': lat,
-      'tripId': tripId,
-    });
-  }
-
-  startTrip({required String id, required String tripId}) {
-    socket.emit("START_TRIP", {
-      'id': id,
-      'tripId': tripId,
-    });
-  }
-
-  endTrip({required String id, required String tripId}) {
-    socket.emit("END_TRIP", {
-      'id': id,
-      'tripId': tripId,
-    });
-  }
-
   listenForSuccess() {
     print("listening for success");
     socket.on("SUCCESS", (data) {
@@ -144,36 +117,36 @@ class SocketService {
     return completer.future;
   }
 
-  //  listenForRideRequest() {
-  //   print('listening for trip request');
-  //
-  //   socket.on("RIDE_REQUEST", (data) {
-  //     print('Received Ride Request: $data');
-  //
-  //     // Parse the JSON data into a Dart map
-  //     Map<String, dynamic> rideRequest = json.decode(data);
-  //
-  //     // Access individual properties
-  //     String tripId = rideRequest['tripId'];
-  //     String riderId = rideRequest['riderId'];
-  //     double pickUpLon = rideRequest['pickUpLon'];
-  //     double pickUpLat = rideRequest['pickUpLat'];
-  //     // Access other properties as needed
-  //
-  //     // Now you can use these variables in your code
-  //     print('Trip ID: $tripId, Rider ID: $riderId, Pick Up Lon: $pickUpLon, Pick Up Lat: $pickUpLat');
-  //   });
-  // }
-  // listenForRideRequest() {
-  //   print('listneing for trip request');
-  //   socket.on("RIDE_REQUEST", (data) {
-  //     print('Received Ride Request: $data');
-  //   });
-  // }
 
+  acceptRide(
+      {required String id,
+        required String lon,
+        required String lat,
+        required String tripId}) {
+    print('starting accetp trip in socket');
+    socket.emit("REQUEST_ACCEPTED", {
+      'id': '634a1ba1-2388-4ad6-a77d-93e134cecc72',
+      'lon': '8.500123499999999',
+      'lat': '4.5827404',
+      'tripId': '65aa5dbab2e8f20021fcac83',
+    });
+    print('printing  response in socket');
+    listenForSuccess();
+  }
 
+  startTrip({required String id, required String tripId}) {
+    socket.emit("START_TRIP", {
+      'id': id,
+      'tripId': tripId,
+    });
+  }
 
-
+  endTrip({required String id, required String tripId}) {
+    socket.emit("END_TRIP", {
+      'id': id,
+      'tripId': tripId,
+    });
+  }
   void listenForTripEnd() {
     socket.on("TRIP_ENDED", (data) {
       print(data);

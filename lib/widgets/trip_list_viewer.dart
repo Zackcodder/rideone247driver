@@ -40,6 +40,7 @@ class _TripListViewerState extends State<TripListViewer> {
           return ListView.builder(
             itemCount: rideRequestProvider.rideRequests.length,
             itemBuilder: (context, index) {
+              final trip = rideRequestProvider.rideRequests[index];
               return GestureDetector(
                 onTap: widget.onCardTap,
                 child: Container(
@@ -80,12 +81,12 @@ class _TripListViewerState extends State<TripListViewer> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              rideRequestProvider.rideRequests[index].paymentMethod,
+                              trip.paymentMethod,
                               style: context.textTheme.bodySmall,
                             ),
                             const VerticalSpacing(10),
                             Text(
-                              rideRequestProvider.rideRequests[index].id,
+                              trip.id,
                               style: context.textTheme.bodySmall,
                             ),
                           ],
@@ -119,7 +120,7 @@ class _TripListViewerState extends State<TripListViewer> {
                               height: 20.h,
                               child: Align(
                                 alignment: Alignment.centerRight,
-                                child: CurrencyWidget(price: rideRequestProvider.rideRequests[index].cost),
+                                child: CurrencyWidget(price: trip.cost),
                               ),
                             ),
                           ],
@@ -138,28 +139,5 @@ class _TripListViewerState extends State<TripListViewer> {
         }
       },
     );
-    // Column(
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: [
-    //     rideRequestProvider.rideRequests.isEmpty ?
-    //         const Text('No Ride request at the moment') :
-    //         // rideRequestProvider.rideRequestLoading == true ?
-    //         //     CircularProgressIndicator():
-    //     Consumer<RideRequestProvider>(
-    //         builder: (context, rideRequestProvider, child) {
-    //       return ListView.builder(
-    //         padding: EdgeInsets.symmetric(horizontal: 20.w),
-    //         physics: const BouncingScrollPhysics(),
-    //         itemCount: rideRequestProvider.rideRequests.length,
-    //         itemBuilder: (context, index) {
-    //           return TripCard(
-    //             model: rideRequestProvider.rideRequests[index],
-    //             onTap: widget.onCardTap,
-    //           );
-    //         },
-    //       );
-    //       }),
-    //   ],
-    // );
   }
 }

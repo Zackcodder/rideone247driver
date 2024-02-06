@@ -10,6 +10,7 @@ import 'package:ride_on_driver/widgets/spacing.dart';
 import 'package:ride_on_driver/widgets/trip_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../widgets/app_elevated_button.dart';
 import '../widgets/currency_widget.dart';
 import '../widgets/rider_box.dart';
 

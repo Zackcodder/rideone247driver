@@ -63,10 +63,16 @@ class TripCompletedScreen extends StatelessWidget {
                   size: 15,
                 ),
                 const HorizontalSpacing(10),
-                Text(
-                  'GO BACK HOME',
-                  style: context.textTheme.bodyMedium!.copyWith(color: AppColors.green),
-                ).onTap(context.popToHome),
+                GestureDetector(
+                  onTap: (){
+                    context.push(const HomeScreen());
+                  },
+                  child: Text(
+                    'GO BACK HOME',
+                    style: context.textTheme.bodyMedium!.copyWith(color: AppColors.green),
+                  )
+                      // .onTap(context.popToHome),
+                ),
               ],
             ),
             const Spacer(),

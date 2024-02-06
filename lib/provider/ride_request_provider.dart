@@ -22,8 +22,29 @@ class RideRequestProvider with ChangeNotifier {
 
   List<Trip> get rideRequests => _rideRequests;
   bool get hasRideRequests => _rideRequests.isNotEmpty;
-  //driver trip
+
+  ///updating driver online status
+  updateDriverStatus(BuildContext context,String id, bool availability) async {
+    _socketService.driverOnlineStatus(
+      id: id,
+      availability: availability,
+    );
+    print('this is the status $availability');
+    print('this is the id $id');
+    _socketService.listenForSuccess();
+  }
+
+  /// trip request
   Timer? checkForRideRequestTimer;
+
+  String? get tripId => _tripId;
+  String? _tripId;
+  String? get tripLat => _tripLat;
+  String? _tripLat;
+  String? get tripLng => _tripLng;
+  String? _tripLng;
+  String? get driverTripId => _driverTripId;
+  String? _driverTripId;
   listenForRideRequests() async {
     print('starting another wahala ');
 
@@ -37,7 +58,14 @@ class RideRequestProvider with ChangeNotifier {
         if (newRequest != null) {
           // Handle the ride request data, for example, add it to a list
           _rideRequests.add(newRequest);
-          print('this is a trip details: ${newRequest.dropOffLon}');
+          _tripId = newRequest.id;
+          _tripLat = newRequest.dropOffLon.toString();
+          _tripLng = newRequest.pickUpLat.toString();
+          _driverTripId = newRequest.driverId;
+          print('this is a trip lat: ${newRequest.dropOffLon}');
+          print('this is a trip lng: ${newRequest.pickUpLat}');
+          print('this is a trip id: ${newRequest.id}');
+          print('this is a trip driver: ${newRequest.driverId}');
 
           // Notify listeners that the ride requests list has been updated
           notifyListeners();
@@ -49,25 +77,12 @@ class RideRequestProvider with ChangeNotifier {
     });
   }
 
-  // listenForRideRequests() async {
-  //   print('staring another wahala ');
-  //   checkForRideRequestTimer =
-  //       Timer.periodic(const Duration(seconds: 55), (timer) async{
-  //     print('staring another wahala haha haha ha');
-  //     /// Listen for ride requests and handle them
-  //     _socketService.listenForRideRequest();
-  //
-  //       });
-  // }
-
-  ///updating driver online status
-  updateDriverStatus(BuildContext context,String id, bool availability) async {
-    _socketService.driverOnlineStatus(
-      id: id,
-      availability: availability,
-    );
-    print('this is the status $availability');
-    print('this is the id $id');
+  ///accept rider request
+  acceptRideRequest(String id, String lon, String lat, String tripId) {
+    print('starting accetp trip in provider');
+    _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
+    print('printing accet response in provider');
     _socketService.listenForSuccess();
   }
+
 }
