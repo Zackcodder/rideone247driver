@@ -61,14 +61,6 @@ class SocketService {
     });
   }
 
-  listenForSuccess() {
-    print("listening for success");
-    socket.on("SUCCESS", (data) {
-      print(data);
-      // print("sucess getting trip data: $data");
-      // Handle success as needed
-    });
-  }
 
   ///Driver location update
   driverLocationUpdate() {
@@ -136,8 +128,10 @@ class SocketService {
 
   startTrip({required String id, required String tripId}) {
     socket.emit("START_TRIP", {
-      'id': id,
-      'tripId': tripId,
+      'id': '634a1ba1-2388-4ad6-a77d-93e134cecc72',
+      //id,
+      'tripId': '65aa5dbab2e8f20021fcac83',
+      //tripId,
     });
   }
 
@@ -151,6 +145,15 @@ class SocketService {
     socket.on("TRIP_ENDED", (data) {
       print(data);
       // Handle trip completion as needed
+    });
+  }
+
+  listenForSuccess() {
+    print("listening for success");
+    socket.on("SUCCESS", (data) {
+      print(data);
+      // print("sucess getting trip data: $data");
+      // Handle success as needed
     });
   }
 

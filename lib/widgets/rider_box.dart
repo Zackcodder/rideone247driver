@@ -6,6 +6,7 @@ import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
+import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/provider/ride_request_provider.dart';
 import 'package:ride_on_driver/screens/chat_screen.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
@@ -169,6 +170,7 @@ class _RiderBoxState extends State<RiderBox>
           ),
 
           _acceptRequest != true ?
+              ///accept trip button
           AppElevatedButton.large(
             onPressed: () async {
 
@@ -190,8 +192,13 @@ class _RiderBoxState extends State<RiderBox>
             },
             text: 'Accept Trip',
           ) :
+
+              /// start trip button
           AppElevatedButton.large(
             onPressed: ()  {
+              rideDetails.startRide(
+                  rideDetails.tripId ??'',
+                  rideDetails.driverTripId ??'');
               context.push(const HomeScreen());
             },
             text: 'Start Trip',
