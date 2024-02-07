@@ -65,7 +65,11 @@ class TripCompletedScreen extends StatelessWidget {
                 const HorizontalSpacing(10),
                 GestureDetector(
                   onTap: (){
-                    context.push(const HomeScreen());
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );
+                    // context.push(const HomeScreen());
                   },
                   child: Text(
                     'GO BACK HOME',
