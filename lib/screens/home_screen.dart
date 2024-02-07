@@ -43,8 +43,8 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    currentTabNotifier = ValueNotifier(tabs.last);
-    tabController = TabController(initialIndex: 1, length: 2, vsync: this);
+    currentTabNotifier = ValueNotifier(tabs.first);
+    tabController = TabController(initialIndex: 0, length: 2, vsync: this);
     Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
     Provider.of<DriverProvider>(context, listen: false).listenForDriverLocationUpdates();
   }
