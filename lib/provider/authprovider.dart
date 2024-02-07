@@ -27,6 +27,8 @@ class AuthProvider with ChangeNotifier {
   String? get driverEmail => _driverEmail;
   String? _driverLastName;
   String? get driverLastName => _driverLastName;
+  // String? _driverImage;
+  // String? get driverImage => _driverImage;
   String? _error;
   String? get error => _error;
   String? _token;
@@ -95,19 +97,17 @@ class AuthProvider with ChangeNotifier {
         _driverLastName = loginResponse.data.userDetails.lastName;
         print(_driverLastName);
         _walletBalance = loginResponse.data.userDetails.walletBalance;
-
-
-
         print('driver wallet balance $_walletBalance');
-
         _token = loginResponse.data.token;
         print(_token);
         _id = loginResponse.data.userDetails.id;
         print('driver id $_id');
-        // Initialize the socket with the user token
+        // _driverImage = loginResponse.data.userDetails.image;
+        // print('driver id $_driverImage');
+        /// Initialize the socket with the user token
         _socketService.initSocket(_token!, _id!);
 
-        // Authenticate the socket connection
+        /// Authenticate the socket connection
         _socketService.authenticate();
 
         // Start location updates when user logs in

@@ -32,6 +32,7 @@ class RideRequestProvider with ChangeNotifier {
     print('this is the status $availability');
     print('this is the id $id');
     _socketService.listenForSuccess();
+    notifyListeners();
   }
 
   /// trip request
@@ -78,11 +79,21 @@ class RideRequestProvider with ChangeNotifier {
   }
 
   ///accept rider request
-  acceptRideRequest(String id, String lon, String lat, String tripId) {
+  acceptRideRequest(String id, String lon, String lat, String tripId) async{
     print('starting accetp trip in provider');
     _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
     print('printing accet response in provider');
     _socketService.listenForSuccess();
+    notifyListeners();
+  }
+
+  ///start trip
+  startRide( String id,  String tripId) async{
+    print('starting ride in provider');
+    _socketService.startTrip(id: id, tripId: tripId);
+    print('starting ride respoinse in provider');
+    _socketService.listenForSuccess();
+    notifyListeners();
   }
 
 }

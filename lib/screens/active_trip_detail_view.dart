@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
@@ -10,6 +11,7 @@ import 'package:ride_on_driver/widgets/spacing.dart';
 import 'package:ride_on_driver/widgets/trip_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../provider/authprovider.dart';
 import '../widgets/app_elevated_button.dart';
 import '../widgets/currency_widget.dart';
 import '../widgets/rider_box.dart';
@@ -41,6 +43,8 @@ class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider =
+    Provider.of<AuthProvider>(context, listen: false);
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -94,7 +98,7 @@ class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
                       color: const Color(0xffdfe7f5),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
-                    child: SvgPicture.asset(Assets.assetsSvgsPaymentLeading),
+                    child: SvgPicture.asset( Assets.assetsSvgsPaymentLeading),
                   ),
                   title: Text('Cash Payment', style: context.textTheme.bodyLarge),
                   trailing: const CurrencyWidget(price: 800),

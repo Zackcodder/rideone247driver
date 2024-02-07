@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    // final authProvider = Provider.of<AuthProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;
@@ -79,9 +79,10 @@ class _HomeScreenState extends State<HomeScreen>
       child: Scaffold(
         appBar: AppBar(
           title: const Text('RIDEON247'),
+          ///driver image
           leading: UnconstrainedBox(
             child: Image.asset(
-              Assets.assetsImagesDriverProfile,
+               Assets.assetsImagesDriverProfile,
               width: 40.w,
             ).clip(radius: 100),
           ).onTap(() => context.push(const ProfileScreen())),
@@ -92,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen>
                 builder: (context, isActive, _) {
                   return CustomSwitch(
                     value: isActive,
-                    onChanged: (value){
+                    onChanged: (value) async{
                       String? id = Provider.of<AuthProvider>(context, listen: false).id;
                       Provider.of<RideRequestProvider>(context, listen: false).updateDriverStatus(context, id!, value);
                       isActiveNotifier.value = value;
@@ -107,6 +108,8 @@ class _HomeScreenState extends State<HomeScreen>
           child: Column(
             children: [
               const VerticalSpacing(20),
+              ///toggle button for switching btw
+              ///active trip and trip request screen
               MultiValueListenableBuilder(
                   valueListenables: [currentTabNotifier, isRideActiveNotifier],
                   builder: (context, values, _) {
@@ -124,15 +127,20 @@ class _HomeScreenState extends State<HomeScreen>
                     );
                   }),
               const VerticalSpacing(20),
+              ///active trip, trip request screen and offline screen
               ValueListenableBuilder(
                 valueListenable: isActiveNotifier,
                 builder: (context, active, _) {
                   return active
-                      ? TabBarView(
+                      ?
+                      /// Active trip screen and trip request screen
+                  TabBarView(
                           controller: tabController,
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
+                            ///active trip screen
                             const TripsView(),
+                            ///trip request screen
                             ValueListenableBuilder(
                               valueListenable: isRideActiveNotifier,
                               builder: (_, rideActive, __) {
@@ -144,7 +152,9 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
                           ],
                         )
-                      : const OfflineView();
+                      :
+                      ///offline screen
+                  const OfflineView();
                 },
               ).expand()
             ],
