@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       'Earned Today',
                       style: context.textTheme.bodySmall,
                     ),
-                    CurrencyWidget(price: authProvider.walletBalance!),
+                    CurrencyWidget(price: authProvider.walletBalance ?? 0),
                   ].toColumn(
                     crossAxisAlignment: CrossAxisAlignment.center,
                   ),
