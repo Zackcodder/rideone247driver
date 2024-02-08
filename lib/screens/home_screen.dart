@@ -46,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen>
     currentTabNotifier = ValueNotifier(tabs.first);
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
     Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
+    String? id = Provider.of<AuthProvider>(context, listen: false).id;
     Provider.of<DriverProvider>(context, listen: false).listenForDriverLocationUpdates();
   }
 

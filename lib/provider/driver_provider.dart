@@ -18,11 +18,6 @@ class DriverProvider with ChangeNotifier{
 
   DriverProvider( String token, String id) {
     _socketService.initSocket(id, token);
-    // Initialize the socket service and listen for ride requests
-    // _socketService.listenForRideRequest((data) {
-    //   // Handle the incoming ride request data
-    //   print('Ride Request Received: $data');
-    // });
     _socketService.socket.on("DRIVER_LOCATION_UPDATED", (data) {
       print('res from updating driver location $data');
     });
@@ -31,29 +26,23 @@ class DriverProvider with ChangeNotifier{
   }
 
   ///update driver location
-  // updateLocation(
-  //       {required String id,
-  //         required BuildContext context,
-  //       required String role,
-  //       required String lat,
-  //       required String lon}) async {
-  //
-  //   String? id = Provider.of<AuthProvider>(context, listen: false).id;
-  //   final position = await _geoLocationService.getCurrentPosition(asPosition: false);
-  //   _socketService.socket.emit("UPDATE_LOCATION", {
-  //       'id': id,
-  //       'role': 'DRIVER',
-  //     lat: position[0].toString(),
-  //     lon: position[1].toString(),
-  //     });
-  //   notifyListeners();
-  //   }
+  updateLocation(
+        {required String id, required String role, required String lat, required String lon}) async {
+    final position = await _geoLocationService.getCurrentPosition(asPosition: false);
+    _socketService.socket.emit("UPDATE_LOCATION", {
+        'id': id,
+        'role': 'DRIVER',
+      lat: position[0].toString(),
+      lon: position[1].toString(),
+      });
+    print('this is the driver location update in the provider $id');
+    print('this is the driver location update in the provider $lon');
+    notifyListeners();
+    }
 
-  // Listen for driver location updates via socket
+  /// Listen for driver location updates via socket
   listenForDriverLocationUpdates() {
     _driverService.startLocationUpdates();
-    // _socketService.driverLocationUpdate();
-    // _socketService.listenForSuccess();
   }
 
 }

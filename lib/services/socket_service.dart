@@ -48,6 +48,7 @@ class SocketService {
     print('socket working with toke $_token');
   }
 
+  ///Driver location update 
   updateLocation(
       {required String id,
       required String role,
@@ -62,7 +63,7 @@ class SocketService {
   }
 
 
-  ///Driver location update
+  ///Driver location update response
   driverLocationUpdate() {
     socket.on("DRIVER_LOCATION_UPDATED", (data) {
       print(data);

@@ -201,9 +201,8 @@ class _RiderBoxState extends State<RiderBox>
                   rideDetails.driverTripId ??'');
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const TripsView()),
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
               );
-              // context.push(const TripsView());
             },
             text: 'Start Trip',
           ),

@@ -11,6 +11,8 @@ class DriverService {
   final GeoLocationService _geoLocationService = GeoLocationService();
   final SocketService _socketService = SocketService();
   final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
+
+
   updateDriverLiveStatus() async {
     final position = await _geoLocationService.getCurrentPosition(asPosition: false);
 
@@ -30,9 +32,6 @@ class DriverService {
         Timer.periodic(const Duration(seconds: 62), (timer) {
           updateDriverLiveStatus();
           updateLocation();
-          _socketService.driverLocationUpdate();
-
-          // _socketService.driverLocationUpdate();/// Call the method to send location updates via socket
         });
   }
 
@@ -43,9 +42,6 @@ class DriverService {
 
   /// Update location using socket
    updateLocation() async {
-     // print('starting oooo');
-
-     // String? id = Provider.of<AuthProvider>(context, listen: false).id;
     final position = await _geoLocationService.getCurrentPosition(asPosition: false);
     _socketService.updateLocation(
       id:
