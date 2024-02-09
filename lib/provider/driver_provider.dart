@@ -43,6 +43,7 @@ class DriverProvider with ChangeNotifier{
   /// Listen for driver location updates via socket
   listenForDriverLocationUpdates() {
     _driverService.startLocationUpdates();
+    notifyListeners();
   }
 
 }

@@ -40,14 +40,18 @@ class _HomeScreenState extends State<HomeScreen>
   List<TabItem> tabs = [const TabItem('Active'), const TabItem('Requests')];
 
   @override
-  void initState() {
+   initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     currentTabNotifier = ValueNotifier(tabs.first);
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
-    Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
-    String? id = Provider.of<AuthProvider>(context, listen: false).id;
-    Provider.of<DriverProvider>(context, listen: false).listenForDriverLocationUpdates();
+
+      Provider.of<RideRequestProvider>(context, listen: false)
+          .listenForRideRequests();
+      Provider.of<DriverProvider>(context, listen: false)
+          .listenForDriverLocationUpdates();
+
+
   }
 
   @override
