@@ -48,7 +48,7 @@ class SocketService {
     print('socket working with toke $_token');
   }
 
-  ///Driver location update 
+  ///Driver location update
   updateLocation(
       {required String id,
       required String role,
