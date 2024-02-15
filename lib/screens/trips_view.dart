@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
@@ -11,12 +12,15 @@ import 'package:ride_on_driver/widgets/map_widget.dart';
 import 'package:ride_on_driver/widgets/trip_card.dart';
 
 import '../core/painters_clippers/vertical_dot_line.dart';
+import '../provider/ride_request_provider.dart';
 import '../widgets/spacing.dart';
 
 class TripsView extends StatelessWidget {
   const TripsView({super.key});
   @override
   Widget build(BuildContext context) {
+    final rideDetails =
+    Provider.of<RideRequestProvider>(context, listen: false);
     return Stack(
       children: [
         const MapWidget(),
@@ -116,7 +120,8 @@ class TripsView extends StatelessWidget {
             ),
             // TripCard(model: activeTripList.first),
             AppElevatedButton.medium(
-              onPressed: () {
+              onPressed: () async {
+                rideDetails.endRiderTrip(rideDetails.driverTripId??'', rideDetails.tripId ?? '');
                 context.push(const TripCompletedScreen());
                 isRideActiveNotifier.value = false;
               },

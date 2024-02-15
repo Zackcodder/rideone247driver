@@ -50,20 +50,20 @@ class RideRequestProvider with ChangeNotifier {
   listenForRideRequests() async {
     print('starting another wahala ');
 
-    checkForRideRequestTimer = Timer.periodic(const Duration(seconds: 55), (timer) async {
+    // checkForRideRequestTimer = Timer.periodic(const Duration(seconds: 55), (timer) async {
       print('starting another wahala haha haha ha');
 
       try {
-        // Listen for ride requests and handle them
+        /// Listen for ride requests and handle them
         Trip? newRequest = await _socketService.listenForRideRequest();
 
         if (newRequest != null) {
           // Handle the ride request data, for example, add it to a list
           _rideRequests.add(newRequest);
-          _tripId = newRequest.id;
+          _tripId = newRequest.driverId;
           _tripLat = newRequest.dropOffLon.toString();
           _tripLng = newRequest.pickUpLat.toString();
-          _driverTripId = newRequest.driverId;
+          _driverTripId = newRequest.id;
           print('this is a trip lat: ${newRequest.dropOffLon}');
           print('this is a trip lng: ${newRequest.pickUpLat}');
           print('this is a trip id: ${newRequest.id}');
@@ -76,7 +76,8 @@ class RideRequestProvider with ChangeNotifier {
         // Handle any errors
         print('Error processing ride request data: $e');
       }
-    });
+    // }
+    // );
   }
 
   ///accept rider request
@@ -84,7 +85,8 @@ class RideRequestProvider with ChangeNotifier {
     print('starting accetp trip in provider');
     _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
     print('printing accet response in provider');
-    _socketService.listenForSuccess();
+    _socketService.acceptRideRespond();
+    _socketService.listenForError();
     notifyListeners();
   }
 
@@ -94,6 +96,17 @@ class RideRequestProvider with ChangeNotifier {
     _socketService.startTrip(id: id, tripId: tripId);
     print('starting ride respoinse in provider');
     _socketService.listenForSuccess();
+    _socketService.listenForError();
+    notifyListeners();
+  }
+
+  endRiderTrip(String id,  String tripId) async{
+    print('ending trip from provider');
+    _socketService.endTrip(id: id, tripId: tripId);
+    print('printing the success response for end trip in provider');
+    _socketService.listenForTripEnd();
+    print('printing the error response for end trip in provider');
+    _socketService.listenForError();
     notifyListeners();
   }
 

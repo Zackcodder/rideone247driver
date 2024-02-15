@@ -173,29 +173,16 @@ class _RiderBoxState extends State<RiderBox>
               ///accept trip button
           AppElevatedButton.large(
             onPressed: () async {
-
-              // Call acceptTripRequest function when the button is pressed
-              rideDetails.acceptRideRequest(
-                rideDetails.tripId ??'', // Assuming driverId is used as the id
-                rideDetails.tripLat ??'',
-                rideDetails.tripLng??'',
-                rideDetails.driverTripId ??''
-              );
-
-              print('this is a trip lat in ui: ${rideDetails.tripLat??''}');
-              print('this is a trip lng in ui: ${rideDetails.tripLng??''}');
-              print('this is a trip id in ui: ${rideDetails.tripId ??''}');
-              print('this is a trip driver in ui: ${rideDetails.driverTripId ??''}');
               setState(() {
                 _acceptRequest = true;
               });
             },
-            text: 'Accept Trip',
+            text: 'Arrived',
           ) :
 
               /// start trip button
           AppElevatedButton.large(
-            onPressed: ()  {
+            onPressed: ()  async{
               rideDetails.startRide(
                   rideDetails.tripId ??'',
                   rideDetails.driverTripId ??'');
