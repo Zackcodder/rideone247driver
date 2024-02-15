@@ -112,27 +112,31 @@ class SocketService {
 
 
   acceptRide(
-      {required String id,
-        required String lon,
-        required String lat,
-        required String tripId}) {
+      {required String id,required String lon,required String lat,required String tripId}) {
     print('starting accetp trip in socket');
     socket.emit("REQUEST_ACCEPTED", {
-      'id': '634a1ba1-2388-4ad6-a77d-93e134cecc72',
-      'lon': '8.500123499999999',
-      'lat': '4.5827404',
-      'tripId': '65aa5dbab2e8f20021fcac83',
+      'id': id,
+      'lon': lon,
+      'lat': lat,
+      'tripId': tripId,
     });
     print('printing  response in socket');
-    listenForSuccess();
+    acceptRideRespond();
+    print('printing error response in socket');
+    listenForError();
+  }
+
+  acceptRideRespond(){
+    print('Printing the acceptance response from the socket');
+    socket.emit("ACCEPTED_REQUEST",  (data) {
+    print(data);
+    });
   }
 
   startTrip({required String id, required String tripId}) {
     socket.emit("START_TRIP", {
-      'id': '634a1ba1-2388-4ad6-a77d-93e134cecc72',
-      //id,
-      'tripId': '65aa5dbab2e8f20021fcac83',
-      //tripId,
+      'id': id,
+      'tripId': tripId,
     });
   }
 
@@ -142,7 +146,8 @@ class SocketService {
       'tripId': tripId,
     });
   }
-  void listenForTripEnd() {
+
+  listenForTripEnd() {
     socket.on("TRIP_ENDED", (data) {
       print(data);
       // Handle trip completion as needed
