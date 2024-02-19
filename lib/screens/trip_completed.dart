@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
@@ -9,11 +10,15 @@ import 'package:ride_on_driver/widgets/check_widget.dart';
 import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 
+import '../provider/ride_request_provider.dart';
+
 class TripCompletedScreen extends StatelessWidget {
   const TripCompletedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final rideDetails =
+    Provider.of<RideRequestProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.lightGrey,
@@ -64,7 +69,8 @@ class TripCompletedScreen extends StatelessWidget {
                 ),
                 const HorizontalSpacing(10),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () async{
+                    rideDetails.resetApp();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => const HomeScreen()),

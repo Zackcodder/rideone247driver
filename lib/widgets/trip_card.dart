@@ -60,7 +60,7 @@ class TripCard extends StatelessWidget {
                   ),
                   const VerticalSpacing(10),
                   Text(
-                    model.id,
+                    model.tripId,
                     style: context.textTheme.bodySmall,
                   ),
                 ],

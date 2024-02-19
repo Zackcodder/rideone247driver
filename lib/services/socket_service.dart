@@ -1,7 +1,7 @@
+// ignore_for_file: prefer_single_quotes
+
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../model/trip.dart';
@@ -11,7 +11,7 @@ class SocketService {
   static final SocketService _singleton = SocketService._internal();
 
   String? _token;
-  String? _id;
+  // String? _id;
   late IO.Socket socket;
 
   factory SocketService() {
@@ -20,7 +20,7 @@ class SocketService {
 
   SocketService._internal();
 
-  void initSocket(String _token, String _id) {
+  initSocket(String _token, String _id) {
     print('starting socket class');
     try {
       socket = IO.io(baseUrl, <String, dynamic>{
@@ -62,7 +62,6 @@ class SocketService {
     });
   }
 
-
   ///Driver location update response
   driverLocationUpdate() {
     socket.on("DRIVER_LOCATION_UPDATED", (data) {
@@ -84,11 +83,7 @@ class SocketService {
   ///listen for ride request
   Future<Trip?> listenForRideRequest() async {
     print('listening for trip request');
-
     Completer<Trip?> completer = Completer<Trip?>();
-    // Make sure to unsubscribe before subscribing again
-    // socket.off("RIDE_REQUEST");
-
     socket.on("RIDE_REQUEST", (data) {
       print('Received Ride Request: $data');
 
@@ -110,9 +105,11 @@ class SocketService {
     return completer.future;
   }
 
-
   acceptRide(
-      {required String id,required String lon,required String lat,required String tripId}) {
+      {required String id,
+      required String lon,
+      required String lat,
+      required String tripId}) {
     print('starting accetp trip in socket');
     socket.emit("REQUEST_ACCEPTED", {
       'id': id,
@@ -120,35 +117,66 @@ class SocketService {
       'lat': lat,
       'tripId': tripId,
     });
-    print('printing  response in socket');
-    acceptRideRespond();
-    print('printing error response in socket');
-    listenForError();
+    // print('printing  response in socket');
+    // acceptRideRespond();
+    // print('printing error response in socket');
+    // listenForError();
   }
 
-  acceptRideRespond(){
+  Future<Trip?> acceptRideRespond() async {
     print('Printing the acceptance response from the socket');
-    socket.emit("ACCEPTED_REQUEST",  (data) {
-    print(data);
+    Completer<Trip?> completer1 = Completer<Trip?>();
+    socket.on("ACCEPTED_REQUEST", (data) {
+      print('result from acceptance');
+      print(data);
+      try {
+        /// Parse the JSON data into a Dart map
+        Map<String, dynamic> acceptedRideRequest = json.decode(data);
+
+        /// Create a Trip object from the parsed data
+        Trip newAcceptedRideRequest = Trip.fromJson(acceptedRideRequest);
+
+        /// Complete the Future with the Trip object
+        completer1.complete(newAcceptedRideRequest);
+      } catch (e) {
+        /// Handle any errors during parsing
+        completer1.completeError(e);
+      }
     });
+
+    return completer1.future;
   }
 
   startTrip({required String id, required String tripId}) {
+    print('starting trip in socket');
     socket.emit("START_TRIP", {
-      'id': id,
-      'tripId': tripId,
+      'id':
+          // '65aa5dbab2e8f20021fcac83',
+          id,
+      'tripId':
+          // '9653b8ed-16f2-4416-8ba8-1ed46abe0b0d',
+          tripId,
     });
+    print('response of started trip in socket');
+    listenForSuccess();
   }
 
   endTrip({required String id, required String tripId}) {
+    print('sending ending trip in socket');
     socket.emit("END_TRIP", {
-      'id': id,
-      'tripId': tripId,
+      'id':
+          // '65aa5dbab2e8f20021fcac83',
+          id,
+      'tripId':
+          // '8924a142-6963-4386-a9bc-67ef8289acf5'
+          tripId,
     });
+    listenForTripEnd();
   }
 
   listenForTripEnd() {
     socket.on("TRIP_ENDED", (data) {
+      print('printing ending trip in socket');
       print(data);
       // Handle trip completion as needed
     });

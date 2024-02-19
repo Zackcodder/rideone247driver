@@ -38,6 +38,7 @@ class _RiderBoxState extends State<RiderBox>
     WidgetsBinding.instance.addObserver(this);
     currentTabNotifier = ValueNotifier(tabs.last);
     tabController = TabController(initialIndex: 1, length: 2, vsync: this);
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
   }
   @override
   void dispose() {
@@ -79,7 +80,7 @@ class _RiderBoxState extends State<RiderBox>
                   contentPadding: EdgeInsets.zero,
                   leading: Image.asset(Assets.assetsImagesDriverProfile).clip(radius: 100),
                   title: Text(
-                    'Trevor Philips',
+                    rideDetails.riderName ?? 'nil',
                     style: context.textTheme.bodyMedium!.copyWith(
                       color: Colors.white,
                     ),
@@ -158,7 +159,7 @@ class _RiderBoxState extends State<RiderBox>
                       ),
                     ),
                     Text(
-                      'Cash',
+                      rideDetails.riderPaymentMethod ?? 'nil',
                       style: context.textTheme.bodySmall!.copyWith(
                         color: Colors.white,
                       ),
@@ -172,20 +173,21 @@ class _RiderBoxState extends State<RiderBox>
           _acceptRequest != true ?
               ///accept trip button
           AppElevatedButton.large(
-            onPressed: () async {
+            onPressed: () {
               setState(() {
                 _acceptRequest = true;
               });
             },
             text: 'Arrived',
           ) :
-
-              /// start trip button
+          /// start trip button
           AppElevatedButton.large(
             onPressed: ()  async{
               rideDetails.startRide(
-                  rideDetails.tripId ??'',
-                  rideDetails.driverTripId ??'');
+                rideDetails.driverId ??'',
+                  rideDetails.acceptedTripId ??'',);
+              print('printing from the start trip button the driver id ${rideDetails.driverId}');
+              print('printing from the start trip button the trip id ${rideDetails.acceptedTripId}');
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const HomeScreen()),

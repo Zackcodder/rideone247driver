@@ -45,12 +45,9 @@ class _HomeScreenState extends State<HomeScreen>
     WidgetsBinding.instance.addObserver(this);
     currentTabNotifier = ValueNotifier(tabs.first);
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
-      Provider.of<RideRequestProvider>(context, listen: false)
-          .listenForRideRequests();
-      Provider.of<DriverProvider>(context, listen: false)
-          .listenForDriverLocationUpdates();
-
-
+      Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
+      Provider.of<DriverProvider>(context, listen: false).listenForDriverLocationUpdates();
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
   }
 
   @override
