@@ -13,8 +13,6 @@ class RequestsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rideDetails =
-    Provider.of<RideRequestProvider>(context, listen: false);
     return TripListViewer(
       onCardTap: () => showBottonSheet(context),
     );
@@ -33,15 +31,15 @@ class RequestsView extends StatelessWidget {
         onAccept: () async{
           /// Call acceptTripRequest function when the button is pressed
           rideDetails.acceptRideRequest(
-              rideDetails.tripId ??'', // Assuming driverId is used as the id
+            rideDetails.driverId ??'',
+              rideDetails.tripLng??'', // Assuming driverId is used as the id
               rideDetails.tripLat ??'',
-              rideDetails.tripLng??'',
-              rideDetails.driverTripId ??''
+              rideDetails.tripId ??''
           );
           print('this is a trip lat in ui: ${rideDetails.tripLat??''}');
           print('this is a trip lng in ui: ${rideDetails.tripLng??''}');
           print('this is a trip id in ui: ${rideDetails.tripId ??''}');
-          print('this is a trip driver in ui: ${rideDetails.driverTripId ??''}');
+          print('this is a driver id ui: ${rideDetails.driverId ??''}');
           context.pop();
           isRideActiveNotifier.value = true;
         },

@@ -7,6 +7,7 @@ import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/dummy_data/active_trips.dart';
+import 'package:ride_on_driver/provider/ride_request_provider.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 import 'package:ride_on_driver/widgets/trip_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,9 +27,9 @@ class ActiveTripDetailView extends StatefulWidget {
 class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadDriverDataFromSharedPreference();
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
   }
 
   String? _driverName;
@@ -43,8 +44,8 @@ class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider =
-    Provider.of<AuthProvider>(context, listen: false);
+    final rideDetails =
+    Provider.of<RideRequestProvider>(context, listen: false);
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -100,7 +101,7 @@ class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
                     ),
                     child: SvgPicture.asset( Assets.assetsSvgsPaymentLeading),
                   ),
-                  title: Text('Cash Payment', style: context.textTheme.bodyLarge),
+                  title: Text(rideDetails.riderPaymentMethod ??'', style: context.textTheme.bodyLarge),
                   trailing: const CurrencyWidget(price: 800),
                 ),
               ).padHorizontal(20.w),

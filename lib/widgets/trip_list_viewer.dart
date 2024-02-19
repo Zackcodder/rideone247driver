@@ -28,8 +28,6 @@ class _TripListViewerState extends State<TripListViewer> {
 
   @override
   Widget build(BuildContext context) {
-    // Listen for ride requests using Provider
-    final rideRequestProvider = Provider.of<RideRequestProvider>(context);
     return Consumer<RideRequestProvider>(
       builder: (context, rideRequestProvider, child) {
         if (rideRequestProvider.rideRequestLoading) {
@@ -86,7 +84,7 @@ class _TripListViewerState extends State<TripListViewer> {
                             ),
                             const VerticalSpacing(10),
                             Text(
-                              trip.id,
+                              trip.driverId,
                               style: context.textTheme.bodySmall,
                             ),
                           ],

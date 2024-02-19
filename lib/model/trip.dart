@@ -1,5 +1,5 @@
 class Trip {
-  final String id;
+  final String tripId;
   final String start;
   final String end;
   final String date;
@@ -13,9 +13,17 @@ class Trip {
   final bool dispatch;
   final String riderId;
   final String driverId;
+  final String riderName;
+  final String riderTripId;
+  final double riderPickupLon;
+  final double riderPickupLat;
+  final double riderDropOffLat;
+  final double riderDropOffLon;
+  final String riderPaymentMethod;
+
 
   Trip({
-    required this.id,
+    required this.tripId,
     required this.start,
     required this.end,
     required this.pickUpLon,
@@ -29,12 +37,19 @@ class Trip {
     required this.dispatch,
     required this.riderId,
     required this.driverId,
+    required this.riderName,
+    required this.riderDropOffLat,
+    required this.riderDropOffLon,
+    required this.riderPaymentMethod,
+    required this.riderPickupLat,
+    required this.riderPickupLon,
+    required this.riderTripId,
   });
 
   // Add a factory method to convert JSON data to a Trip object
   factory Trip.fromJson(Map<String, dynamic> json) {
     return Trip(
-      id: json['tripId'] ?? '',
+      tripId: json['tripId'] ?? '',
       start: json['start'] ?? '',
       end: json['end'] ?? '',
       cost: json['cost'] ?? 0,
@@ -48,6 +63,13 @@ class Trip {
       riderId: json['riderId'] ?? '',
       driverId: json['driverId'] ?? '',
       dispatch: json['dispatch'] ?? false,
+      riderName: json['riderName'] ?? '',
+      riderTripId: json['tripId'] ?? '',
+      riderDropOffLat: json['dropOffLat'] ?? 0.0,
+      riderDropOffLon: json['dropOffLon'] ?? 0.0,
+      riderPaymentMethod: json['paymentMethod'] ??'',
+      riderPickupLat: json['pickUpLat'] ?? 0.0,
+      riderPickupLon: json['pickUpLon'] ?? 0.0,
     );
   }
 }

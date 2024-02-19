@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/list_extensions.dart';
@@ -9,7 +10,9 @@ import 'package:ride_on_driver/widgets/app_elevated_button.dart';
 import 'package:ride_on_driver/widgets/currency_widget.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 
-class RideRequestBox extends StatelessWidget {
+import '../provider/ride_request_provider.dart';
+
+class RideRequestBox extends StatefulWidget {
   const RideRequestBox(
       {super.key,
       required this.onAccept,
@@ -20,7 +23,14 @@ class RideRequestBox extends StatelessWidget {
   final int price;
 
   @override
+  State<RideRequestBox> createState() => _RideRequestBoxState();
+}
+
+class _RideRequestBoxState extends State<RideRequestBox> {
+  @override
   Widget build(BuildContext context) {
+    final rideDetails =
+    Provider.of<RideRequestProvider>(context, listen: false);
     return Container(
       height: 160.h,
       margin: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 10.h),
@@ -53,7 +63,7 @@ class RideRequestBox extends StatelessWidget {
                       color: Colors.grey,
                     )),
                 CurrencyWidget(
-                  price: price,
+                  price: widget.price,
                   color: AppColors.white,
                   fontSize: 14.sp,
                 ),
@@ -80,7 +90,7 @@ class RideRequestBox extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Cash',
+                  rideDetails.paymentMethod ?? 'nil',
                   style: context.textTheme.bodySmall!.copyWith(
                     color: Colors.white,
                   ),
@@ -91,8 +101,8 @@ class RideRequestBox extends StatelessWidget {
           Row(
             children: [
               AppElevatedButton.medium(
-                onPressed: onAccept,
-                text: buttonText,
+                onPressed: widget.onAccept,
+                text: widget.buttonText,
                 icon: Icons.trending_flat_rounded,
               ).expand(2),
               const HorizontalSpacing(10),

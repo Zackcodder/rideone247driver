@@ -15,8 +15,20 @@ import '../core/painters_clippers/vertical_dot_line.dart';
 import '../provider/ride_request_provider.dart';
 import '../widgets/spacing.dart';
 
-class TripsView extends StatelessWidget {
+class TripsView extends StatefulWidget {
   const TripsView({super.key});
+
+  @override
+  State<TripsView> createState() => _TripsViewState();
+}
+
+class _TripsViewState extends State<TripsView> {
+  initState() {
+    super.initState();
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final rideDetails =
@@ -121,7 +133,11 @@ class TripsView extends StatelessWidget {
             // TripCard(model: activeTripList.first),
             AppElevatedButton.medium(
               onPressed: () async {
-                rideDetails.endRiderTrip(rideDetails.driverTripId??'', rideDetails.tripId ?? '');
+                rideDetails.endRiderTrip
+                  // ('65aa5dbab2e8f20021fcac83','8924a142-6963-4386-a9bc-67ef8289acf5');
+                  (rideDetails.driverId??'',  rideDetails.acceptedTripId ?? '');
+                print('printing from the end trip button the driver id ${rideDetails.driverId}');
+                print('printing from the end trip button the trip id ${rideDetails.acceptedTripId}');
                 context.push(const TripCompletedScreen());
                 isRideActiveNotifier.value = false;
               },
