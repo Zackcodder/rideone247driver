@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
 import 'package:ride_on_driver/services/google_map_service.dart';
 
+import '../main.dart';
 import '../provider/map_provider.dart';
+import '../provider/ride_request_provider.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({super.key});
@@ -18,16 +20,39 @@ class MapWidget extends StatefulWidget {
 class MapWidgetState extends State<MapWidget> {
   late GoogleMapController mapController;
   final Completer<GoogleMapController> _controller = Completer();
-  // PolylinePoints _polylinePoints = PolylinePoints();
 
   // List<LatLng> polylineCoordinates = [];
   //
   // Map<PolylineId, Polyline> polyLines = {};
   //
   // late MapView _mapViewProvider;
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   print('init state ran');
+  //   _mapViewProvider =
+  //       Provider.of(MyApp.navigatorKey.currentContext!, listen: false);
+  //   _mapViewProvider.polyline.addListener(_polylineListener);
+  // }
+  //
+  // _polylineListener() async {
+  //   print('This listener ran again');
+  //   await Future.delayed(const Duration(milliseconds: 1));
+  //   if (mounted) setState(() {});
+  // }
+  //
+  // @override
+  // void dispose() {
+  //   _mapViewProvider.removeListener(_polylineListener);
+  //   super.dispose();
+  // }
+
 
   @override
   Widget build(BuildContext context) {
+    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    Provider.of<RideRequestProvider>(context, listen: false).displayDirectionsToPickup(imageConfiguration);
     final mapProvider = Provider.of<MapView>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -40,6 +65,7 @@ class MapWidgetState extends State<MapWidget> {
         mapType: MapType.normal,
         markers: mapProvider.marker,
         circles: mapProvider.circle,
+        polylines: mapProvider.polyline,
         initialCameraPosition: GoogleMapService.googlePlex,
         onMapCreated: (GoogleMapController controller) async {
           _controller.complete(controller);
