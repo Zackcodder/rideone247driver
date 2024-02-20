@@ -49,6 +49,7 @@ class _RiderBoxState extends State<RiderBox>
   bool _acceptRequest = false;
   @override
   Widget build(BuildContext context) {
+    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
     final rideDetails =
     Provider.of<RideRequestProvider>(context, listen: false);
     return WillPopScope(
@@ -183,6 +184,7 @@ class _RiderBoxState extends State<RiderBox>
           /// start trip button
           AppElevatedButton.large(
             onPressed: ()  async{
+              rideDetails.displayDirectionsToPickup(imageConfiguration);
               rideDetails.startRide(
                 rideDetails.driverId ??'',
                   rideDetails.acceptedTripId ??'',);

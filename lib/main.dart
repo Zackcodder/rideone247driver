@@ -26,6 +26,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  static final GlobalKey<NavigatorState> navigatorKey =
+  GlobalKey<NavigatorState>();
   final String? initialdriverName;
   final String? initialdriverLastName;
   final String? initialdriverEmail;

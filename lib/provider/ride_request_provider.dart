@@ -1,12 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_on_driver/services/geo_locator_service.dart';
 
 import '../model/trip.dart';
+import '../services/google_map_service.dart';
+import '../services/map_service.dart';
 import '../services/socket_service.dart';
-import 'authprovider.dart';
 
 class RideRequestProvider with ChangeNotifier {
   bool _rideRequestLoading = false;
@@ -33,6 +37,7 @@ class RideRequestProvider with ChangeNotifier {
     print('this is the status $availability');
     print('this is the id $id');
     _socketService.listenForSuccess();
+
     notifyListeners();
   }
 
@@ -158,6 +163,7 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  ///reset app to default
   resetApp() async{
     _riderName = '';
     _acceptedTripId = '';
@@ -176,4 +182,139 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  ///extracting of coordinate
+  List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
+    return points
+        .map((point) => LatLng(point.latitude, point.longitude))
+        .toList();
+  }
+
+  ///poly line from driver location to rider pickup location
+
+  final GoogleMapService _googleMapService = GoogleMapService();
+  final MapService _mapService = MapService();
+  final GeoLocationService _geoLocationService = GeoLocationService();
+  late List _riderLocationCoordinates;
+  List get riderLocationCoordinates => _riderLocationCoordinates;
+
+
+  displayDirectionsToPickup(imageConfiguration) async {
+
+    ///get driver current location
+    var currentPosition = await _geoLocationService.getCurrentPosition(
+      forceUseCurrentLocation: true,
+      asPosition: true,
+    );
+    /// get rider  coordinates
+    var pickup = _googleMapService.convertDoubleToLatLng(
+        _riderPickUpLat ?? 0.0, _riderPickUpLon ?? 0.0);
+
+    ///assign the driver location as lan and lng
+    var currentLocationCoordinates = [
+      currentPosition.latitude,
+      currentPosition.longitude
+    ];
+    ///assign the rider location as lan and lng
+    var pickupCoordinates = [
+      pickup.latitude,
+      pickup.longitude,
+    ];
+    _riderLocationCoordinates = pickupCoordinates;
+    if (pickupCoordinates.isEmpty && currentLocationCoordinates.isEmpty) {
+      return Fluttertoast.showToast(
+          fontSize: 18,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red.withOpacity(0.7),
+          msg: 'no dest and pickup',
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white);
+
+    }
+
+    /// Fetch directions using your API service (e.g., MapService)
+    var directionsResponse = await _mapService.getDirections(
+      pickup: currentLocationCoordinates,
+      destination: pickupCoordinates,
+    );
+
+    if (directionsResponse != null) {
+      if (directionsResponse == null) {
+        print('The plotting is not working');
+      } else if (directionsResponse.isNotEmpty) {
+        /// Extract polyline coordinates from the directions response
+        final List<PointLatLng> pointLatLngList =
+        _googleMapService.decodePolylines(
+          directionsResponse ['routes'][0]['overview_polyline']['points'],
+        );
+
+        /// Convert List<PointLatLng> to List<LatLng>
+        final List<LatLng> polylineCoordinates = pointLatLngList
+            .map((point) => LatLng(point.latitude, point.longitude))
+            .toList();
+        _googleMapService.clearCircles();
+        _googleMapService.clearMarkers();
+        _googleMapService.clearPolyLines();
+        _googleMapService.clearPolyLineCoordinate();
+
+        /// Update the map to display the polyline
+        _googleMapService.setPolyLine(polylineCoordinates);
+        _googleMapService.fitPolyLineToMap(
+          pickup: currentLocationCoordinates,
+          destination: pickupCoordinates,
+        );
+        LatLng convertPositionToLatLng(Position position) {
+          return LatLng(position.latitude, position.longitude);
+        }
+
+        var driverMarker = _googleMapService.createMarker(
+          id: 'pickup',
+          position: convertPositionToLatLng(currentPosition),
+          imageConfiguration: imageConfiguration,
+          // icon: carIcon,
+        );
+        var riderMarker = _googleMapService.createMarker(
+          id: 'destination',
+          position: pickup,
+          imageConfiguration: imageConfiguration,
+          // icon: personIcon,
+        );
+        _googleMapService.addMarkers(driverMarker);
+        _googleMapService.addMarkers(riderMarker);
+
+        final durationText =
+        directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+        // final etaTimer1 =
+        //     int.parse(RegExp(r"(\d+)").stringMatch(durationText) ?? '0');
+
+        // _tripDistance = distanceText;
+        // _etaTimer1 = etaTimer1.toString();
+        /// _etaTimer1 = durationText ?? 'Calculating';
+
+        notifyListeners();
+      } else {}
+    } else {}
+  }
+
+  ///refresh connect rider code
+  // late Timer _refreshDirectionToRiderLocationTimer;
+  // restartDisplayDirectionsToPickup(imageConfiguration) {
+  //   // Start a repeating timer that triggers every 2 seconds
+  //   _refreshRideRequestTimer =
+  //       Timer.periodic(const Duration(seconds: 60), (timer) {
+  //         // Call the refreshMap function to update the map and driver locations
+  //         displayDirectionsToPickup(imageConfiguration);
+  //       });
+  // }
+  //
+  // // Start the auto-refresh timer
+  // startAutoDisplayDirectionsToPickup(imageConfiguration) {
+  //   restartDisplayDirectionsToPickup(imageConfiguration);
+  // }
+  //
+  // //stop rider request timer
+  // stopAutoDisplayDirectionsToPickup() {
+  //   if (_refreshDirectionToRiderLocationTimer.isActive) {
+  //     _refreshDirectionToRiderLocationTimer.cancel();
+  //   }
+  // }
 }
