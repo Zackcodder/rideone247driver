@@ -31,14 +31,15 @@ class _RiderBoxState extends State<RiderBox>
   late final TabController tabController;
   late final ValueNotifier<TabItem> currentTabNotifier;
   List<TabItem> tabs = [const TabItem('Active'), const TabItem('Requests')];
+  late RideRequestProvider _rideRequestProvider;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // currentTabNotifier = ValueNotifier(tabs.last); ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
+    _rideRequestProvider.acceptRideRequestResponse();
     tabController = TabController(initialIndex: 1, length: 2, vsync: this);
-    // Provider.of<RideRequestProvider>(context, listen: false).displayDirectionsToPickup(imageConfiguration);
   }
   @override
   void dispose() {
@@ -50,8 +51,8 @@ class _RiderBoxState extends State<RiderBox>
   @override
   Widget build(BuildContext context) {
     ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
-  final rideDetails = Provider.of<RideRequestProvider>(context, listen: false);
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
+  RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;
@@ -184,10 +185,10 @@ class _RiderBoxState extends State<RiderBox>
           /// start trip button
           AppElevatedButton.large(
             onPressed: ()  async{
-              rideDetails.displayDirectionsToPickup(imageConfiguration);
-              rideDetails.startRide(
-                rideDetails.driverId ??'',
-                  rideDetails.acceptedTripId ??'',);
+              setState(() {
+                rideDetails.displayDirectionsToPickup(imageConfiguration);
+                rideDetails.startRide(rideDetails.driverId ??'',rideDetails.acceptedTripId ??'',);
+              });
               print('printing from the start trip button the driver id ${rideDetails.driverId}');
               print('printing from the start trip button the trip id ${rideDetails.acceptedTripId}');
               Navigator.pushReplacement(

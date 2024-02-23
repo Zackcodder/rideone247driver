@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen>
   late final ValueNotifier<TabItem> currentTabNotifier;
   List<TabItem> tabs = [const TabItem('Active'), const TabItem('Requests')];
 
+
   @override
    initState() {
     super.initState();
@@ -47,8 +48,7 @@ class _HomeScreenState extends State<HomeScreen>
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
       Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
       Provider.of<DriverProvider>(context, listen: false).listenForDriverLocationUpdates();
-    // Provider.of<RideRequestProvider>(context, listen: false).displayDirectionsToPickup(imageConfiguration);
-  }
+       }
 
   @override
   didChangeAppLifecycleState(AppLifecycleState state) {
@@ -66,8 +66,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
+    // ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;
@@ -96,9 +96,11 @@ class _HomeScreenState extends State<HomeScreen>
                   return CustomSwitch(
                     value: isActive,
                     onChanged: (value) async{
-                      String? id = Provider.of<AuthProvider>(context, listen: false).id;
-                      Provider.of<RideRequestProvider>(context, listen: false).updateDriverStatus(context, id!, value);
-                      isActiveNotifier.value = value;
+                      setState(() {
+                        String? id = Provider.of<AuthProvider>(context, listen: false).id;
+                        isActiveNotifier.value = value;
+                        Provider.of<RideRequestProvider>(context, listen: false).updateDriverStatus(context, id!, value);
+                      });
                     }
                         // (value) => isActiveNotifier.value = value,
                   );
