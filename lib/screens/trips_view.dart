@@ -25,12 +25,13 @@ class TripsView extends StatefulWidget {
 class _TripsViewState extends State<TripsView> {
   initState() {
     super.initState();
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
   }
 
 
   @override
   Widget build(BuildContext context) {
+    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
     final rideDetails =
     Provider.of<RideRequestProvider>(context, listen: false);
     return Stack(

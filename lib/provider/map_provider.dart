@@ -18,7 +18,8 @@ class MapView extends ChangeNotifier {
       _googleMapService.convertPositionToLatLng(position);
   get circle => _googleMapService.mainPageCircles(_currentPosition);
   get marker => _googleMapService.markers;
-  get polyline => _googleMapService.polyLines;
+   // ValueNotifier<Map<PolylineId, Polyline>> get polyline => GoogleMapService.polyLines;
+    get polyline => _googleMapService.polyLines;
   LatLngBounds? get bounds => _googleMapService.bounds;
 
   @override

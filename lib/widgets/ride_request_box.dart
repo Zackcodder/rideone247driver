@@ -52,7 +52,7 @@ class _RideRequestBoxState extends State<RideRequestBox> {
                     style: context.textTheme.bodySmall!.copyWith(
                       color: Colors.grey,
                     )),
-                Text('4.2 mi',
+                Text(rideDetails.distance ?? 'calculating',
                     style: context.textTheme.bodySmall!.copyWith(
                       color: Colors.white,
                     )),
@@ -76,7 +76,7 @@ class _RideRequestBoxState extends State<RideRequestBox> {
                   ),
                 ),
                 Text(
-                  '14:20',
+                  rideDetails.etaTimer ?? 'calculating',
                   style: context.textTheme.bodySmall!.copyWith(
                     color: Colors.white,
                   ),

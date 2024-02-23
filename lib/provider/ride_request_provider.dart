@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
+import 'package:ride_on_driver/services/polyline_point_service.dart';
 
 import '../model/trip.dart';
 import '../services/google_map_service.dart';
@@ -18,10 +19,10 @@ class RideRequestProvider with ChangeNotifier {
 
   final SocketService _socketService = SocketService();
 
-  RideRequestProvider(String token, String id) {
+  RideRequestProvider(String token, String id,) {
     listenForRideRequests();
-    acceptRideRequestResponse();
     _socketService.initSocket(token, id);
+    notifyListeners();
   }
 
   List<Trip> _rideRequests = [];
@@ -36,7 +37,24 @@ class RideRequestProvider with ChangeNotifier {
     );
     print('this is the status $availability');
     print('this is the id $id');
-    _socketService.listenForSuccess();
+    var onlineResponse = await _socketService.listenForSuccess();
+    if(onlineResponse == 'You are now available'){
+      return Fluttertoast.showToast(
+        fontSize: 18,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.black.withOpacity(0.7),
+        msg: 'You are now available',
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white);
+    }else if(onlineResponse == 'You are now unavailable'){
+      return Fluttertoast.showToast(
+          fontSize: 18,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.black.withOpacity(0.7),
+          msg: 'You are now unavailable',
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white);
+    }
 
     notifyListeners();
   }
@@ -78,6 +96,7 @@ class RideRequestProvider with ChangeNotifier {
 
           // Notify listeners that the ride requests list has been updated
           notifyListeners();
+          return;
         }
       } catch (e) {
         // Handle any errors
@@ -112,7 +131,7 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  acceptRideRequestResponse() async{
+  acceptRideRequestResponse(imageConfiguration) async{
     print('printing accept response in provider');
     try {
       /// Listen for ride acceptance and handle them
@@ -128,8 +147,10 @@ class RideRequestProvider with ChangeNotifier {
         _riderPickUpLon = newAcceptedRequest.riderPickupLon;
         _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
         _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
+        displayDirectionsToPickup(imageConfiguration);
         // Notify listeners that the ride requests list has been updated
         notifyListeners();
+        return;
 
         print('this is a rider name: ${newAcceptedRequest.riderName}');
         print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');
@@ -178,7 +199,12 @@ class RideRequestProvider with ChangeNotifier {
     _driverId = '';
     _paymentMethod = '';
     _rideRequests = [];
+    _riderLocationCoordinates = [];
     _rideAcceptedRequests = [];
+    _riderPickUpLon = 0.0;
+    _riderPickUpLat = 0.0;
+    _googleMapService.clearPolyLines();
+    _googleMapService.clearPolyLineCoordinate();
     notifyListeners();
   }
 
@@ -192,10 +218,15 @@ class RideRequestProvider with ChangeNotifier {
   ///poly line from driver location to rider pickup location
 
   final GoogleMapService _googleMapService = GoogleMapService();
+  final PolylinePointService _polylinePointService = PolylinePointService();
   final MapService _mapService = MapService();
   final GeoLocationService _geoLocationService = GeoLocationService();
   late List _riderLocationCoordinates;
   List get riderLocationCoordinates => _riderLocationCoordinates;
+  String? get etaTimer => _etaTimer;
+  String? _etaTimer;
+  String? get distance => _distance;
+  String? _distance;
 
 
   displayDirectionsToPickup(imageConfiguration) async {
@@ -207,7 +238,7 @@ class RideRequestProvider with ChangeNotifier {
     );
     /// get rider  coordinates
     var pickup = _googleMapService.convertDoubleToLatLng(
-        _riderPickUpLat ?? 0.0, _riderPickUpLon ?? 0.0);
+        _riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
 
     ///assign the driver location as lan and lng
     var currentLocationCoordinates = [
@@ -242,19 +273,23 @@ class RideRequestProvider with ChangeNotifier {
         print('The plotting is not working');
       } else if (directionsResponse.isNotEmpty) {
         /// Extract polyline coordinates from the directions response
-        final List<PointLatLng> pointLatLngList =
-        _googleMapService.decodePolylines(
+        final List pointLatLngList =
+        _polylinePointService.decodePolyPoints(
           directionsResponse ['routes'][0]['overview_polyline']['points'],
         );
+        // final List<PointLatLng> pointLatLngList =
+        // _googleMapService.decodePolylines(
+        //   directionsResponse ['routes'][0]['overview_polyline']['points'],
+        // );
 
         /// Convert List<PointLatLng> to List<LatLng>
         final List<LatLng> polylineCoordinates = pointLatLngList
             .map((point) => LatLng(point.latitude, point.longitude))
             .toList();
-        _googleMapService.clearCircles();
-        _googleMapService.clearMarkers();
-        _googleMapService.clearPolyLines();
-        _googleMapService.clearPolyLineCoordinate();
+        // _googleMapService.clearCircles();
+        // _googleMapService.clearMarkers();
+        // _googleMapService.clearPolyLines();
+        // _googleMapService.clearPolyLineCoordinate();
 
         /// Update the map to display the polyline
         _googleMapService.setPolyLine(polylineCoordinates);
@@ -281,14 +316,16 @@ class RideRequestProvider with ChangeNotifier {
         _googleMapService.addMarkers(driverMarker);
         _googleMapService.addMarkers(riderMarker);
 
-        final durationText =
-        directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+        final durationText = directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+        final distanceText = directionsResponse['routes'][0]['legs'][0]['distance']['text'];
         // final etaTimer1 =
         //     int.parse(RegExp(r"(\d+)").stringMatch(durationText) ?? '0');
 
         // _tripDistance = distanceText;
         // _etaTimer1 = etaTimer1.toString();
-        /// _etaTimer1 = durationText ?? 'Calculating';
+         _etaTimer = durationText ?? 'Calculating';
+         _distance = distanceText ?? 'Calculating';
+         print('this is the time to get to the rider: $_etaTimer');
 
         notifyListeners();
       } else {}

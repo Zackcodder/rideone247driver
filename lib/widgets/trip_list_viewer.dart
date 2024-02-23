@@ -28,6 +28,8 @@ class _TripListViewerState extends State<TripListViewer> {
 
   @override
   Widget build(BuildContext context) {
+    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    final rideDetails = Provider.of<RideRequestProvider>(context, listen: false);
     return Consumer<RideRequestProvider>(
       builder: (context, rideRequestProvider, child) {
         if (rideRequestProvider.rideRequestLoading) {
@@ -40,7 +42,9 @@ class _TripListViewerState extends State<TripListViewer> {
             itemBuilder: (context, index) {
               final trip = rideRequestProvider.rideRequests[index];
               return GestureDetector(
-                onTap: widget.onCardTap,
+                onTap:  widget.onCardTap,
+                  // rideDetails.displayDirectionsToPickup(imageConfiguration);
+
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,

@@ -47,7 +47,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('this is from the main class $initialId ');
+    // ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+
+  print('this is from the main class $initialId ');
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,
@@ -77,6 +79,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: AppStrings.appName,
             theme: AppTheme.lightTheme,
+            navigatorKey: MyApp.navigatorKey,
             home:
                 initialToken != null ? const HomeScreen() : const LoginScreen(),
           ),

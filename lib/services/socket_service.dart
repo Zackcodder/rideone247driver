@@ -48,6 +48,7 @@ class SocketService {
     print('auth in socket');
     socket.emit("AUTH", {'token': 'Bearer $_token'});
     print('socket working with toke $_token');
+
   }
 
   ///Driver location update
@@ -184,13 +185,21 @@ class SocketService {
     });
   }
 
-  listenForSuccess() {
+  Future<dynamic> listenForSuccess() {
     print("listening for success");
+
+    Completer<dynamic> completer = Completer<dynamic>();
     socket.on("SUCCESS", (data) {
       print(data);
+      // Resolve the completer with the received data
+      completer.complete(data);
+
       // print("sucess getting trip data: $data");
       // Handle success as needed
     });
+
+    // Return the future from the completer
+    return completer.future;
   }
 
   listenForError() {
