@@ -12,9 +12,14 @@ import 'package:ride_on_driver/widgets/spacing.dart';
 
 import '../provider/ride_request_provider.dart';
 
-class TripCompletedScreen extends StatelessWidget {
+class TripCompletedScreen extends StatefulWidget {
   const TripCompletedScreen({super.key});
 
+  @override
+  State<TripCompletedScreen> createState() => _TripCompletedScreenState();
+}
+
+class _TripCompletedScreenState extends State<TripCompletedScreen> {
   @override
   Widget build(BuildContext context) {
     final rideDetails =
@@ -71,6 +76,7 @@ class TripCompletedScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () async{
                     rideDetails.resetApp();
+                    setState(() { });
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => const HomeScreen()),

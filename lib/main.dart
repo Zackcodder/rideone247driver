@@ -27,7 +27,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   static final GlobalKey<NavigatorState> navigatorKey =
-  GlobalKey<NavigatorState>();
+      GlobalKey<NavigatorState>();
   final String? initialdriverName;
   final String? initialdriverLastName;
   final String? initialdriverEmail;
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
 
-  print('this is from the main class $initialId ');
+    print('this is from the main class $initialId ');
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       minTextAdapt: true,

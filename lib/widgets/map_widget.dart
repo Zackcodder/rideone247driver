@@ -70,8 +70,8 @@ class MapWidgetState extends State<MapWidget> {
         onMapCreated: (GoogleMapController controller) async {
           _controller.complete(controller);
           mapController = controller;
-          ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-          Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
+          // ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+          Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
           final position = await mapProvider.currentPosition;
           mapController.animateCamera(CameraUpdate.newLatLng(
               mapProvider.convertPositionToLatLng(position)));

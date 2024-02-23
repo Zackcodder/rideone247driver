@@ -52,11 +52,7 @@ class SocketService {
   }
 
   ///Driver location update
-  updateLocation(
-      {required String id,
-      required String role,
-      required String lat,
-      required String lon}) {
+  updateLocation( {required String id,required String role, required String lat,required String lon}) {
     socket.emit("UPDATE_LOCATION", {
       'id': id,
       'role': role,
@@ -108,11 +104,7 @@ class SocketService {
     return completer.future;
   }
 
-  acceptRide(
-      {required String id,
-      required String lon,
-      required String lat,
-      required String tripId}) {
+  acceptRide({required String id, required String lon, required String lat, required String tripId}) {
     print('starting accetp trip in socket');
     socket.emit("REQUEST_ACCEPTED", {
       'id': id,
@@ -185,22 +177,47 @@ class SocketService {
     });
   }
 
+  // Create a single completer
+  Completer<dynamic>? _completer;
+  // Method to listen for "SUCCESS" event
   Future<dynamic> listenForSuccess() {
     print("listening for success");
 
-    Completer<dynamic> completer = Completer<dynamic>();
-    socket.on("SUCCESS", (data) {
-      print(data);
-      // Resolve the completer with the received data
-      completer.complete(data);
+    // Only create the completer if it hasn't been created yet
+    _completer ??= Completer<dynamic>();
 
-      // print("sucess getting trip data: $data");
-      // Handle success as needed
-    });
+    // Only register the event listener if it hasn't been registered yet
+    if (!_completer!.isCompleted) {
+      // Define a callback function to handle the SUCCESS event
+      void successHandler(data) {
+        print(data);
+        // Resolve the completer with the received data
+        _completer!.complete(data);
+      }
+
+      // Register the event listener for the SUCCESS event
+      socket.on("SUCCESS", successHandler);
+    }
 
     // Return the future from the completer
-    return completer.future;
+    return _completer!.future;
   }
+  // Future<dynamic> listenForSuccess() {
+  //   print("listening for success");
+  //
+  //   Completer<dynamic> completer = Completer<dynamic>();
+  //   socket.on("SUCCESS", (data) {
+  //     print(data);
+  //     // Resolve the completer with the received data
+  //     completer.complete(data);
+  //
+  //     // print("sucess getting trip data: $data");
+  //     // Handle success as needed
+  //   });
+  //
+  //   // Return the future from the completer
+  //   return completer.future;
+  // }
 
   listenForError() {
     socket.on("ERROR", (data) {

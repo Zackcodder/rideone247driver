@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
 import 'package:ride_on_driver/services/polyline_point_service.dart';
 
 import '../model/trip.dart';
+import '../screens/home_screen.dart';
 import '../services/google_map_service.dart';
 import '../services/map_service.dart';
 import '../services/socket_service.dart';
@@ -28,16 +30,22 @@ class RideRequestProvider with ChangeNotifier {
   List<Trip> _rideRequests = [];
   List<Trip> get rideRequests => _rideRequests;
   bool get hasRideRequests => _rideRequests.isNotEmpty;
+  bool  _Online = false;
+  bool get Online => _Online;
 
   ///updating driver online status
   updateDriverStatus(BuildContext context,String id, bool availability) async {
-    _socketService.driverOnlineStatus(
+    await _socketService.driverOnlineStatus(
       id: id,
       availability: availability,
     );
     print('this is the status $availability');
     print('this is the id $id');
     var onlineResponse = await _socketService.listenForSuccess();
+    if (onlineResponse == 'You are now available' || onlineResponse == 'You are now unavailable') {
+      isActiveNotifier.value = availability; // Update isActiveNotifier value
+      // notifyListeners();
+    }
     if(onlineResponse == 'You are now available'){
       return Fluttertoast.showToast(
         fontSize: 18,
@@ -46,7 +54,8 @@ class RideRequestProvider with ChangeNotifier {
         msg: 'You are now available',
         gravity: ToastGravity.BOTTOM,
         textColor: Colors.white);
-    }else if(onlineResponse == 'You are now unavailable'){
+    }
+    else if(onlineResponse == 'You are now unavailable'){
       return Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
@@ -54,6 +63,7 @@ class RideRequestProvider with ChangeNotifier {
           msg: 'You are now unavailable',
           gravity: ToastGravity.BOTTOM,
           textColor: Colors.white);
+
     }
 
     notifyListeners();
@@ -125,13 +135,13 @@ class RideRequestProvider with ChangeNotifier {
 
   acceptRideRequest(String id, String lon, String lat, String tripId) async{
     print('starting accetp trip in provider');
-    _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
+    await _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
     // acceptRideRequestResponse();
     // _socketService.listenForError();
     notifyListeners();
   }
 
-  acceptRideRequestResponse(imageConfiguration) async{
+  acceptRideRequestResponse() async{
     print('printing accept response in provider');
     try {
       /// Listen for ride acceptance and handle them
@@ -147,8 +157,18 @@ class RideRequestProvider with ChangeNotifier {
         _riderPickUpLon = newAcceptedRequest.riderPickupLon;
         _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
         _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
-        displayDirectionsToPickup(imageConfiguration);
+        // displayDirectionsToPickup(imageConfiguration);
         // Notify listeners that the ride requests list has been updated
+        // Get location names for pickup and destination
+        // String? pickupLocationName = await getLocationName(_riderPickUpLat ??0.0, _riderPickUpLon ?? 0.0);
+        // String? destinationLocationName = await getLocationName(_riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
+        //
+        // // Use the location names as needed
+        // if (pickupLocationName != null && destinationLocationName != null) {
+        //   print('Pickup Location: $pickupLocationName');
+        //   print('Destination Location: $destinationLocationName');
+        // }
+
         notifyListeners();
         return;
 
@@ -164,10 +184,30 @@ class RideRequestProvider with ChangeNotifier {
     }
   }
 
+  ///getting the name of the pickup from the co ordinate
+  // Function to get the name of a location from its latitude and longitude
+  Future<String?> getLocationName(double latitude, double longitude) async {
+    try {
+      // Perform reverse geocoding
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+
+      // Extract the name of the location from the placemark
+      if (placemarks.isNotEmpty) {
+        String locationName = placemarks[0].name ?? '';
+        print('this is the name of the pcikup location');
+        print(locationName);
+        return locationName;
+      }
+    } catch (e) {
+      print('Error getting location name: $e');
+    }
+    return null; // Return null if unable to get the location name
+  }
+
   ///start trip
   startRide( String id,  String tripId) async{
     print('starting ride in provider');
-    _socketService.startTrip(id: id, tripId: tripId);
+   await  _socketService.startTrip(id: id, tripId: tripId);
     print('starting ride respoinse in provider');
     _socketService.listenForSuccess();
     _socketService.listenForError();
@@ -183,31 +223,6 @@ class RideRequestProvider with ChangeNotifier {
     _socketService.listenForError();
     notifyListeners();
   }
-
-  ///reset app to default
-  resetApp() async{
-    _riderName = '';
-    _acceptedTripId = '';
-    _riderPaymentMethod = '';
-    _riderPickUpLat =0.0;
-    _riderPickUpLon = 0.0;
-    _riderDestinationLat = 0.0;
-    _riderDestinationLon = 0.0;
-    _tripId = '';
-    _tripLat = '';
-    _tripLng ='';
-    _driverId = '';
-    _paymentMethod = '';
-    _rideRequests = [];
-    _riderLocationCoordinates = [];
-    _rideAcceptedRequests = [];
-    _riderPickUpLon = 0.0;
-    _riderPickUpLat = 0.0;
-    _googleMapService.clearPolyLines();
-    _googleMapService.clearPolyLineCoordinate();
-    notifyListeners();
-  }
-
   ///extracting of coordinate
   List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
     return points
@@ -228,7 +243,7 @@ class RideRequestProvider with ChangeNotifier {
   String? get distance => _distance;
   String? _distance;
 
-
+  ///displaying the location to the rider fromt he driver location
   displayDirectionsToPickup(imageConfiguration) async {
 
     ///get driver current location
@@ -286,10 +301,10 @@ class RideRequestProvider with ChangeNotifier {
         final List<LatLng> polylineCoordinates = pointLatLngList
             .map((point) => LatLng(point.latitude, point.longitude))
             .toList();
-        // _googleMapService.clearCircles();
-        // _googleMapService.clearMarkers();
-        // _googleMapService.clearPolyLines();
-        // _googleMapService.clearPolyLineCoordinate();
+        _googleMapService.clearCircles();
+        _googleMapService.clearMarkers();
+        _googleMapService.clearPolyLines();
+        _googleMapService.clearPolyLineCoordinate();
 
         /// Update the map to display the polyline
         _googleMapService.setPolyLine(polylineCoordinates);
@@ -354,4 +369,30 @@ class RideRequestProvider with ChangeNotifier {
   //     _refreshDirectionToRiderLocationTimer.cancel();
   //   }
   // }
+
+  ///reset app to default
+  resetApp() async{
+    _riderName = '';
+    _acceptedTripId = '';
+    _riderPaymentMethod = '';
+    _riderPickUpLat =0.0;
+    _riderPickUpLon = 0.0;
+    _riderDestinationLat = 0.0;
+    _riderDestinationLon = 0.0;
+    _tripId = '';
+    _tripLat = '';
+    _tripLng ='';
+    _driverId = '';
+    _paymentMethod = '';
+    _rideRequests = [];
+    _riderLocationCoordinates = [];
+    _rideAcceptedRequests = [];
+    _riderPickUpLon = 0.0;
+    _riderPickUpLat = 0.0;
+    _googleMapService.clearPolyLines();
+    _googleMapService.clearPolyLineCoordinate();
+    listenForRideRequests();
+    notifyListeners();
+  }
+
 }

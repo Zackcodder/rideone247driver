@@ -7,10 +7,15 @@ import 'package:ride_on_driver/widgets/trip_list_viewer.dart';
 
 import '../provider/ride_request_provider.dart';
 
-class RequestsView extends StatelessWidget {
+class RequestsView extends StatefulWidget {
   const RequestsView({super.key, required this.tabController});
   final TabController tabController;
 
+  @override
+  State<RequestsView> createState() => _RequestsViewState();
+}
+
+class _RequestsViewState extends State<RequestsView> {
   @override
   Widget build(BuildContext context) {
     return TripListViewer(
@@ -30,14 +35,16 @@ class RequestsView extends StatelessWidget {
       builder: (context) => RideRequestBox(
         price: 456,
         onAccept: () async{
-          rideDetails.displayDirectionsToPickup(imageConfiguration);
+          setState(() {
+            rideDetails.displayDirectionsToPickup(imageConfiguration);
           /// Call acceptTripRequest function when the button is pressed
           rideDetails.acceptRideRequest(
-            rideDetails.driverId ??'',
+              rideDetails.driverId ??'',
               rideDetails.tripLng??'', // Assuming driverId is used as the id
               rideDetails.tripLat ??'',
               rideDetails.tripId ??''
           );
+          });
           print('this is a trip lat in ui: ${rideDetails.tripLat??''}');
           print('this is a trip lng in ui: ${rideDetails.tripLng??''}');
           print('this is a trip id in ui: ${rideDetails.tripId ??''}');

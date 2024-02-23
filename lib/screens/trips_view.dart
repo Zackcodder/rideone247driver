@@ -31,7 +31,7 @@ class _TripsViewState extends State<TripsView> {
   @override
   Widget build(BuildContext context) {
     ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
     final rideDetails =
     Provider.of<RideRequestProvider>(context, listen: false);
     return Stack(
@@ -40,107 +40,109 @@ class _TripsViewState extends State<TripsView> {
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              padding: EdgeInsets.all(15.w),
-              margin: EdgeInsets.only(bottom: 10.h),
-              child: IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ///start trip location icon
-                        Icon(
-                          Icons.location_on,
-                          color: AppColors.black,
-                          size: 20.w,
-                        ),
-                        ///line
-                        CustomPaint(
-                          size: Size(1, 30.h),
-                          painter: const DashedLineVerticalPainter(
-                            color: AppColors.black,
-                          ),
-                        ),
-                        ///destination icon
-                        Icon(
-                          Icons.send_outlined,
-                          color: AppColors.black,
-                          size: 20.w,
-                        ).rotate(-0.6),
-                      ],
-                    ),
-                    const HorizontalSpacing(10),
-                    ///trip start and end location
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                         ' model.paymentMethod',
-                          style: context.textTheme.bodySmall,
-                        ),
-                        const VerticalSpacing(10),
-                        Text(
-                          'model.id',
-                          style: context.textTheme.bodySmall,
-                        ),
-                      ],
-                    ).expand(),
-                    const HorizontalSpacing(10),
-                    ///trip cost, date and rating
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ///trip date
-                        Text(
-                          'date',
-                          style: context.textTheme.bodySmall,
-                        ),
-                        ///trip rating
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(
-                            5,
-                                (index) => Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              //index < model.rating ? AppColors.yellow : AppColors.grey,
-                              size: 15.w,
-                            ),
-                          ),
-                        ),
-                        ///trip cost
-                        SizedBox(
-                          width: 50.w,
-                          height: 20.h,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: const Text('#4000'),
-                            //CurrencyWidget(price: model.cost),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(10.r),
+            //   ),
+            //   padding: EdgeInsets.all(15.w),
+            //   margin: EdgeInsets.only(bottom: 10.h),
+            //   child: IntrinsicHeight(
+            //     child: Row(
+            //       children: [
+            //         Column(
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             ///start trip location icon
+            //             Icon(
+            //               Icons.location_on,
+            //               color: AppColors.black,
+            //               size: 20.w,
+            //             ),
+            //             ///line
+            //             CustomPaint(
+            //               size: Size(1, 30.h),
+            //               painter: const DashedLineVerticalPainter(
+            //                 color: AppColors.black,
+            //               ),
+            //             ),
+            //             ///destination icon
+            //             Icon(
+            //               Icons.send_outlined,
+            //               color: AppColors.black,
+            //               size: 20.w,
+            //             ).rotate(-0.6),
+            //           ],
+            //         ),
+            //         const HorizontalSpacing(10),
+            //         ///trip start and end location
+            //         Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //           children: [
+            //             Text(
+            //              ' model.paymentMethod',
+            //               style: context.textTheme.bodySmall,
+            //             ),
+            //             const VerticalSpacing(10),
+            //             Text(
+            //               'model.id',
+            //               style: context.textTheme.bodySmall,
+            //             ),
+            //           ],
+            //         ).expand(),
+            //         const HorizontalSpacing(10),
+            //         ///trip cost, date and rating
+            //         Column(
+            //           crossAxisAlignment: CrossAxisAlignment.end,
+            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //           children: [
+            //             ///trip date
+            //             Text(
+            //               'date',
+            //               style: context.textTheme.bodySmall,
+            //             ),
+            //             ///trip rating
+            //             Row(
+            //               mainAxisSize: MainAxisSize.min,
+            //               children: List.generate(
+            //                 5,
+            //                     (index) => Icon(
+            //                   Icons.star,
+            //                   color: Colors.yellow,
+            //                   //index < model.rating ? AppColors.yellow : AppColors.grey,
+            //                   size: 15.w,
+            //                 ),
+            //               ),
+            //             ),
+            //             ///trip cost
+            //             SizedBox(
+            //               width: 50.w,
+            //               height: 20.h,
+            //               child: Align(
+            //                 alignment: Alignment.centerRight,
+            //                 child: const Text('#4000'),
+            //                 //CurrencyWidget(price: model.cost),
+            //               ),
+            //             ),
+            //           ],
+            //         )
+            //       ],
+            //     ),
+            //   ),
+            // ),
             // TripCard(model: activeTripList.first),
+            SizedBox(),
             AppElevatedButton.medium(
               onPressed: () async {
-                rideDetails.endRiderTrip
-                  // ('65aa5dbab2e8f20021fcac83','8924a142-6963-4386-a9bc-67ef8289acf5');
-                  (rideDetails.driverId??'',  rideDetails.acceptedTripId ?? '');
+                rideDetails.endRiderTrip(rideDetails.driverId??'',  rideDetails.acceptedTripId ?? '');
                 print('printing from the end trip button the driver id ${rideDetails.driverId}');
                 print('printing from the end trip button the trip id ${rideDetails.acceptedTripId}');
                 context.push(const TripCompletedScreen());
                 isRideActiveNotifier.value = false;
+                setState(() {
+
+                });
               },
               text: 'TAP TO COMPLETE',
               icon: Icons.trending_flat_rounded,
