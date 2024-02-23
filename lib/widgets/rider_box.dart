@@ -36,9 +36,9 @@ class _RiderBoxState extends State<RiderBox>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    currentTabNotifier = ValueNotifier(tabs.last);
+    // currentTabNotifier = ValueNotifier(tabs.last); ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
     tabController = TabController(initialIndex: 1, length: 2, vsync: this);
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
+    // Provider.of<RideRequestProvider>(context, listen: false).displayDirectionsToPickup(imageConfiguration);
   }
   @override
   void dispose() {
@@ -50,8 +50,8 @@ class _RiderBoxState extends State<RiderBox>
   @override
   Widget build(BuildContext context) {
     ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-    final rideDetails =
-    Provider.of<RideRequestProvider>(context, listen: false);
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
+  final rideDetails = Provider.of<RideRequestProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;
@@ -147,14 +147,14 @@ class _RiderBoxState extends State<RiderBox>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '4.2 mi',
+                      rideDetails.distance??'calculating',
                       style: context.textTheme.bodySmall!.copyWith(
                         color: Colors.white,
                       ),
                     ),
                     const CurrencyWidget(price: 800, color: Colors.white),
                     Text(
-                      '14:20',
+                      rideDetails.etaTimer ?? 'calculating',
                       style: context.textTheme.bodySmall!.copyWith(
                         color: Colors.white,
                       ),

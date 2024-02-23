@@ -19,6 +19,7 @@ class RequestsView extends StatelessWidget {
   }
 
   void showBottonSheet(BuildContext context) {
+    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
     final rideDetails =
     Provider.of<RideRequestProvider>(context, listen: false);
     showModalBottomSheet(
@@ -29,6 +30,7 @@ class RequestsView extends StatelessWidget {
       builder: (context) => RideRequestBox(
         price: 456,
         onAccept: () async{
+          rideDetails.displayDirectionsToPickup(imageConfiguration);
           /// Call acceptTripRequest function when the button is pressed
           rideDetails.acceptRideRequest(
             rideDetails.driverId ??'',

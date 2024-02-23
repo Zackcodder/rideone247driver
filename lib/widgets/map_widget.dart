@@ -31,9 +31,9 @@ class MapWidgetState extends State<MapWidget> {
   // void initState() {
   //   super.initState();
   //   print('init state ran');
-  //   _mapViewProvider =
-  //       Provider.of(MyApp.navigatorKey.currentContext!, listen: false);
-  //   _mapViewProvider.polyline.addListener(_polylineListener);
+  //   ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+  //   Provider.of<RideRequestProvider>(context, listen: false).displayDirectionsToPickup(imageConfiguration);
+  //
   // }
   //
   // _polylineListener() async {
@@ -51,8 +51,6 @@ class MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-    Provider.of<RideRequestProvider>(context, listen: false).displayDirectionsToPickup(imageConfiguration);
     final mapProvider = Provider.of<MapView>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -65,11 +63,15 @@ class MapWidgetState extends State<MapWidget> {
         mapType: MapType.normal,
         markers: mapProvider.marker,
         circles: mapProvider.circle,
-        polylines: mapProvider.polyline,
+        polylines:
+        // Set<Polyline>.of(mapProvider.polyline.value.values),
+        mapProvider.polyline,
         initialCameraPosition: GoogleMapService.googlePlex,
         onMapCreated: (GoogleMapController controller) async {
           _controller.complete(controller);
           mapController = controller;
+          ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+          Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
           final position = await mapProvider.currentPosition;
           mapController.animateCamera(CameraUpdate.newLatLng(
               mapProvider.convertPositionToLatLng(position)));

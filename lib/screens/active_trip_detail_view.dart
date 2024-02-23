@@ -29,7 +29,6 @@ class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
   void initState() {
     super.initState();
     loadDriverDataFromSharedPreference();
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
   }
 
   String? _driverName;
@@ -44,6 +43,8 @@ class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
 
   @override
   Widget build(BuildContext context) {
+    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
     final rideDetails =
     Provider.of<RideRequestProvider>(context, listen: false);
     return Stack(

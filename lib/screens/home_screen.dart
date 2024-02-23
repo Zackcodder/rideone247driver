@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen>
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
       Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
       Provider.of<DriverProvider>(context, listen: false).listenForDriverLocationUpdates();
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
+    // Provider.of<RideRequestProvider>(context, listen: false).displayDirectionsToPickup(imageConfiguration);
   }
 
   @override
@@ -66,7 +66,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;

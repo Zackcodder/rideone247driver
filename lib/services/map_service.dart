@@ -17,6 +17,8 @@ class MapService {
 
     if (res.statusCode == 200) {
       final response = json.decode(res.body);
+      print('this is the direction result');
+      print(response);
       return response;
     }
     return res;
