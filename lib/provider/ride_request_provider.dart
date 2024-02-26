@@ -39,6 +39,7 @@ class RideRequestProvider with ChangeNotifier {
       id: id,
       availability: availability,
     );
+    notifyListeners();
     print('this is the status $availability');
     print('this is the id $id');
     var onlineResponse = await _socketService.listenForSuccess();
@@ -66,7 +67,7 @@ class RideRequestProvider with ChangeNotifier {
 
     }
 
-    notifyListeners();
+
   }
 
   /// trip request
@@ -115,7 +116,6 @@ class RideRequestProvider with ChangeNotifier {
   }
 
   ///accept rider request
-
   List<Trip> _rideAcceptedRequests = [];
   List<Trip> get rideAcceptedRequests => _rideAcceptedRequests;
   String? get acceptedTripId => _acceptedTripId;

@@ -132,7 +132,7 @@ class _TripsViewState extends State<TripsView> {
             //   ),
             // ),
             // TripCard(model: activeTripList.first),
-            SizedBox(),
+            const SizedBox(),
             AppElevatedButton.medium(
               onPressed: () async {
                 rideDetails.endRiderTrip(rideDetails.driverId??'',  rideDetails.acceptedTripId ?? '');

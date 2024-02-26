@@ -36,7 +36,7 @@ class GoogleMapService {
       CameraUpdate.newLatLngBounds(bounds!, 90);
 
   static CameraPosition googlePlex =
-  const CameraPosition(target: LatLng(6.5244, 3.3792), zoom: 20);
+  const CameraPosition(target: LatLng(6.5244, 3.3792), zoom: 16);
 
   convertPositionToLatLng(Position position) =>
       LatLng(position.latitude, position.longitude);
@@ -56,9 +56,9 @@ class GoogleMapService {
             circleId: const CircleId('Current'),
             strokeColor: Colors.orange,
             strokeWidth: 1,
-            radius: 10,
+            radius: 50,
             center: convertPositionToLatLng(pos),
-            fillColor: Colors.blue.withOpacity(0.2))
+            fillColor: Colors.orange.withOpacity(0.2))
       };
 
   /// for markers

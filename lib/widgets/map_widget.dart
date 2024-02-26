@@ -60,7 +60,7 @@ class MapWidgetState extends State<MapWidget> {
         zoomGesturesEnabled: true,
         mapToolbarEnabled: false,
         zoomControlsEnabled: false,
-        mapType: MapType.normal,
+        mapType: MapType.terrain,
         markers: mapProvider.marker,
         circles: mapProvider.circle,
         polylines:

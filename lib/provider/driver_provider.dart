@@ -1,14 +1,10 @@
 
 
 import 'package:flutter/cupertino.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:ride_on_driver/services/driver_services.dart';
 
 import '../services/geo_locator_service.dart';
 import '../services/socket_service.dart';
-import 'authprovider.dart';
 
 class DriverProvider with ChangeNotifier{
   final SocketService _socketService = SocketService();

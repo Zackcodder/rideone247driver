@@ -32,7 +32,7 @@ class _TripListViewerState extends State<TripListViewer> {
     final rideDetails = Provider.of<RideRequestProvider>(context, listen: false);
     return Consumer<RideRequestProvider>(
       builder: (context, rideRequestProvider, child) {
-        if (rideRequestProvider.rideRequestLoading) {
+        if (rideRequestProvider.rideRequestLoading || rideRequestProvider == null) {
           return const Center(
             child: CircularProgressIndicator(),
           );

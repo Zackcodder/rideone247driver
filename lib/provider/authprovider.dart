@@ -107,21 +107,26 @@ class AuthProvider with ChangeNotifier {
         /// Initialize the socket with the user token
         _socketService.initSocket(_token!, _id!);
 
-        /// Authenticate the socket connection
-        _socketService.authenticate();
 
-        // Start location updates when user logs in
-        _driverService.startLocationUpdates();
         await saveDriverData( _driverName!, _driverLastName!,_driverEmail!,_token!, _walletBalance!, _id!);
+        notifyListeners();
         _signInLoading = false;
         //navigate to home page
+        if(_driverName !=null && _driverLastName != null &&_driverEmail!=null &&_token!=null && _walletBalance!=null && _id!=null)
         Future.delayed(Duration.zero, () {
+          /// Authenticate the socket connection
+          _socketService.authenticate();
+
+          /// Start location updates when user logs in
+          _driverService.startLocationUpdates();
+
+          ///startdriver status
+          _socketService.driverOnlineStatus(id: _id!, availability: false);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         });
-        notifyListeners();
       } else {
         _signInLoading = false;
         notifyListeners();
