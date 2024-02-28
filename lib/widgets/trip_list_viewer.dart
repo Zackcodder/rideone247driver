@@ -21,18 +21,20 @@ class TripListViewer extends StatefulWidget {
 }
 
 class _TripListViewerState extends State<TripListViewer> {
+  late RideRequestProvider _rideRequestProvider;
   @override
   void initState() {
     super.initState();
+    _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
+    _rideRequestProvider.listenForRideRequests();
   }
 
   @override
   Widget build(BuildContext context) {
-    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
     final rideDetails = Provider.of<RideRequestProvider>(context, listen: false);
     return Consumer<RideRequestProvider>(
       builder: (context, rideRequestProvider, child) {
-        if (rideRequestProvider.rideRequestLoading) {
+        if (rideRequestProvider.rideRequestLoading || rideRequestProvider == null) {
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -43,7 +45,6 @@ class _TripListViewerState extends State<TripListViewer> {
               final trip = rideRequestProvider.rideRequests[index];
               return GestureDetector(
                 onTap:  widget.onCardTap,
-                  // rideDetails.displayDirectionsToPickup(imageConfiguration);
 
                 child: Container(
                   decoration: BoxDecoration(

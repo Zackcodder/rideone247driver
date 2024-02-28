@@ -177,31 +177,39 @@ class SocketService {
     });
   }
 
-  // Create a single completer
-  Completer<dynamic>? _completer;
-  // Method to listen for "SUCCESS" event
-  Future<dynamic> listenForSuccess() {
-    print("listening for success");
-
-    // Only create the completer if it hasn't been created yet
-    _completer ??= Completer<dynamic>();
-
-    // Only register the event listener if it hasn't been registered yet
-    if (!_completer!.isCompleted) {
-      // Define a callback function to handle the SUCCESS event
-      void successHandler(data) {
-        print(data);
-        // Resolve the completer with the received data
-        _completer!.complete(data);
-      }
-
-      // Register the event listener for the SUCCESS event
-      socket.on("SUCCESS", successHandler);
-    }
-
-    // Return the future from the completer
-    return _completer!.future;
+  ///listen for success
+  listenForSuccess(){
+    print("listening for success in socket");
+    socket.on("SUCCESS", (data) {
+      print("success data fromm socket: $data");
+    });
   }
+
+  // Create a single completer
+  // Completer<dynamic>? _completer;
+  // Method to listen for "SUCCESS" event
+  // Future<dynamic> listenForSuccess() {
+  //   print("listening for success");
+  //
+  //   // Only create the completer if it hasn't been created yet
+  //   _completer ??= Completer<dynamic>();
+  //
+  //   // Only register the event listener if it hasn't been registered yet
+  //   if (!_completer!.isCompleted) {
+  //     // Define a callback function to handle the SUCCESS event
+  //     void successHandler(data) {
+  //       print(data);
+  //       // Resolve the completer with the received data
+  //       _completer!.complete(data);
+  //     }
+  //
+  //     // Register the event listener for the SUCCESS event
+  //     socket.on("SUCCESS", successHandler);
+  //   }
+  //
+  //   // Return the future from the completer
+  //   return _completer!.future;
+  // }
   // Future<dynamic> listenForSuccess() {
   //   print("listening for success");
   //

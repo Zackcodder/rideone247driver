@@ -46,7 +46,6 @@ class _ActiveTripDetailViewState extends State<ActiveTripDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    // ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
     Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
     RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
     return Stack(

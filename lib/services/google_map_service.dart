@@ -36,7 +36,7 @@ class GoogleMapService {
       CameraUpdate.newLatLngBounds(bounds!, 90);
 
   static CameraPosition googlePlex =
-  const CameraPosition(target: LatLng(6.5244, 3.3792), zoom: 20);
+  const CameraPosition(target: LatLng(6.5244, 3.3792), zoom: 16);
 
   convertPositionToLatLng(Position position) =>
       LatLng(position.latitude, position.longitude);
@@ -56,9 +56,9 @@ class GoogleMapService {
             circleId: const CircleId('Current'),
             strokeColor: Colors.orange,
             strokeWidth: 1,
-            radius: 10,
+            radius: 50,
             center: convertPositionToLatLng(pos),
-            fillColor: Colors.blue.withOpacity(0.2))
+            fillColor: Colors.orange.withOpacity(0.2))
       };
 
   /// for markers
@@ -134,53 +134,6 @@ class GoogleMapService {
   static Set<Polyline> _polyLines = <Polyline>{};
   Set<Polyline> get polyLines => _polyLines;
 
-  ///
-  // static final PolylinePoints _polylinePoints = PolylinePoints();
-  // static final ValueNotifier<Map<PolylineId, Polyline>> _polyLines =
-  // ValueNotifier({});
-  //
-  // static ValueNotifier<Map<PolylineId, Polyline>> get polyLines => _polyLines;
-  //
-  // static createPolyLine(String polylineId, PointLatLng pickupLocation,
-  //     PointLatLng destinationLocation) async {
-  //   PolylineId pId = PolylineId(polylineId);
-  //
-  //   Polyline polyLine = Polyline(
-  //       polylineId: pId,
-  //       color: Colors.orange,
-  //       points: await getRouteBetweenLocations(pickupLocation, destinationLocation),
-  //       jointType: JointType.round,
-  //       width: 3,
-  //       startCap: Cap.roundCap,
-  //       endCap: Cap.roundCap,
-  //       geodesic: true
-  //   );
-  //   _polyLines.value = {};
-  //   _polyLines.value = {pId: polyLine};
-  // }
-  // clearPolyLines() => _polyLines.value.clear();
-  // // final MapService
-  //
-  // static Future<List<LatLng>> getRouteBetweenLocations(
-  //     PointLatLng pickupLocation, PointLatLng destinationLocation) async {
-  //   PolylineResult result = await _polylinePoints.getRouteBetweenCoordinates(
-  //     MapService.mapKey,
-  //     pickupLocation,
-  //     destinationLocation,
-  //     travelMode: TravelMode.driving,
-  //   );
-  //   List<LatLng> polylineCoordinates = [];
-  //
-  //   if (result.points.isNotEmpty) {
-  //     for (var point in result.points) {
-  //       polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-  //     }
-  //   }
-  //   return polylineCoordinates;
-  // }
-
-    ///
-
     setPolyLine(List<LatLng> polylineCoordinates) {
       Polyline polyline = Polyline(
         polylineId: const PolylineId('polyid'),
@@ -188,7 +141,7 @@ class GoogleMapService {
         points: polylineCoordinates,
         jointType: JointType.round,
         width: 4,
-        startCap: Cap.buttCap,
+        startCap: Cap.roundCap,
         endCap: Cap.roundCap,
         geodesic: true,
       );
@@ -211,8 +164,8 @@ class GoogleMapService {
       if (pickupLatitude > destinationLatitude &&
           pickupLongitude > destinationLongitude) {
         bounds = LatLngBounds(
-          southwest: LatLng(destinationLatitude, destinationLongitude),
-          northeast: LatLng(pickupLatitude, pickupLongitude),
+          southwest: LatLng(pickupLatitude, destinationLongitude),
+          northeast: LatLng(destinationLatitude, pickupLongitude),
         );
       } else if (pickupLongitude > destinationLongitude) {
         bounds = LatLngBounds(

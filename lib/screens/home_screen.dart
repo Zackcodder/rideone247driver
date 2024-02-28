@@ -14,6 +14,7 @@ import 'package:ride_on_driver/screens/requests_view.dart';
 import 'package:ride_on_driver/widgets/app_logo.dart';
 import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../provider/ride_request_provider.dart';
 import '../services/socket_service.dart';
@@ -38,22 +39,36 @@ class _HomeScreenState extends State<HomeScreen>
   late final TabController tabController;
   late final ValueNotifier<TabItem> currentTabNotifier;
   List<TabItem> tabs = [const TabItem('Active'), const TabItem('Requests')];
+  late RideRequestProvider _rideRequestProvider;
+  // String? _id = Provider.of<AuthProvider>(context, listen: false).id;
+  String? _id;
+
+  loadDriverDataFromSharedPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _id = prefs.getString('id');
+    });
+  }
 
 
   @override
    initState() {
     super.initState();
+    loadDriverDataFromSharedPreference();
     WidgetsBinding.instance.addObserver(this);
     currentTabNotifier = ValueNotifier(tabs.first);
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
-      Provider.of<RideRequestProvider>(context, listen: false).listenForRideRequests();
-      Provider.of<DriverProvider>(context, listen: false).listenForDriverLocationUpdates();
+    _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
+    _rideRequestProvider.updateDriverStatus(context, _id ??'', isActiveNotifier.value);
        }
 
   @override
   didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.detached) {
       isActiveNotifier.dispose();
+      setState(() {
+
+      });
     }
   }
 
@@ -66,8 +81,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    // ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
+    RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;
@@ -96,11 +110,10 @@ class _HomeScreenState extends State<HomeScreen>
                   return CustomSwitch(
                     value: isActive,
                     onChanged: (value) async{
-                      setState(() {
-                        String? id = Provider.of<AuthProvider>(context, listen: false).id;
+                      setState(() {});
                         isActiveNotifier.value = value;
-                        Provider.of<RideRequestProvider>(context, listen: false).updateDriverStatus(context, id!, value);
-                      });
+                      rideDetails.updateDriverStatus(context, _id!, value);
+
                     }
                         // (value) => isActiveNotifier.value = value,
                   );

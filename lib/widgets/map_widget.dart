@@ -20,37 +20,23 @@ class MapWidget extends StatefulWidget {
 class MapWidgetState extends State<MapWidget> {
   late GoogleMapController mapController;
   final Completer<GoogleMapController> _controller = Completer();
+  late RideRequestProvider _rideRequestProvider;
+   GoogleMapService _googleMapService = GoogleMapService();
 
-  // List<LatLng> polylineCoordinates = [];
-  //
-  // Map<PolylineId, Polyline> polyLines = {};
-  //
-  // late MapView _mapViewProvider;
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   print('init state ran');
-  //   ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-  //   Provider.of<RideRequestProvider>(context, listen: false).displayDirectionsToPickup(imageConfiguration);
-  //
-  // }
-  //
-  // _polylineListener() async {
-  //   print('This listener ran again');
-  //   await Future.delayed(const Duration(milliseconds: 1));
-  //   if (mounted) setState(() {});
-  // }
-  //
-  // @override
-  // void dispose() {
-  //   _mapViewProvider.removeListener(_polylineListener);
-  //   super.dispose();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
+    _rideRequestProvider.acceptRideRequestResponse();
+    _googleMapService.markers;
+  }
 
 
   @override
   Widget build(BuildContext context) {
+    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
+    RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
     final mapProvider = Provider.of<MapView>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -71,10 +57,13 @@ class MapWidgetState extends State<MapWidget> {
           _controller.complete(controller);
           mapController = controller;
           // ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-          Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
+          // Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
           final position = await mapProvider.currentPosition;
           mapController.animateCamera(CameraUpdate.newLatLng(
               mapProvider.convertPositionToLatLng(position)));
+          setState(() {});
+          rideDetails.displayDirectionForActivateTrip(imageConfiguration);
+          // rideDetails.displayDirectionsToPickup(imageConfiguration);
         },
       ),
     );
