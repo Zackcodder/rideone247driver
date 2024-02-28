@@ -79,7 +79,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //login function
+  ///login function
   signIn(BuildContext context, String email, String password) async {
     try {
       print('signing method in provider service');
@@ -121,7 +121,7 @@ class AuthProvider with ChangeNotifier {
           _driverService.startLocationUpdates();
 
           ///startdriver status
-          _socketService.driverOnlineStatus(id: _id!, availability: false);
+          // _socketService.driverOnlineStatus(id: _id!, availability: true);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const HomeScreen()),

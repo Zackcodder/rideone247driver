@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
   late final ValueNotifier<TabItem> currentTabNotifier;
   List<TabItem> tabs = [const TabItem('Active'), const TabItem('Requests')];
   late RideRequestProvider _rideRequestProvider;
-  // String? id = Provider.of<AuthProvider>(context, listen: false).id;
+  // String? _id = Provider.of<AuthProvider>(context, listen: false).id;
   String? _id;
 
   loadDriverDataFromSharedPreference() async {
@@ -82,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;

@@ -186,7 +186,8 @@ class _RiderBoxState extends State<RiderBox>
           AppElevatedButton.large(
             onPressed: ()  async{
               setState(() {
-                rideDetails.displayDirectionsToPickup(imageConfiguration);
+                // rideDetails.displayDirectionsToPickup(imageConfiguration);
+                rideDetails.displayDirectionForActivateTrip(imageConfiguration);
                 rideDetails.startRide(rideDetails.driverId ??'',rideDetails.acceptedTripId ??'',);
               });
               print('printing from the start trip button the driver id ${rideDetails.driverId}');
