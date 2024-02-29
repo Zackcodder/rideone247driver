@@ -56,7 +56,7 @@ class GoogleMapService {
             circleId: const CircleId('Current'),
             strokeColor: Colors.orange,
             strokeWidth: 1,
-            radius: 50,
+            radius: 350,
             center: convertPositionToLatLng(pos),
             fillColor: Colors.orange.withOpacity(0.2))
       };
