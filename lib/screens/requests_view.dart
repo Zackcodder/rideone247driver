@@ -24,9 +24,10 @@ class _RequestsViewState extends State<RequestsView> {
   }
 
   void showBottonSheet(BuildContext context) {
-    ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+    ImageConfiguration imageConfiguration =
+        createLocalImageConfiguration(context, size: const Size(2, 2));
     final rideDetails =
-    Provider.of<RideRequestProvider>(context, listen: false);
+        Provider.of<RideRequestProvider>(context, listen: false);
     showModalBottomSheet(
       context: context,
       barrierColor: Colors.transparent,
@@ -34,21 +35,21 @@ class _RequestsViewState extends State<RequestsView> {
       backgroundColor: Colors.transparent,
       builder: (context) => RideRequestBox(
         price: 456,
-        onAccept: () async{
+        onAccept: () async {
           setState(() {
-            rideDetails.displayDirectionsToPickup(imageConfiguration);
-          /// Call acceptTripRequest function when the button is pressed
-          rideDetails.acceptRideRequest(
-              rideDetails.driverId ??'',
-              rideDetails.tripLng??'', // Assuming driverId is used as the id
-              rideDetails.tripLat ??'',
-              rideDetails.tripId ??''
-          );
+            // rideDetails.displayDirectionsToPickup(imageConfiguration);
+            /// Call acceptTripRequest function when the button is pressed
+            rideDetails.acceptRideRequest(
+                rideDetails.driverId ?? '',
+                rideDetails.tripLng ??
+                    '', // Assuming driverId is used as the id
+                rideDetails.tripLat ?? '',
+                rideDetails.tripId ?? '');
           });
-          print('this is a trip lat in ui: ${rideDetails.tripLat??''}');
-          print('this is a trip lng in ui: ${rideDetails.tripLng??''}');
-          print('this is a trip id in ui: ${rideDetails.tripId ??''}');
-          print('this is a driver id ui: ${rideDetails.driverId ??''}');
+          print('this is a trip lat in ui: ${rideDetails.tripLat ?? ''}');
+          print('this is a trip lng in ui: ${rideDetails.tripLng ?? ''}');
+          print('this is a trip id in ui: ${rideDetails.tripId ?? ''}');
+          print('this is a driver id ui: ${rideDetails.driverId ?? ''}');
           context.pop();
           isRideActiveNotifier.value = true;
         },
