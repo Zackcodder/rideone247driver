@@ -18,6 +18,7 @@ class MapWidget extends StatefulWidget {
 }
 
 class MapWidgetState extends State<MapWidget> {
+  ImageConfiguration imageConfiguration = ImageConfiguration();
   late GoogleMapController mapController;
   final Completer<GoogleMapController> _controller = Completer();
   late RideRequestProvider _rideRequestProvider;
@@ -28,6 +29,7 @@ class MapWidgetState extends State<MapWidget> {
     super.initState();
     _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.acceptRideRequestResponse();
+    _rideRequestProvider.displayDirectionForActivateTrip(imageConfiguration);
     _googleMapService.markers;
   }
 
@@ -44,25 +46,22 @@ class MapWidgetState extends State<MapWidget> {
         myLocationButtonEnabled: false,
         myLocationEnabled: true,
         zoomGesturesEnabled: true,
-        mapToolbarEnabled: false,
+        mapToolbarEnabled: true,
         zoomControlsEnabled: false,
         mapType: MapType.normal,
         markers: mapProvider.marker,
         circles: mapProvider.circle,
-        polylines:
-        // Set<Polyline>.of(mapProvider.polyline.value.values),
-        mapProvider.polyline,
+        polylines: mapProvider.polyline,
         initialCameraPosition: GoogleMapService.googlePlex,
         onMapCreated: (GoogleMapController controller) async {
           _controller.complete(controller);
           mapController = controller;
-          // ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-          // Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
-          final position = await mapProvider.currentPosition;
+         final position = await mapProvider.currentPosition;
           mapController.animateCamera(CameraUpdate.newLatLng(
               mapProvider.convertPositionToLatLng(position)));
-          setState(() {});
-          rideDetails.displayDirectionForActivateTrip(imageConfiguration);
+          setState(() {
+            rideDetails.displayDirectionForActivateTrip(imageConfiguration);
+          });
           // rideDetails.displayDirectionsToPickup(imageConfiguration);
         },
       ),

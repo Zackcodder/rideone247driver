@@ -53,6 +53,7 @@ class _RiderBoxState extends State<RiderBox>
     ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
     Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
   RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
+  // rideDetails.displayDirectionsToPickup(imageConfiguration);
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;
@@ -82,7 +83,7 @@ class _RiderBoxState extends State<RiderBox>
                   contentPadding: EdgeInsets.zero,
                   leading: Image.asset(Assets.assetsImagesDriverProfile).clip(radius: 100),
                   title: Text(
-                    rideDetails.riderName ?? 'nil',
+                    rideDetails.riderName ?? '',
                     style: context.textTheme.bodyMedium!.copyWith(
                       color: Colors.white,
                     ),
@@ -148,20 +149,20 @@ class _RiderBoxState extends State<RiderBox>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      rideDetails.distance??'calculating',
+                      rideDetails.distance??'',
                       style: context.textTheme.bodySmall!.copyWith(
                         color: Colors.white,
                       ),
                     ),
                     const CurrencyWidget(price: 800, color: Colors.white),
                     Text(
-                      rideDetails.etaTimer ?? 'calculating',
+                      rideDetails.etaTimer ?? '',
                       style: context.textTheme.bodySmall!.copyWith(
                         color: Colors.white,
                       ),
                     ),
                     Text(
-                      rideDetails.riderPaymentMethod ?? 'nil',
+                      rideDetails.riderPaymentMethod ?? '',
                       style: context.textTheme.bodySmall!.copyWith(
                         color: Colors.white,
                       ),
@@ -186,10 +187,10 @@ class _RiderBoxState extends State<RiderBox>
           AppElevatedButton.large(
             onPressed: ()  async{
               setState(() {
-                // rideDetails.displayDirectionsToPickup(imageConfiguration);
-                rideDetails.displayDirectionForActivateTrip(imageConfiguration);
-                rideDetails.startRide(rideDetails.driverId ??'',rideDetails.acceptedTripId ??'',);
               });
+              // rideDetails.displayDirectionsToPickup(imageConfiguration);
+              rideDetails.displayDirectionForActivateTrip(imageConfiguration);
+              rideDetails.startRide(rideDetails.driverId ??'',rideDetails.acceptedTripId ??'',);
               print('printing from the start trip button the driver id ${rideDetails.driverId}');
               print('printing from the start trip button the trip id ${rideDetails.acceptedTripId}');
               Navigator.pushReplacement(
