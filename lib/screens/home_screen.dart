@@ -76,9 +76,9 @@ class _HomeScreenState extends State<HomeScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     tabController.dispose();
+    isActiveNotifier.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
@@ -110,9 +110,11 @@ class _HomeScreenState extends State<HomeScreen>
                   return CustomSwitch(
                     value: isActive,
                     onChanged: (value) async{
-                      setState(() {});
-                        isActiveNotifier.value = value;
-                      rideDetails.updateDriverStatus(context, _id!, value);
+                        setState(() {
+                          isActiveNotifier.value = value;
+                          rideDetails.updateDriverStatus(context, _id!, value);
+                        });
+                        setState(() {});
 
                     }
                         // (value) => isActiveNotifier.value = value,
