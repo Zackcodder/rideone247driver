@@ -27,7 +27,6 @@ class AuthService {
             textColor: Colors.white);
         return responseData;
       } else {
-
         throw Fluttertoast.showToast(
             fontSize: 18,
             toastLength: Toast.LENGTH_LONG,
@@ -36,7 +35,8 @@ class AuthService {
             gravity: ToastGravity.BOTTOM,
             textColor: Colors.white);
       }
-    }catch(e){print('error login in');
+    } catch (e) {
+      print('error login in');
       print(e);
     }
   }
@@ -80,8 +80,6 @@ class AuthService {
           textColor: Colors.white);
     }
   }
-
-
 
   //sending of otp
   sendOtp(String otp) async {

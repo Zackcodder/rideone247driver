@@ -21,7 +21,10 @@ class RideRequestProvider with ChangeNotifier {
 
   final SocketService _socketService = SocketService();
 
-  RideRequestProvider(String token, String id,) {
+  RideRequestProvider(
+    String token,
+    String id,
+  ) {
     listenForRideRequests();
     _socketService.initSocket(token, id);
     notifyListeners();
@@ -30,20 +33,21 @@ class RideRequestProvider with ChangeNotifier {
   List<Trip> _rideRequests = [];
   List<Trip> get rideRequests => _rideRequests;
   bool get hasRideRequests => _rideRequests.isNotEmpty;
-  bool  _Online = false;
+  bool _Online = false;
   bool get Online => _Online;
 
   ///updating driver online status
-  updateDriverStatus(BuildContext context,String id, bool availability) async {
-    await _socketService.driverOnlineStatus(id: id,availability: availability);
+  updateDriverStatus(BuildContext context, String id, bool availability) async {
+    await _socketService.driverOnlineStatus(id: id, availability: availability);
     print('this is the status $availability');
     print('this is the id $id');
-    var onlineResponse = await _socketService.listenForSuccess();
-    if (onlineResponse == 'You are now available'
-        || onlineResponse == 'You are now unavailable') {
-      isActiveNotifier.value = availability; // Update isActiveNotifier value
-      notifyListeners();
-    }
+    // var onlineResponse = await _socketService.listenForSuccess();
+    // if (onlineResponse == 'You are now available'
+    //     || onlineResponse == 'You are now unavailable') {
+    //   isActiveNotifier.value = availability; // Update isActiveNotifier value
+    //   notifyListeners();
+    // }
+    isActiveNotifier.value = availability;
     notifyListeners();
     // if(onlineResponse == 'You are now available'){
     //   return Fluttertoast.showToast(
@@ -84,34 +88,34 @@ class RideRequestProvider with ChangeNotifier {
   listenForRideRequests() async {
     print('starting another wahala ');
 
-      try {
-        /// Listen for ride requests and handle them
-        Trip? newRequest = await _socketService.listenForRideRequest();
+    try {
+      /// Listen for ride requests and handle them
+      Trip? newRequest = await _socketService.listenForRideRequest();
 
-        if (newRequest != null) {
-          // Handle the ride request data, for example, add it to a list
-          _rideRequests.add(newRequest);
-          _tripId = newRequest.tripId;
-          _tripLat = newRequest.dropOffLon.toString();
-          _tripLng = newRequest.pickUpLat.toString();
-          _driverId = newRequest.driverId;
-          _paymentMethod = newRequest.paymentMethod;
-          print('this is a trip lat: ${newRequest.dropOffLon}');
-          print('this is a trip lng: ${newRequest.pickUpLat}');
-          print('this is a trip id: ${newRequest.tripId}');
-          print('this is a driver id: ${newRequest.driverId}');
-          print('this is a trip payment method: ${newRequest.paymentMethod}');
+      if (newRequest != null) {
+        // Handle the ride request data, for example, add it to a list
+        _rideRequests.add(newRequest);
+        _tripId = newRequest.tripId;
+        _tripLat = newRequest.dropOffLon.toString();
+        _tripLng = newRequest.pickUpLat.toString();
+        _driverId = newRequest.driverId;
+        _paymentMethod = newRequest.paymentMethod;
+        print('this is a trip lat: ${newRequest.dropOffLon}');
+        print('this is a trip lng: ${newRequest.pickUpLat}');
+        print('this is a trip id: ${newRequest.tripId}');
+        print('this is a driver id: ${newRequest.driverId}');
+        print('this is a trip payment method: ${newRequest.paymentMethod}');
 
-          // Notify listeners that the ride requests list has been updated
-          notifyListeners();
-          return;
-        }else{
-          print('hahahaha i have catch u');
-        }
-      } catch (e) {
-        // Handle any errors
-        print('Error processing ride request data: $e');
+        // Notify listeners that the ride requests list has been updated
+        notifyListeners();
+        return;
+      } else {
+        print('hahahaha i have catch u');
       }
+    } catch (e) {
+      // Handle any errors
+      print('Error processing ride request data: $e');
+    }
   }
 
   ///accept rider request
@@ -132,7 +136,7 @@ class RideRequestProvider with ChangeNotifier {
   double? get riderDestinationLon => _riderDestinationLon;
   double? _riderDestinationLon;
 
-  acceptRideRequest(String id, String lon, String lat, String tripId) async{
+  acceptRideRequest(String id, String lon, String lat, String tripId) async {
     print('starting accetp trip in provider');
     await _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
     // acceptRideRequestResponse();
@@ -140,7 +144,7 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  acceptRideRequestResponse() async{
+  acceptRideRequestResponse() async {
     print('printing accept response in provider');
     try {
       /// Listen for ride acceptance and handle them
@@ -174,8 +178,8 @@ class RideRequestProvider with ChangeNotifier {
         print('this is a rider name: ${newAcceptedRequest.riderName}');
         print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');
         print('this is a rider trip id: ${newAcceptedRequest.riderTripId}');
-        print('this is a rider payment method: ${newAcceptedRequest.riderPaymentMethod}');
-
+        print(
+            'this is a rider payment method: ${newAcceptedRequest.riderPaymentMethod}');
       }
     } catch (e) {
       // Handle any errors
@@ -188,7 +192,8 @@ class RideRequestProvider with ChangeNotifier {
   Future<String?> getLocationName(double latitude, double longitude) async {
     try {
       // Perform reverse geocoding
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
 
       // Extract the name of the location from the placemark
       if (placemarks.isNotEmpty) {
@@ -204,16 +209,16 @@ class RideRequestProvider with ChangeNotifier {
   }
 
   ///start trip
-  startRide( String id,  String tripId) async{
+  startRide(String id, String tripId) async {
     print('starting ride in provider');
-   await  _socketService.startTrip(id: id, tripId: tripId);
+    await _socketService.startTrip(id: id, tripId: tripId);
     print('starting ride respoinse in provider');
     _socketService.listenForSuccess();
     _socketService.listenForError();
     notifyListeners();
   }
 
-  endRiderTrip(String id,  String tripId) async{
+  endRiderTrip(String id, String tripId) async {
     print('ending trip from provider');
     _socketService.endTrip(id: id, tripId: tripId);
     print('printing the success response for end trip in provider');
@@ -222,6 +227,7 @@ class RideRequestProvider with ChangeNotifier {
     _socketService.listenForError();
     notifyListeners();
   }
+
   ///extracting of coordinate
   List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
     return points
@@ -353,16 +359,16 @@ class RideRequestProvider with ChangeNotifier {
   String? _tripDistance;
   displayDirectionForActivateTrip(imageConfiguration) async {
     /// get rider pickup coordinates
-    var pickup = _googleMapService.convertDoubleToLatLng(_riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
+    var pickup = _googleMapService.convertDoubleToLatLng(
+        _riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
 
     /// get rider destination coordinate
-    var destination = _googleMapService.convertDoubleToLatLng(_riderPickUpLat ?? 0.0, _riderPickUpLon ?? 0.0);
+    var destination = _googleMapService.convertDoubleToLatLng(
+        _riderPickUpLat ?? 0.0, _riderPickUpLon ?? 0.0);
 
     ///assign the destination location as lan and lng
-    var destinationCoordinates = [
-      destination.latitude,
-      destination.longitude
-    ];
+    var destinationCoordinates = [destination.latitude, destination.longitude];
+
     ///assign the rider location as lan and lng
     var pickupCoordinates = [
       pickup.latitude,
@@ -377,7 +383,6 @@ class RideRequestProvider with ChangeNotifier {
           msg: 'no dest and pickup',
           gravity: ToastGravity.BOTTOM,
           textColor: Colors.white);
-
     }
 
     /// Fetch directions using your API service (e.g., MapService)
@@ -391,9 +396,8 @@ class RideRequestProvider with ChangeNotifier {
         print('The plotting is not working');
       } else if (directionsResponse.isNotEmpty) {
         /// Extract polyline coordinates from the directions response
-        final List pointLatLngList =
-        _polylinePointService.decodePolyPoints(
-          directionsResponse ['routes'][0]['overview_polyline']['points'],
+        final List pointLatLngList = _polylinePointService.decodePolyPoints(
+          directionsResponse['routes'][0]['overview_polyline']['points'],
         );
 
         /// Convert List<PointLatLng> to List<LatLng>
@@ -430,12 +434,11 @@ class RideRequestProvider with ChangeNotifier {
 
         Circle originCircle = Circle(
             circleId: CircleId('origin'),
-          fillColor: Colors.green,
-          radius: 12,
-          strokeColor: Colors.white,
-          strokeWidth: 3,
-          center: pickup
-        );
+            fillColor: Colors.green,
+            radius: 12,
+            strokeColor: Colors.white,
+            strokeWidth: 3,
+            center: pickup);
 
         Circle destinationCircle = Circle(
             circleId: CircleId('destination'),
@@ -443,25 +446,26 @@ class RideRequestProvider with ChangeNotifier {
             radius: 12,
             strokeColor: Colors.white,
             strokeWidth: 3,
-            center: pickup
-        );
+            center: pickup);
         _googleMapService.addMarkers(originMarker);
         _googleMapService.addMarkers(destinationMarker);
         _googleMapService.addCircle(originCircle);
         _googleMapService.addCircle(destinationCircle);
         notifyListeners();
 
-        final durationText = directionsResponse['routes'][0]['legs'][0]['duration']['text'];
-        final distanceText = directionsResponse['routes'][0]['legs'][0]['distance']['text'];
+        final durationText =
+            directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+        final distanceText =
+            directionsResponse['routes'][0]['legs'][0]['distance']['text'];
         // final etaTimer1 =
         //     int.parse(RegExp(r"(\d+)").stringMatch(durationText) ?? '0');
 
         // _tripDistance = distanceText;
         // _etaTimer1 = etaTimer1.toString();
-         _tripEtaTimer = durationText ?? 'Calculating';
-         _tripDistance = distanceText ?? 'Calculating';
-         print('this is the time fro the rider trip: $_tripEtaTimer');
-         print('this is the distance to the rider destination: $_tripDistance');
+        _tripEtaTimer = durationText ?? 'Calculating';
+        _tripDistance = distanceText ?? 'Calculating';
+        print('this is the time fro the rider trip: $_tripEtaTimer');
+        print('this is the distance to the rider destination: $_tripDistance');
         notifyListeners();
       } else {}
     } else {}
@@ -491,17 +495,17 @@ class RideRequestProvider with ChangeNotifier {
   // }
 
   ///reset app to default
-  resetApp() async{
+  resetApp() async {
     _riderName = '';
     _acceptedTripId = '';
     _riderPaymentMethod = '';
-    _riderPickUpLat =0.0;
+    _riderPickUpLat = 0.0;
     _riderPickUpLon = 0.0;
     _riderDestinationLat = 0.0;
     _riderDestinationLon = 0.0;
     _tripId = '';
     _tripLat = '';
-    _tripLng ='';
+    _tripLng = '';
     _driverId = '';
     _paymentMethod = '';
     _rideRequests = [];
