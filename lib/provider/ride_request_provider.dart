@@ -35,39 +35,36 @@ class RideRequestProvider with ChangeNotifier {
 
   ///updating driver online status
   updateDriverStatus(BuildContext context,String id, bool availability) async {
-    await _socketService.driverOnlineStatus(
-      id: id,
-      availability: availability,
-    );
-    notifyListeners();
+    await _socketService.driverOnlineStatus(id: id,availability: availability);
     print('this is the status $availability');
     print('this is the id $id');
     var onlineResponse = await _socketService.listenForSuccess();
-    if (onlineResponse == 'You are now available' || onlineResponse == 'You are now unavailable') {
+    if (onlineResponse == 'You are now available'
+        || onlineResponse == 'You are now unavailable') {
       isActiveNotifier.value = availability; // Update isActiveNotifier value
-      // notifyListeners();
+      notifyListeners();
     }
-    if(onlineResponse == 'You are now available'){
-      return Fluttertoast.showToast(
-        fontSize: 18,
-        toastLength: Toast.LENGTH_LONG,
-        backgroundColor: Colors.black.withOpacity(0.7),
-        msg: 'You are now available',
-        gravity: ToastGravity.BOTTOM,
-        textColor: Colors.white);
-    }
-    else if(onlineResponse == 'You are now unavailable'){
-      return Fluttertoast.showToast(
-          fontSize: 18,
-          toastLength: Toast.LENGTH_LONG,
-          backgroundColor: Colors.black.withOpacity(0.7),
-          msg: 'You are now unavailable',
-          gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white);
-
-    }
-
-
+    notifyListeners();
+    // if(onlineResponse == 'You are now available'){
+    //   return Fluttertoast.showToast(
+    //     fontSize: 18,
+    //     toastLength: Toast.LENGTH_LONG,
+    //     backgroundColor: Colors.black.withOpacity(0.7),
+    //     msg: 'You are now available',
+    //     gravity: ToastGravity.BOTTOM,
+    //     textColor: Colors.white);
+    // }
+    // else if(onlineResponse == 'You are now unavailable'){
+    //   return Fluttertoast.showToast(
+    //       fontSize: 18,
+    //       toastLength: Toast.LENGTH_LONG,
+    //       backgroundColor: Colors.black.withOpacity(0.7),
+    //       msg: 'You are now unavailable',
+    //       gravity: ToastGravity.BOTTOM,
+    //       textColor: Colors.white);
+    //
+    // }
+    //
   }
 
   /// trip request
