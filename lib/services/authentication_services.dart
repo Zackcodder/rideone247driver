@@ -12,7 +12,7 @@ class AuthService {
         'Content-Type': 'application/json',
       };
       var response = await https.post(
-        Uri.parse('$baseUrl/api/users/login/driver'),
+        Uri.parse('$baseUrl/api/drivers/login'),
         body: jsonEncode({'loginId': email, 'password': password}),
         headers: headers,
       );

@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-import '../provider/authprovider.dart';
 import 'geo_locator_service.dart';
-import 'dart:convert' as convert;
-import 'socket_service.dart'; // Import the SocketService class
+import 'socket_service.dart';
 
 class DriverService {
   final GeoLocationService _geoLocationService = GeoLocationService();
@@ -29,7 +25,7 @@ class DriverService {
    startLocationUpdates() {
     /// Start a repeating timer that calls the updateLocation method every 5 seconds.
     locationUpdateTimer =
-        Timer.periodic(const Duration(seconds: 62), (timer) {
+        Timer.periodic(const Duration(seconds: 60), (timer) {
           updateDriverLiveStatus();
           updateLocation();
         });
@@ -43,16 +39,24 @@ class DriverService {
   /// Update location using socket
    updateLocation() async {
     final position = await _geoLocationService.getCurrentPosition(asPosition: false);
+
+    // String? id = Provider.of<AuthProvider>(context, listen: false).id;
+    // _socketService.socket.emit("UPDATE_LOCATION", {
+    //   'id': id,
+    //   'role': 'DRIVER',
+    //   lat: position[0].toString(),
+    //   lon: position[1].toString(),
+    // });
     _socketService.updateLocation(
       id:
       //id!,
-      // driverId,
       '65aa5dbab2e8f20021fcac83', // Provide the driver ID
       role: 'DRIVER',
       lat: position[0].toString(),
       lon: position[1].toString(),
     );
-     // print('ID: $id');
+     print('this is from the driver service class');
+     print('Driver Id: $id');
      print('Latitude: ${position[0]}');
      print('Longitude: ${position[1]}');
      _socketService.driverLocationUpdate();
