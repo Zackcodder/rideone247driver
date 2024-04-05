@@ -71,9 +71,9 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
                 create: (context) =>
                     RideRequestProvider(initialToken ?? '', initialId ?? '')),
-            ChangeNotifierProvider(
-                create: (context) =>
-                    DriverProvider(initialToken ?? '', initialId ?? '')),
+            // ChangeNotifierProvider(
+            //     create: (context) =>
+            //         DriverProvider(initialToken ?? '', initialId ?? '')),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

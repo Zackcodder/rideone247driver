@@ -58,12 +58,20 @@ class SocketService {
       'role': role,
       'lat': lat,
       'lon': lon,
-    });
+    }
+    );
+    print('this is from the driver socket location class');
+    print('ID: $id');
+    print('driver role in socket: $role');
+    print('Latitude: $lat');
+    print('Longitude: $lon');
+    driverLocationUpdate();
   }
 
   ///Driver location update response
   driverLocationUpdate() {
     socket.on("DRIVER_LOCATION_UPDATED", (data) {
+      print('this is the result from the driver location $data');
       print(data);
     });
   }

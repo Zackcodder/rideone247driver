@@ -1,8 +1,8 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:ride_on_driver/model/login_model.dart';
 import 'package:ride_on_driver/model/signup_model.dart';
+import 'package:ride_on_driver/provider/driver_provider.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/services/authentication_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,17 +90,17 @@ class AuthProvider with ChangeNotifier {
       print(responseData);
       if (loginResponse.message == 'success') {
         print('data gotten');
-        _driverName = loginResponse.data.userDetails.firstName;
+        _driverName = loginResponse.data.driver.firstName;
         print(' driver name $_driverName');
-        _driverEmail = loginResponse.data.userDetails.email;
+        _driverEmail = loginResponse.data.driver.email;
         print(_driverEmail);
-        _driverLastName = loginResponse.data.userDetails.lastName;
+        _driverLastName = loginResponse.data.driver.lastName;
         print(_driverLastName);
-        _walletBalance = loginResponse.data.userDetails.walletBalance;
+        _walletBalance = loginResponse.data.driver.walletBalance;
         print('driver wallet balance $_walletBalance');
         _token = loginResponse.data.token;
         print(_token);
-        _id = loginResponse.data.userDetails.id;
+        _id = loginResponse.data.driver.id;
         print('driver id $_id');
         // _driverImage = loginResponse.data.userDetails.image;
         // print('driver id $_driverImage');
@@ -112,21 +112,23 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
         _signInLoading = false;
         //navigate to home page
-        if(_driverName !=null && _driverLastName != null &&_driverEmail!=null &&_token!=null && _walletBalance!=null && _id!=null)
-        Future.delayed(Duration.zero, () {
+        if(_driverName !=null && _driverLastName != null &&_driverEmail!=null &&_token!=null && _walletBalance!=null && _id!=null) {
+          Future.delayed(Duration.zero, () {
           /// Authenticate the socket connection
           _socketService.authenticate();
 
           /// Start location updates when user logs in
           _driverService.startLocationUpdates();
 
-          ///startdriver status
+
+          ///start driver status
           // _socketService.driverOnlineStatus(id: _id!, availability: true);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         });
+        }
       } else {
         _signInLoading = false;
         notifyListeners();

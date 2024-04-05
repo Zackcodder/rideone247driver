@@ -11,6 +11,7 @@ import 'package:ride_on_driver/provider/driver_provider.dart';
 import 'package:ride_on_driver/screens/active_trip_detail_view.dart';
 import 'package:ride_on_driver/screens/profile_screen.dart';
 import 'package:ride_on_driver/screens/requests_view.dart';
+import 'package:ride_on_driver/services/driver_services.dart';
 import 'package:ride_on_driver/widgets/app_logo.dart';
 import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
@@ -49,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen>
       _id = prefs.getString('id');
     });
   }
+  DriverService _driverService = DriverService();
 
 
   @override
@@ -57,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen>
     loadDriverDataFromSharedPreference();
     WidgetsBinding.instance.addObserver(this);
     currentTabNotifier = ValueNotifier(tabs.first);
+    _driverService.startLocationUpdates();
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
     _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.updateDriverStatus(context, _id ??'', isActiveNotifier.value);
