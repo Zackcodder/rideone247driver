@@ -34,17 +34,17 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
             width: 40.w,
           ).clip(radius: 100),
         ),
-        actions: [
-          ValueListenableBuilder(
-              valueListenable: isActiveNotifier,
-              builder: (context, isActive, _) {
-                return CustomSwitch(
-                  value: isActive,
-                  onChanged: (value) => isActiveNotifier.value = value,
-                );
-              }),
-          const HorizontalSpacing(10),
-        ],
+        // actions: [
+        //   ValueListenableBuilder(
+        //       valueListenable: isActiveNotifier,
+        //       builder: (context, isActive, _) {
+        //         return CustomSwitch(
+        //           value: isActive,
+        //           onChanged: (value) => isActiveNotifier.value = value,
+        //         );
+        //       }),
+        //   const HorizontalSpacing(10),
+        // ],
       ),
       body: Center(
         child: Column(

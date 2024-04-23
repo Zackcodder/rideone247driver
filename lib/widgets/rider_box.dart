@@ -197,6 +197,7 @@ class _RiderBoxState extends State<RiderBox>
                 context,
                 MaterialPageRoute(builder: (context) => const HomeScreen()),
               );
+              setState(() {});
             },
             text: 'Start Trip',
           ),

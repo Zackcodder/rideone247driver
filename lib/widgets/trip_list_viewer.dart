@@ -84,12 +84,12 @@ class _TripListViewerState extends State<TripListViewer> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              trip.paymentMethod,
+                              trip.riderPickUpName,
                               style: context.textTheme.bodySmall,
                             ),
                             const VerticalSpacing(10),
                             Text(
-                              trip.driverId,
+                              trip.riderDestinationName,
                               style: context.textTheme.bodySmall,
                             ),
                           ],

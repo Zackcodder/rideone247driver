@@ -135,6 +135,10 @@ class RideRequestProvider with ChangeNotifier {
   double? _riderDestinationLat;
   double? get riderDestinationLon => _riderDestinationLon;
   double? _riderDestinationLon;
+  String? _riderPickUpLocationName;
+  String? get riderPickUpLocationName => _riderPickUpLocationName;
+  String? _riderDestinationLocationName;
+  String? get riderDestinationLocationName => _riderDestinationLocationName;
 
   acceptRideRequest(String id, String lon, String lat, String tripId) async {
     print('starting accetp trip in provider');
@@ -221,9 +225,9 @@ class RideRequestProvider with ChangeNotifier {
   endRiderTrip(String id, String tripId) async {
     print('ending trip from provider');
     _socketService.endTrip(id: id, tripId: tripId);
-    print('printing the success response for end trip in provider');
+    print('printing the success response for end trip in provider $id');
     _socketService.listenForTripEnd();
-    print('printing the error response for end trip in provider');
+    print('printing the error response for end trip in provider $tripId');
     _socketService.listenForError();
     notifyListeners();
   }
@@ -392,12 +396,22 @@ class RideRequestProvider with ChangeNotifier {
     );
 
     if (directionsResponse != null) {
+      print('Directions Response: $directionsResponse');
       if (directionsResponse == null) {
         print('The plotting is not working');
-      } else if (directionsResponse.isNotEmpty) {
+      }
+      else if (directionsResponse.isNotEmpty &&directionsResponse.containsKey('routes') && directionsResponse['routes'].isNotEmpty) {
+        var route = directionsResponse['routes'][0];
+        print('Route: $route');
+        if (route.containsKey('overview_polyline')) {
+          var overviewPolyline = route['overview_polyline'];
+          print('Overview Polyline: $overviewPolyline');
+          var points = overviewPolyline['points'];
+          print('Points: $points');}
         /// Extract polyline coordinates from the directions response
         final List pointLatLngList = _polylinePointService.decodePolyPoints(
           directionsResponse['routes'][0]['overview_polyline']['points'],
+
         );
 
         /// Convert List<PointLatLng> to List<LatLng>
@@ -467,8 +481,11 @@ class RideRequestProvider with ChangeNotifier {
         print('this is the time fro the rider trip: $_tripEtaTimer');
         print('this is the distance to the rider destination: $_tripDistance');
         notifyListeners();
-      } else {}
-    } else {}
+      }
+      else {
+        print('No routes in directions response');}
+    } else {
+      print('Directions response is null');}
   }
 
   ///refresh connect rider code

@@ -7,8 +7,8 @@ class MapService {
   static String mapKey = 'AIzaSyB4CbrtiWbGJoVp4D9eAgV9boaAI0kkCwA';
 
   Future getDirections({
-    required List pickup, // [latitude,longitude]
-    required List destination, // [latitude,longitude]
+    required List<double> pickup, // [latitude,longitude]
+    required List<double> destination, // [latitude,longitude]
   }) async {
     final api =
         "https://maps.googleapis.com/maps/api/directions/json?origin=${pickup[0]},${pickup[1]}&destination=${destination[0]},${destination[1]}&mode=driving&key=$mapKey";

@@ -17,6 +17,8 @@ class Trip {
   final String riderTripId;
   final double riderPickupLon;
   final double riderPickupLat;
+  final String riderPickUpName;
+  final String riderDestinationName;
   final double riderDropOffLat;
   final double riderDropOffLon;
   final String riderPaymentMethod;
@@ -40,9 +42,11 @@ class Trip {
     required this.riderName,
     required this.riderDropOffLat,
     required this.riderDropOffLon,
+    required this.riderDestinationName,
     required this.riderPaymentMethod,
     required this.riderPickupLat,
     required this.riderPickupLon,
+    required this.riderPickUpName,
     required this.riderTripId,
   });
 
@@ -52,13 +56,15 @@ class Trip {
       tripId: json['tripId'] ?? '',
       start: json['start'] ?? '',
       end: json['end'] ?? '',
-      cost: json['cost'] ?? 0,
+      cost: json['fare'] ?? 0,
       rating: json['rating'] ?? 0.0,
       date: json['date'] ?? '',
       pickUpLon: json['pickUpLon'] ?? 0.0,
       pickUpLat: json['pickUpLat'] ?? 0.0,
+      riderPickUpName: json['pickOff'] ?? '',
       dropOffLon: json['dropOffLon'] ?? 0.0,
       dropOffLat: json['dropOffLat'] ?? 0.0,
+      riderDestinationName: json['dropOff'] ?? '',
       paymentMethod: json['paymentMethod'] ?? '',
       riderId: json['riderId'] ?? '',
       driverId: json['driverId'] ?? '',
