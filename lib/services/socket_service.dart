@@ -9,7 +9,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../model/trip.dart';
 
 class SocketService {
-  final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
+  final String baseUrl = 'https://rideon247-production.up.railway.app';
   static final SocketService _singleton = SocketService._internal();
 
   String? _token;
@@ -88,29 +88,35 @@ class SocketService {
   }
 
   ///listen for ride request
-  Future<Trip?> listenForRideRequest() async {
+  listenForRideRequest(){
     print('listening for trip request');
-    Completer<Trip?> completer = Completer<Trip?>();
     socket.on("RIDE_REQUEST", (data) {
-      print('Received Ride Request: $data');
-
-      try {
-        // Parse the JSON data into a Dart map
-        Map<String, dynamic> rideRequest = json.decode(data);
-
-        // Create a Trip object from the parsed data
-        Trip newRequest = Trip.fromJson(rideRequest);
-
-        // Complete the Future with the Trip object
-        completer.complete(newRequest);
-      } catch (e) {
-        // Handle any errors during parsing
-        completer.completeError(e);
-      }
+      print('trip request data $data');
     });
-
-    return completer.future;
   }
+  // Future<Trip?> listenForRideRequest() async {
+  //   print('listening for trip request');
+  //   Completer<Trip?> completer = Completer<Trip?>();
+  //   socket.on("RIDE_REQUEST", (data) {
+  //     print('Received Ride Request: $data');
+  //
+  //     try {
+  //       // Parse the JSON data into a Dart map
+  //       Map<String, dynamic> rideRequest = json.decode(data);
+  //
+  //       // Create a Trip object from the parsed data
+  //       Trip newRequest = Trip.fromJson(rideRequest);
+  //
+  //       // Complete the Future with the Trip object
+  //       completer.complete(newRequest);
+  //     } catch (e) {
+  //       // Handle any errors during parsing
+  //       completer.completeError(e);
+  //     }
+  //   });
+  //
+  //   return completer.future;
+  // }
 
   acceptRide({required String id, required String lon, required String lat, required String tripId}) {
     print('starting accetp trip in socket');

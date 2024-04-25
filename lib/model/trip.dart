@@ -61,7 +61,7 @@ class Trip {
       date: json['date'] ?? '',
       pickUpLon: json['pickUpLon'] ?? 0.0,
       pickUpLat: json['pickUpLat'] ?? 0.0,
-      riderPickUpName: json['pickOff'] ?? '',
+      riderPickUpName: json['pickUp'] ?? '',
       dropOffLon: json['dropOffLon'] ?? 0.0,
       dropOffLat: json['dropOffLat'] ?? 0.0,
       riderDestinationName: json['dropOff'] ?? '',

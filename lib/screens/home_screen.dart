@@ -63,7 +63,12 @@ class _HomeScreenState extends State<HomeScreen>
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
     _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.updateDriverStatus(context, _id ??'', isActiveNotifier.value);
+    _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
        }
+
+
+
+
 
   @override
   didChangeAppLifecycleState(AppLifecycleState state) {
