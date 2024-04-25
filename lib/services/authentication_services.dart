@@ -4,7 +4,7 @@ import 'package:http/http.dart' as https;
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthService {
-  final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
+  final String baseUrl = 'https://rideon247-production.up.railway.app';
   //login function
   signIn(String email, String password) async {
     try {

@@ -6,7 +6,7 @@ import 'socket_service.dart';
 class DriverService {
   final GeoLocationService _geoLocationService = GeoLocationService();
   final SocketService _socketService = SocketService();
-  final String baseUrl = 'https://rideon247endpoints-uqexm.ondigitalocean.app';
+  final String baseUrl = 'https://rideon247-production.up.railway.app';
 
 
   updateDriverLiveStatus() async {

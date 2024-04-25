@@ -16,7 +16,7 @@ import '../services/map_service.dart';
 import '../services/socket_service.dart';
 
 class RideRequestProvider with ChangeNotifier {
-  bool _rideRequestLoading = false;
+ final bool _rideRequestLoading = false;
   bool get rideRequestLoading => _rideRequestLoading;
 
   final SocketService _socketService = SocketService();
@@ -33,8 +33,8 @@ class RideRequestProvider with ChangeNotifier {
   List<Trip> _rideRequests = [];
   List<Trip> get rideRequests => _rideRequests;
   bool get hasRideRequests => _rideRequests.isNotEmpty;
-  bool _Online = false;
-  bool get Online => _Online;
+  final bool _onLine = false;
+  bool get onLine => _onLine;
 
   ///updating driver online status
   updateDriverStatus(BuildContext context, String id, bool availability) async {
@@ -82,19 +82,62 @@ class RideRequestProvider with ChangeNotifier {
   String? _tripLng;
   String? get driverId => _driverId;
   String? _driverId;
+  int? _tripCost;
+  int? get tripCost => _tripCost;
   String? get paymentMethod => _paymentMethod;
   String? _paymentMethod;
+  double get tripRequestSheetHeight =>_tripRequestSheetHeight;
+  double _tripRequestSheetHeight = 0;
+  // listenForRideRequests() async {
+  //   print('starting another wahala ');
+  //
+  //   try {
+  //     /// Listen for ride requests and handle them
+  //     Trip? newRequest = await _socketService.listenForRideRequest();
+  //
+  //     if (newRequest != null) {
+  //       // Handle the ride request data, for example, add it to a list
+  //       _rideRequests.add(newRequest);
+  //       _tripId = newRequest.tripId;
+  //       _tripLat = newRequest.dropOffLon.toString();
+  //       _tripLng = newRequest.pickUpLat.toString();
+  //       _driverId = newRequest.driverId;
+  //       _paymentMethod = newRequest.paymentMethod;
+  //       print('this is a trip lat: ${newRequest.dropOffLon}');
+  //       print('this is a trip lng: ${newRequest.pickUpLat}');
+  //       print('this is a trip id: ${newRequest.tripId}');
+  //       print('this is a driver id: ${newRequest.driverId}');
+  //       print('this is a trip payment method: ${newRequest.paymentMethod}');
+  //       _tripRequestSheetHeight = 240;
+  //
+  //       // Notify listeners that the ride requests list has been updated
+  //       notifyListeners();
+  //       return;
+  //     } else {
+  //       print('hahahaha i have catch u');
+  //     }
+  //   } catch (e) {
+  //     // Handle any errors
+  //     print('Error processing ride request data: $e');
+  //   }
+  // }
 
-  listenForRideRequests() async {
-    print('starting another wahala ');
-
-    try {
-      /// Listen for ride requests and handle them
+  ///
+  /// to get the esitimate cost for trip response
+  listenForRideRequests() async{
+    // try {
       Trip? newRequest = await _socketService.listenForRideRequest();
+      // Trip.fromJson(responseData);
 
+      try{
       if (newRequest != null) {
         // Handle the ride request data, for example, add it to a list
+
         _rideRequests.add(newRequest);
+        _riderName = newRequest.riderName;
+        _riderPickUpLocationName = newRequest.riderDestinationName;
+        _riderDestinationLocationName = newRequest.riderDestinationName;
+        _tripCost = newRequest.cost;
         _tripId = newRequest.tripId;
         _tripLat = newRequest.dropOffLon.toString();
         _tripLng = newRequest.pickUpLat.toString();
@@ -105,18 +148,21 @@ class RideRequestProvider with ChangeNotifier {
         print('this is a trip id: ${newRequest.tripId}');
         print('this is a driver id: ${newRequest.driverId}');
         print('this is a trip payment method: ${newRequest.paymentMethod}');
+        _tripRequestSheetHeight = 240;
 
         // Notify listeners that the ride requests list has been updated
         notifyListeners();
-        return;
-      } else {
+        // return;
+      }
+      else {
         print('hahahaha i have catch u');
       }
-    } catch (e) {
-      // Handle any errors
-      print('Error processing ride request data: $e');
+      notifyListeners();
+    } catch (error) {
+      print('Error getting trip request: $error');
     }
   }
+  ///
 
   ///accept rider request
   List<Trip> _rideAcceptedRequests = [];
@@ -143,8 +189,7 @@ class RideRequestProvider with ChangeNotifier {
   acceptRideRequest(String id, String lon, String lat, String tripId) async {
     print('starting accetp trip in provider');
     await _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
-    // acceptRideRequestResponse();
-    // _socketService.listenForError();
+    _tripRequestSheetHeight=0;
     notifyListeners();
   }
 
@@ -164,6 +209,12 @@ class RideRequestProvider with ChangeNotifier {
         _riderPickUpLon = newAcceptedRequest.riderPickupLon;
         _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
         _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
+
+        print('this is a rider name: ${newAcceptedRequest.riderName}');
+        print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');
+        print('this is a rider trip id: ${newAcceptedRequest.riderTripId}');
+        print(
+            'this is a rider payment method: ${newAcceptedRequest.riderPaymentMethod}');
         // displayDirectionsToPickup(imageConfiguration);
         // Notify listeners that the ride requests list has been updated
         // Get location names for pickup and destination
@@ -179,11 +230,6 @@ class RideRequestProvider with ChangeNotifier {
         notifyListeners();
         return;
 
-        print('this is a rider name: ${newAcceptedRequest.riderName}');
-        print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');
-        print('this is a rider trip id: ${newAcceptedRequest.riderTripId}');
-        print(
-            'this is a rider payment method: ${newAcceptedRequest.riderPaymentMethod}');
       }
     } catch (e) {
       // Handle any errors
@@ -532,7 +578,7 @@ class RideRequestProvider with ChangeNotifier {
     _riderPickUpLat = 0.0;
     _googleMapService.clearPolyLines();
     _googleMapService.clearPolyLineCoordinate();
-    listenForRideRequests();
+    // listenForRideRequests();
     notifyListeners();
   }
 }
