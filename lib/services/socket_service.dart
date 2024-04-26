@@ -33,6 +33,8 @@ class SocketService {
       print('this is the token gotten: $_token');
 
       socket.connect();
+      listenForRideRequest();
+      acceptRideRespond();
       print('socket working');
     } catch (e) {
       print("Error initializing socket: $e");
@@ -42,6 +44,8 @@ class SocketService {
 
   void disconnectSocket() {
     socket.disconnect();
+    _acceptedRequestController.close();
+    _rideRequestController.close();
   }
 
   authenticate() {
@@ -88,35 +92,40 @@ class SocketService {
   }
 
   ///listen for ride request
-  listenForRideRequest(){
+  // listenForRideRequest(){
+  //   print('listening for trip request');
+  //   socket.on("RIDE_REQUEST", (data) {
+  //     print('trip request data $data');
+  //   });
+  // }
+  ///
+
+  StreamController<Trip> _rideRequestController = StreamController<Trip>.broadcast();
+
+  Stream<Trip> get rideRequestStream => _rideRequestController.stream;
+
+  void listenForRideRequest() {
     print('listening for trip request');
     socket.on("RIDE_REQUEST", (data) {
-      print('trip request data $data');
+      print('Received Ride Request: $data');
+
+      try {
+        // Parse the JSON data into a Dart map
+        Map<String, dynamic> rideRequest = json.decode(data);
+
+        // Create a Trip object from the parsed data
+        Trip newRequest = Trip.fromJson(rideRequest);
+
+        // Add the new request to the stream
+        _rideRequestController.add(newRequest);
+      } catch (e) {
+        // Handle any errors during parsing
+        print('Error parsing ride request: $e');
+      }
     });
   }
-  // Future<Trip?> listenForRideRequest() async {
-  //   print('listening for trip request');
-  //   Completer<Trip?> completer = Completer<Trip?>();
-  //   socket.on("RIDE_REQUEST", (data) {
-  //     print('Received Ride Request: $data');
-  //
-  //     try {
-  //       // Parse the JSON data into a Dart map
-  //       Map<String, dynamic> rideRequest = json.decode(data);
-  //
-  //       // Create a Trip object from the parsed data
-  //       Trip newRequest = Trip.fromJson(rideRequest);
-  //
-  //       // Complete the Future with the Trip object
-  //       completer.complete(newRequest);
-  //     } catch (e) {
-  //       // Handle any errors during parsing
-  //       completer.completeError(e);
-  //     }
-  //   });
-  //
-  //   return completer.future;
-  // }
+
+  ///
 
   acceptRide({required String id, required String lon, required String lat, required String tripId}) {
     print('starting accetp trip in socket');
@@ -131,40 +140,63 @@ class SocketService {
     // print('printing error response in socket');
     // listenForError();
   }
+  ///accept trip request
+  ///
+  StreamController<Trip> _acceptedRequestController = StreamController<Trip>.broadcast();
 
-  Future<Trip?> acceptRideRespond() async {
-    print('Printing the acceptance response from the socket');
-    Completer<Trip?> completer1 = Completer<Trip?>();
+  Stream<Trip> get acceptedRequestStream => _acceptedRequestController.stream;
+
+  acceptRideRespond() {
+    print('listening for accepted ride request');
     socket.on("ACCEPTED_REQUEST", (data) {
-      print('result from acceptance');
-      print(data);
+      print('Received Accepted Ride Request: $data');
+
       try {
-        /// Parse the JSON data into a Dart map
+        // Parse the JSON data into a Dart map
         Map<String, dynamic> acceptedRideRequest = json.decode(data);
 
-        /// Create a Trip object from the parsed data
-        Trip newAcceptedRideRequest = Trip.fromJson(acceptedRideRequest);
+        // Create a Trip object from the parsed data
+        Trip newAcceptedRequest = Trip.fromJson(acceptedRideRequest);
 
-        /// Complete the Future with the Trip object
-        completer1.complete(newAcceptedRideRequest);
+        // Add the new accepted request to the stream
+        _acceptedRequestController.add(newAcceptedRequest);
       } catch (e) {
-        /// Handle any errors during parsing
-        completer1.completeError(e);
+        // Handle any errors during parsing
+        print('Error parsing accepted ride request: $e');
       }
     });
-
-    return completer1.future;
   }
+
+  ///
+  // Future<Trip?> acceptRideRespond() async {
+  //   print('Printing the acceptance response from the socket');
+  //   Completer<Trip?> completer1 = Completer<Trip?>();
+  //   socket.on("ACCEPTED_REQUEST", (data) {
+  //     print('result from acceptance');
+  //     print(data);
+  //     try {
+  //       /// Parse the JSON data into a Dart map
+  //       Map<String, dynamic> acceptedRideRequest = json.decode(data);
+  //
+  //       /// Create a Trip object from the parsed data
+  //       Trip newAcceptedRideRequest = Trip.fromJson(acceptedRideRequest);
+  //
+  //       /// Complete the Future with the Trip object
+  //       completer1.complete(newAcceptedRideRequest);
+  //     } catch (e) {
+  //       /// Handle any errors during parsing
+  //       completer1.completeError(e);
+  //     }
+  //   });
+  //
+  //   return completer1.future;
+  // }
 
   startTrip({required String id, required String tripId}) {
     print('starting trip in socket');
     socket.emit("START_TRIP", {
-      'id':
-          // '65aa5dbab2e8f20021fcac83',
-          id,
-      'tripId':
-          // '9653b8ed-16f2-4416-8ba8-1ed46abe0b0d',
-          tripId,
+      'id': id,
+      'tripId': tripId,
     });
     print('response of started trip in socket');
     listenForSuccess();
@@ -173,12 +205,8 @@ class SocketService {
   endTrip({required String id, required String tripId}) {
     print('sending ending trip in socket');
     socket.emit("END_TRIP", {
-      'id':
-          // '65aa5dbab2e8f20021fcac83',
-          id,
-      'tripId':
-          // '8924a142-6963-4386-a9bc-67ef8289acf5'
-          tripId,
+      'id': id,
+      'tripId': tripId,
     });
     listenForTripEnd();
   }
@@ -198,48 +226,6 @@ class SocketService {
       print("success data fromm socket: $data");
     });
   }
-
-  // Create a single completer
-  // Completer<dynamic>? _completer;
-  // Method to listen for "SUCCESS" event
-  // Future<dynamic> listenForSuccess() {
-  //   print("listening for success");
-  //
-  //   // Only create the completer if it hasn't been created yet
-  //   _completer ??= Completer<dynamic>();
-  //
-  //   // Only register the event listener if it hasn't been registered yet
-  //   if (!_completer!.isCompleted) {
-  //     // Define a callback function to handle the SUCCESS event
-  //     void successHandler(data) {
-  //       print(data);
-  //       // Resolve the completer with the received data
-  //       _completer!.complete(data);
-  //     }
-  //
-  //     // Register the event listener for the SUCCESS event
-  //     socket.on("SUCCESS", successHandler);
-  //   }
-  //
-  //   // Return the future from the completer
-  //   return _completer!.future;
-  // }
-  // Future<dynamic> listenForSuccess() {
-  //   print("listening for success");
-  //
-  //   Completer<dynamic> completer = Completer<dynamic>();
-  //   socket.on("SUCCESS", (data) {
-  //     print(data);
-  //     // Resolve the completer with the received data
-  //     completer.complete(data);
-  //
-  //     // print("sucess getting trip data: $data");
-  //     // Handle success as needed
-  //   });
-  //
-  //   // Return the future from the completer
-  //   return completer.future;
-  // }
 
   listenForError() {
     socket.on("ERROR", (data) {
