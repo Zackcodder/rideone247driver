@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
-import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/provider/ride_request_provider.dart';
 import 'package:ride_on_driver/screens/chat_screen.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
-import 'package:ride_on_driver/screens/trips_view.dart';
 import 'package:ride_on_driver/widgets/currency_widget.dart';
 import 'package:ride_on_driver/widgets/icon_text_button.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 
-import '../screens/active_trip_detail_view.dart';
 import 'app_elevated_button.dart';
 import 'custom_tabbar.dart';
 

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
@@ -109,6 +108,7 @@ class RideRequestProvider with ChangeNotifier {
        _paymentMethod = newRequest.paymentMethod;
 
        _tripRequestSheetHeight = 250;
+       _acceptedTripRequestSheetHeight =0;
 
        // Notify listeners that the ride requests list has been updated
        notifyListeners();
@@ -138,6 +138,10 @@ class RideRequestProvider with ChangeNotifier {
   String? get riderPickUpLocationName => _riderPickUpLocationName;
   String? _riderDestinationLocationName;
   String? get riderDestinationLocationName => _riderDestinationLocationName;
+ bool _acceptedNewTripRequest = false;
+ bool get acceptedNewTripRequest => _acceptedNewTripRequest;
+ double get acceptedTripRequestSheetHeight =>_acceptedTripRequestSheetHeight;
+ double _acceptedTripRequestSheetHeight = 0;
 
   acceptRideRequest(String id, String lon, String lat, String tripId) async {
     print('starting accetp trip in provider');
@@ -150,6 +154,7 @@ class RideRequestProvider with ChangeNotifier {
  acceptRideRequestResponse() async{
    _socketService.acceptedRequestStream.listen((newAcceptedRequest) {
      if (newAcceptedRequest != null) {
+       _acceptedNewTripRequest = true;
        // Handle the accepted ride request data
        _rideAcceptedRequests.add(newAcceptedRequest);
        _riderName = newAcceptedRequest.riderName;
@@ -159,6 +164,9 @@ class RideRequestProvider with ChangeNotifier {
        _riderPickUpLon = newAcceptedRequest.riderPickupLon;
        _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
        _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
+       _acceptedTripRequestSheetHeight =200;
+
+       _tripRequestSheetHeight = 0;
 
        print('this is a rider name: ${newAcceptedRequest.riderName}');
        print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');
@@ -170,7 +178,7 @@ class RideRequestProvider with ChangeNotifier {
    });
  }
 
-  
+
   ///start trip
   startRide(String id, String tripId) async {
     print('starting ride in provider');
@@ -491,7 +499,7 @@ class RideRequestProvider with ChangeNotifier {
     _riderPickUpLat = 0.0;
     _googleMapService.clearPolyLines();
     _googleMapService.clearPolyLineCoordinate();
-    // listenForRideRequests();
+    listenForRideRequests();
     notifyListeners();
   }
 }
