@@ -3,9 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
-import 'package:ride_on_driver/dummy_data/active_trips.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
-import 'package:ride_on_driver/widgets/trip_card.dart';
 
 import '../core/constants/colors.dart';
 import '../core/painters_clippers/vertical_dot_line.dart';
