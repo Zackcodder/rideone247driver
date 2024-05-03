@@ -5,6 +5,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
 import 'package:ride_on_driver/services/polyline_point_service.dart';
 
@@ -30,8 +31,6 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Trip> _rideRequests = [];
-  List<Trip> get rideRequests => _rideRequests;
   bool get hasRideRequests => _rideRequests.isNotEmpty;
   final bool _onLine = false;
   bool get onLine => _onLine;
@@ -39,37 +38,42 @@ class RideRequestProvider with ChangeNotifier {
   ///updating driver online status
   updateDriverStatus(BuildContext context, String id, bool availability) async {
     await _socketService.driverOnlineStatus(id: id, availability: availability);
-    print('this is the status $availability');
-    print('this is the id $id');
-    // var onlineResponse = await _socketService.listenForSuccess();
-    // if (onlineResponse == 'You are now available'
-    //     || onlineResponse == 'You are now unavailable') {
-    //   isActiveNotifier.value = availability; // Update isActiveNotifier value
-    //   notifyListeners();
-    // }
-    isActiveNotifier.value = availability;
+    // print('this is the status $availability');
+    // print('this is the id $id');
+    // isActiveNotifier.value = availability;
+    driverOnlineStatus();
     notifyListeners();
-    // if(onlineResponse == 'You are now available'){
-    //   return Fluttertoast.showToast(
-    //     fontSize: 18,
-    //     toastLength: Toast.LENGTH_LONG,
-    //     backgroundColor: Colors.black.withOpacity(0.7),
-    //     msg: 'You are now available',
-    //     gravity: ToastGravity.BOTTOM,
-    //     textColor: Colors.white);
-    // }
-    // else if(onlineResponse == 'You are now unavailable'){
-    //   return Fluttertoast.showToast(
-    //       fontSize: 18,
-    //       toastLength: Toast.LENGTH_LONG,
-    //       backgroundColor: Colors.black.withOpacity(0.7),
-    //       msg: 'You are now unavailable',
-    //       gravity: ToastGravity.BOTTOM,
-    //       textColor: Colors.white);
-    //
-    // }
-    //
+
   }
+
+ ///listen for driver updated status
+ driverOnlineStatus() async{
+   print('Driver status:');
+   _socketService.listenForSuccess();
+   _socketService.socket.on('SUCCESS', (data) {
+     print('Driver status: $data');
+     // Check if the data contains the success message
+     if (data == 'You are now available') {
+       return Fluttertoast.showToast(
+           fontSize: 18,
+           toastLength: Toast.LENGTH_SHORT,
+           backgroundColor: AppColors.green.withOpacity(0.7),
+           msg: data,
+           gravity: ToastGravity.TOP,
+           textColor: AppColors.black);
+     } else {
+       print('error from driver online status: $data');
+        Fluttertoast.showToast(
+           fontSize: 18,
+           toastLength: Toast.LENGTH_SHORT,
+           backgroundColor: Colors.red.withOpacity(0.7),
+           msg: data,
+           gravity: ToastGravity.TOP,
+           textColor: Colors.white);
+     }
+     notifyListeners();
+   });
+ }
 
   /// trip request
   Timer? checkForRideRequestTimer;
@@ -90,12 +94,16 @@ class RideRequestProvider with ChangeNotifier {
   double _tripRequestSheetHeight = 0;
   bool _newTripRequest = false;
   bool get newTripRequest => _newTripRequest;
+  List<Trip> _rideRequests = [];
+  List<Trip> get rideRequests => _rideRequests;
 
   ///
  listenForRideRequests() {
    _socketService.rideRequestStream.listen((newRequest) {
      if (newRequest != null) {
        _newTripRequest = true;
+       _tripRequestSheetHeight = 250;
+       _acceptedTripRequestSheetHeight =0;
        _rideRequests.add(newRequest);
        _riderName = newRequest.riderName;
        _riderPickUpLocationName = newRequest.riderPickUpName;
@@ -106,11 +114,6 @@ class RideRequestProvider with ChangeNotifier {
        _tripLng = newRequest.pickUpLat.toString();
        _driverId = newRequest.driverId;
        _paymentMethod = newRequest.paymentMethod;
-
-       _tripRequestSheetHeight = 250;
-       _acceptedTripRequestSheetHeight =0;
-
-       // Notify listeners that the ride requests list has been updated
        notifyListeners();
      }
    });
@@ -144,9 +147,8 @@ class RideRequestProvider with ChangeNotifier {
  double _acceptedTripRequestSheetHeight = 0;
 
   acceptRideRequest(String id, String lon, String lat, String tripId) async {
-    print('starting accetp trip in provider');
+    print('starting accept trip in provider');
     await _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
-    _tripRequestSheetHeight=0;
     notifyListeners();
   }
   ///accept trip request
@@ -155,7 +157,8 @@ class RideRequestProvider with ChangeNotifier {
    _socketService.acceptedRequestStream.listen((newAcceptedRequest) {
      if (newAcceptedRequest != null) {
        _acceptedNewTripRequest = true;
-       // Handle the accepted ride request data
+       _tripRequestSheetHeight = 0;
+       _acceptedTripRequestSheetHeight =200;
        _rideAcceptedRequests.add(newAcceptedRequest);
        _riderName = newAcceptedRequest.riderName;
        _acceptedTripId = newAcceptedRequest.riderTripId;
@@ -164,9 +167,6 @@ class RideRequestProvider with ChangeNotifier {
        _riderPickUpLon = newAcceptedRequest.riderPickupLon;
        _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
        _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
-       _acceptedTripRequestSheetHeight =200;
-
-       _tripRequestSheetHeight = 0;
 
        print('this is a rider name: ${newAcceptedRequest.riderName}');
        print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');

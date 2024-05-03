@@ -7,6 +7,7 @@ import 'package:ride_on_driver/provider/map_provider.dart';
 import 'package:ride_on_driver/provider/ride_request_provider.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
+import 'package:ride_on_driver/screens/nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/constants/strings.dart';
@@ -81,7 +82,7 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             navigatorKey: MyApp.navigatorKey,
             home:
-                initialToken != null ? const HomeScreen() : const LoginScreen(),
+                initialToken != null ? const NavBar() : const LoginScreen(),
           ),
         );
       },

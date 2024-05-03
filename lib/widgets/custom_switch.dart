@@ -13,20 +13,36 @@ class CustomSwitch extends StatelessWidget {
       onTap: () => onChanged(!value),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        curve: Curves.easeIn,
+        curve: Curves.easeInCirc,
         alignment: value ? Alignment.centerRight : Alignment.centerLeft,
         padding: const EdgeInsets.all(2),
-        width: 45.w,
-        height: 30.h,
+        width: 75.w,
+        height: 35.h,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.r),
-          color: value ? AppColors.green : AppColors.grey,
+          borderRadius: BorderRadius.circular(50.r),
+          border: Border.all(
+            color: AppColors.black, // Change border color based on value
+            width: 1.0, // Adjust the width as needed
+          ),
+          color: value ? AppColors.green : Colors.transparent,
         ),
         child: Container(
-          width: 20.w,
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          width: 30.w,
+          height: 30.h,
+          decoration: BoxDecoration(
+            color: value ? AppColors.green : AppColors.white,
             shape: BoxShape.circle,
+            border: Border.all(
+              color: AppColors.black, // Change border color based on value
+              width: 1.0, // Adjust the width as needed
+            ),
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.directions_car_outlined,
+              color: AppColors.black,
+              size: 20,
+            ),
           ),
         ),
       ),

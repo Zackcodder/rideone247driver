@@ -52,18 +52,20 @@ class SocketService {
     print('auth in socket');
     socket.emit("AUTH", {'token': 'Bearer $_token'});
     print('socket working with toke $_token');
-
   }
 
   ///Driver location update
-  updateLocation( {required String id,required String role, required String lat,required String lon}) {
+  updateLocation(
+      {required String id,
+      required String role,
+      required String lat,
+      required String lon}) {
     socket.emit("UPDATE_LOCATION", {
       'id': id,
       'role': role,
       'lat': lat,
       'lon': lon,
-    }
-    );
+    });
     print('this is from the driver socket location class');
     print('ID: $id');
     print('driver role in socket: $role');
@@ -84,27 +86,20 @@ class SocketService {
   driverOnlineStatus({required String id, required bool availability}) {
     socket.emit(
       "UPDATE_AVAILABILITY",
-      {'id': id, 'availability': availability},
+      {
+        'id': id,
+        'availability': availability,
+      },
     );
-    print('printing from socket $id');
-    print('printing from status socket $availability');
-    listenForSuccess();
   }
 
   ///listen for ride request
-  // listenForRideRequest(){
-  //   print('listening for trip request');
-  //   socket.on("RIDE_REQUEST", (data) {
-  //     print('trip request data $data');
-  //   });
-  // }
-  ///
-
-  StreamController<Trip> _rideRequestController = StreamController<Trip>.broadcast();
+  StreamController<Trip> _rideRequestController =
+      StreamController<Trip>.broadcast();
 
   Stream<Trip> get rideRequestStream => _rideRequestController.stream;
 
-  void listenForRideRequest() {
+  listenForRideRequest() {
     print('listening for trip request');
     socket.on("RIDE_REQUEST", (data) {
       print('Received Ride Request: $data');
@@ -125,9 +120,11 @@ class SocketService {
     });
   }
 
-  ///
-
-  acceptRide({required String id, required String lon, required String lat, required String tripId}) {
+  acceptRide(
+      {required String id,
+      required String lon,
+      required String lat,
+      required String tripId}) {
     print('starting accetp trip in socket');
     socket.emit("REQUEST_ACCEPTED", {
       'id': id,
@@ -135,14 +132,11 @@ class SocketService {
       'lat': lat,
       'tripId': tripId,
     });
-    // print('printing  response in socket');
-    // acceptRideRespond();
-    // print('printing error response in socket');
-    // listenForError();
   }
+
   ///accept trip request
-  ///
-  StreamController<Trip> _acceptedRequestController = StreamController<Trip>.broadcast();
+  StreamController<Trip> _acceptedRequestController =
+      StreamController<Trip>.broadcast();
 
   Stream<Trip> get acceptedRequestStream => _acceptedRequestController.stream;
 
@@ -166,31 +160,6 @@ class SocketService {
       }
     });
   }
-
-  ///
-  // Future<Trip?> acceptRideRespond() async {
-  //   print('Printing the acceptance response from the socket');
-  //   Completer<Trip?> completer1 = Completer<Trip?>();
-  //   socket.on("ACCEPTED_REQUEST", (data) {
-  //     print('result from acceptance');
-  //     print(data);
-  //     try {
-  //       /// Parse the JSON data into a Dart map
-  //       Map<String, dynamic> acceptedRideRequest = json.decode(data);
-  //
-  //       /// Create a Trip object from the parsed data
-  //       Trip newAcceptedRideRequest = Trip.fromJson(acceptedRideRequest);
-  //
-  //       /// Complete the Future with the Trip object
-  //       completer1.complete(newAcceptedRideRequest);
-  //     } catch (e) {
-  //       /// Handle any errors during parsing
-  //       completer1.completeError(e);
-  //     }
-  //   });
-  //
-  //   return completer1.future;
-  // }
 
   startTrip({required String id, required String tripId}) {
     print('starting trip in socket');
@@ -220,10 +189,10 @@ class SocketService {
   }
 
   ///listen for success
-  listenForSuccess(){
+  listenForSuccess() {
     print("listening for success in socket");
     socket.on("SUCCESS", (data) {
-      print("success data fromm socket: $data");
+      print("success data fromm socket on driver: $data");
     });
   }
 
