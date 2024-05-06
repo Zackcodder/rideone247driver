@@ -78,7 +78,7 @@ class _FloatingBottomBar extends StatelessWidget {
       margin: EdgeInsets.all(10.h),
       height: 56.h,
       decoration: BoxDecoration(
-        color: AppColors.yellow,
+        color: AppColors.black,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -128,13 +128,13 @@ class _BottomBarItem extends StatelessWidget {
             Container(
               height: 3.h,
               width: 25.w,
-              color: AppColors.white,
+              color: AppColors.yellow,
             ),
           const Spacer(),
           ///color for selected icon on nav bar
           Icon(
             icon,
-            color: selected ? AppColors.white : AppColors.black,
+            color: selected ? AppColors.yellow : AppColors.white,
             size: 30.w,
           ),
           const Spacer(),

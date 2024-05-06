@@ -5,6 +5,11 @@ class Assets {
   /// assets/fonts/sf_compact_display_medium.otf
   static const String assetsFontsSfCompactDisplayMedium = "assets/fonts/sf_compact_display_medium.otf";
 
+  /// Assets for assetsImagesPatternBackground
+  /// assets/images/pattern_background.png
+  static const String assetsImagesPatternBackground =
+      'assets/images/pattern_background.png';
+
   /// Assets for assetsFontsSfCompactDisplayThin
   /// assets/fonts/sf_compact_display_thin.otf
   static const String assetsFontsSfCompactDisplayThin = "assets/fonts/sf_compact_display_thin.otf";

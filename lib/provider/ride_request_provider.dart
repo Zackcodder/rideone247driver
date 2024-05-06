@@ -16,7 +16,7 @@ import '../services/map_service.dart';
 import '../services/socket_service.dart';
 
 class RideRequestProvider with ChangeNotifier {
- final bool _rideRequestLoading = false;
+  final bool _rideRequestLoading = false;
   bool get rideRequestLoading => _rideRequestLoading;
 
   final SocketService _socketService = SocketService();
@@ -38,42 +38,38 @@ class RideRequestProvider with ChangeNotifier {
   ///updating driver online status
   updateDriverStatus(BuildContext context, String id, bool availability) async {
     await _socketService.driverOnlineStatus(id: id, availability: availability);
-    // print('this is the status $availability');
-    // print('this is the id $id');
-    // isActiveNotifier.value = availability;
     driverOnlineStatus();
     notifyListeners();
-
   }
 
- ///listen for driver updated status
- driverOnlineStatus() async{
-   print('Driver status:');
-   _socketService.listenForSuccess();
-   _socketService.socket.on('SUCCESS', (data) {
-     print('Driver status: $data');
-     // Check if the data contains the success message
-     if (data == 'You are now available') {
-       return Fluttertoast.showToast(
-           fontSize: 18,
-           toastLength: Toast.LENGTH_SHORT,
-           backgroundColor: AppColors.green.withOpacity(0.7),
-           msg: data,
-           gravity: ToastGravity.TOP,
-           textColor: AppColors.black);
-     } else {
-       print('error from driver online status: $data');
+  ///listen for driver updated status
+  driverOnlineStatus() async {
+    print('Driver status:');
+    _socketService.listenForSuccess();
+    _socketService.socket.on('SUCCESS', (data) {
+      print('Driver status: $data');
+      // Check if the data contains the success message
+      if (data == 'You are now available') {
+        return Fluttertoast.showToast(
+            fontSize: 18,
+            toastLength: Toast.LENGTH_SHORT,
+            backgroundColor: AppColors.green.withOpacity(0.7),
+            msg: 'You are now available',
+            gravity: ToastGravity.TOP,
+            textColor: AppColors.black);
+      } else {
+        print('error from driver online status: $data');
         Fluttertoast.showToast(
-           fontSize: 18,
-           toastLength: Toast.LENGTH_SHORT,
-           backgroundColor: Colors.red.withOpacity(0.7),
-           msg: data,
-           gravity: ToastGravity.TOP,
-           textColor: Colors.white);
-     }
-     notifyListeners();
-   });
- }
+            fontSize: 18,
+            toastLength: Toast.LENGTH_SHORT,
+            backgroundColor: Colors.red.withOpacity(0.7),
+            msg: data,
+            gravity: ToastGravity.TOP,
+            textColor: Colors.white);
+      }
+      notifyListeners();
+    });
+  }
 
   /// trip request
   Timer? checkForRideRequestTimer;
@@ -90,7 +86,7 @@ class RideRequestProvider with ChangeNotifier {
   int? get tripCost => _tripCost;
   String? get paymentMethod => _paymentMethod;
   String? _paymentMethod;
-  double get tripRequestSheetHeight =>_tripRequestSheetHeight;
+  double get tripRequestSheetHeight => _tripRequestSheetHeight;
   double _tripRequestSheetHeight = 0;
   bool _newTripRequest = false;
   bool get newTripRequest => _newTripRequest;
@@ -98,26 +94,28 @@ class RideRequestProvider with ChangeNotifier {
   List<Trip> get rideRequests => _rideRequests;
 
   ///
- listenForRideRequests() {
-   _socketService.rideRequestStream.listen((newRequest) {
-     if (newRequest != null) {
-       _newTripRequest = true;
-       _tripRequestSheetHeight = 250;
-       _acceptedTripRequestSheetHeight =0;
-       _rideRequests.add(newRequest);
-       _riderName = newRequest.riderName;
-       _riderPickUpLocationName = newRequest.riderPickUpName;
-       _riderDestinationLocationName = newRequest.riderDestinationName;
-       _tripCost = newRequest.cost;
-       _tripId = newRequest.tripId;
-       _tripLat = newRequest.dropOffLon.toString();
-       _tripLng = newRequest.pickUpLat.toString();
-       _driverId = newRequest.driverId;
-       _paymentMethod = newRequest.paymentMethod;
-       notifyListeners();
-     }
-   });
- }
+  listenForRideRequests() {
+    _socketService.rideRequestStream.listen((newRequest) {
+      if (newRequest != null) {
+        _newTripRequest = true;
+        _acceptedNewTripRequest = false;
+        _tripRequestSheetHeight = 250;
+        _acceptedTripRequestSheetHeight = 0;
+        _rideRequests.add(newRequest);
+        _riderName = newRequest.riderName;
+        _riderPickUpLocationName = newRequest.riderPickUpName;
+        _riderDestinationLocationName = newRequest.riderDestinationName;
+        _tripCost = newRequest.cost;
+        _tripId = newRequest.tripId;
+        _tripLat = newRequest.dropOffLon.toString();
+        _tripLng = newRequest.pickUpLat.toString();
+        _driverId = newRequest.driverId;
+        _paymentMethod = newRequest.paymentMethod;
+        notifyListeners();
+      }
+    });
+  }
+
   ///
 
   ///accept rider request
@@ -141,54 +139,87 @@ class RideRequestProvider with ChangeNotifier {
   String? get riderPickUpLocationName => _riderPickUpLocationName;
   String? _riderDestinationLocationName;
   String? get riderDestinationLocationName => _riderDestinationLocationName;
- bool _acceptedNewTripRequest = false;
- bool get acceptedNewTripRequest => _acceptedNewTripRequest;
- double get acceptedTripRequestSheetHeight =>_acceptedTripRequestSheetHeight;
- double _acceptedTripRequestSheetHeight = 0;
+  bool _acceptedNewTripRequest = false;
+  bool get acceptedNewTripRequest => _acceptedNewTripRequest;
+  double get acceptedTripRequestSheetHeight => _acceptedTripRequestSheetHeight;
+  double _acceptedTripRequestSheetHeight = 0;
 
   acceptRideRequest(String id, String lon, String lat, String tripId) async {
     print('starting accept trip in provider');
     await _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
     notifyListeners();
   }
+
   ///accept trip request
- ///
- acceptRideRequestResponse() async{
-   _socketService.acceptedRequestStream.listen((newAcceptedRequest) {
-     if (newAcceptedRequest != null) {
-       _acceptedNewTripRequest = true;
-       _tripRequestSheetHeight = 0;
-       _acceptedTripRequestSheetHeight =200;
-       _rideAcceptedRequests.add(newAcceptedRequest);
-       _riderName = newAcceptedRequest.riderName;
-       _acceptedTripId = newAcceptedRequest.riderTripId;
-       _riderPaymentMethod = newAcceptedRequest.riderPaymentMethod;
-       _riderPickUpLat = newAcceptedRequest.riderPickupLat;
-       _riderPickUpLon = newAcceptedRequest.riderPickupLon;
-       _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
-       _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
+  ///
+  acceptRideRequestResponse() async {
+    _socketService.acceptedRequestStream.listen((newAcceptedRequest) {
+      if (newAcceptedRequest != null) {
+        _acceptedNewTripRequest = true;
+        _newTripRequest = false;
+        _tripRequestSheetHeight = 0;
+        _acceptedTripRequestSheetHeight = 200;
+        _rideAcceptedRequests.add(newAcceptedRequest);
+        _riderName = newAcceptedRequest.riderName;
+        _acceptedTripId = newAcceptedRequest.riderTripId;
+        _riderPaymentMethod = newAcceptedRequest.riderPaymentMethod;
+        _riderPickUpLat = newAcceptedRequest.riderPickupLat;
+        _riderPickUpLon = newAcceptedRequest.riderPickupLon;
+        _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
+        _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
 
-       print('this is a rider name: ${newAcceptedRequest.riderName}');
-       print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');
-       print('this is a rider trip id: ${newAcceptedRequest.riderTripId}');
-       print('this is a rider payment method: ${newAcceptedRequest.riderPaymentMethod}');
+        print('this is a rider name: ${newAcceptedRequest.riderName}');
+        print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');
+        print('this is a rider trip id: ${newAcceptedRequest.riderTripId}');
+        print(
+            'this is a rider payment method: ${newAcceptedRequest.riderPaymentMethod}');
 
-       notifyListeners();
-     }
-   });
- }
-
+        notifyListeners();
+      }
+    });
+  }
 
   ///start trip
+  bool _tripHasStarted = false;
+  bool get tripHasStarted => _tripHasStarted;
   startRide(String id, String tripId) async {
     print('starting ride in provider');
     await _socketService.startTrip(id: id, tripId: tripId);
-    print('starting ride respoinse in provider');
+    print('starting ride response in provider');
     _socketService.listenForSuccess();
     _socketService.listenForError();
+    // _socketService.socket.on('SUCCESS', (data) {
+    //   print('starting trip status from driver: $data');
+    //   if (data == 'Trip started successfully') {
+    //     _tripHasStarted = true;
+    //     _tripHasEnded = false;
+    //     _acceptedNewTripRequest = false;
+    //     _newTripRequest = false;
+    //     return Fluttertoast.showToast(
+    //         fontSize: 18,
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         backgroundColor: AppColors.green.withOpacity(0.7),
+    //         msg: data,
+    //         gravity: ToastGravity.TOP,
+    //         textColor: AppColors.black);
+    //   } else {
+    //     print('error from starting trip status from driver: $data');
+    //     Fluttertoast.showToast(
+    //         fontSize: 18,
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         backgroundColor: Colors.red.withOpacity(0.7),
+    //         msg: data,
+    //         gravity: ToastGravity.TOP,
+    //         textColor: Colors.white);
+    //   }
+    //   notifyListeners();
+    // });
     notifyListeners();
   }
 
+  ///end trip
+  bool _tripHasEnded = false;
+  bool get tripHasEnded => _tripHasEnded;
   endRiderTrip(String id, String tripId) async {
     print('ending trip from provider');
     _socketService.endTrip(id: id, tripId: tripId);
@@ -196,6 +227,33 @@ class RideRequestProvider with ChangeNotifier {
     _socketService.listenForTripEnd();
     print('printing the error response for end trip in provider $tripId');
     _socketService.listenForError();
+    // _socketService.socket.on('TRIP_ENDED', (data) {
+    //   print('ending trip status from driver: $data');
+    //   if (data == 'Trip ended successfully') {
+    //     _tripHasEnded = true;
+    //     _tripHasStarted = false;
+    //     _acceptedNewTripRequest = false;
+    //     _newTripRequest = false;
+    //     stopAutoDisplayDirectionsToPickup();
+    //     return Fluttertoast.showToast(
+    //         fontSize: 18,
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         backgroundColor: AppColors.green.withOpacity(0.7),
+    //         msg: data,
+    //         gravity: ToastGravity.TOP,
+    //         textColor: AppColors.black);
+    //   } else {
+    //     print('error from ending trip status from driver: $data');
+    //     Fluttertoast.showToast(
+    //         fontSize: 18,
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         backgroundColor: Colors.red.withOpacity(0.7),
+    //         msg: data,
+    //         gravity: ToastGravity.TOP,
+    //         textColor: Colors.white);
+    //   }
+    //   notifyListeners();
+    // });
     notifyListeners();
   }
 
@@ -226,6 +284,7 @@ class RideRequestProvider with ChangeNotifier {
       forceUseCurrentLocation: true,
       asPosition: true,
     );
+
     /// get rider  coordinates
     var pickup = _googleMapService.convertDoubleToLatLng(
         _riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
@@ -235,6 +294,7 @@ class RideRequestProvider with ChangeNotifier {
       currentPosition.latitude,
       currentPosition.longitude
     ];
+
     ///assign the rider location as lan and lng
     var pickupCoordinates = [
       pickup.latitude,
@@ -249,7 +309,6 @@ class RideRequestProvider with ChangeNotifier {
           msg: 'no dest and pickup',
           gravity: ToastGravity.BOTTOM,
           textColor: Colors.white);
-
     }
 
     /// Fetch directions using your API service (e.g., MapService)
@@ -263,9 +322,8 @@ class RideRequestProvider with ChangeNotifier {
         print('The plotting is not working');
       } else if (directionsResponse.isNotEmpty) {
         /// Extract polyline coordinates from the directions response
-        final List pointLatLngList =
-        _polylinePointService.decodePolyPoints(
-          directionsResponse ['routes'][0]['overview_polyline']['points'],
+        final List pointLatLngList = _polylinePointService.decodePolyPoints(
+          directionsResponse['routes'][0]['overview_polyline']['points'],
         );
         // final List<PointLatLng> pointLatLngList =
         // _googleMapService.decodePolylines(
@@ -306,16 +364,18 @@ class RideRequestProvider with ChangeNotifier {
         _googleMapService.addMarkers(driverMarker);
         _googleMapService.addMarkers(riderMarker);
 
-        final durationText = directionsResponse['routes'][0]['legs'][0]['duration']['text'];
-        final distanceText = directionsResponse['routes'][0]['legs'][0]['distance']['text'];
+        final durationText =
+            directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+        final distanceText =
+            directionsResponse['routes'][0]['legs'][0]['distance']['text'];
         // final etaTimer1 =
         //     int.parse(RegExp(r"(\d+)").stringMatch(durationText) ?? '0');
 
         // _tripDistance = distanceText;
         // _etaTimer1 = etaTimer1.toString();
-         _etaTimer = durationText ?? 'Calculating';
-         _distance = distanceText ?? 'Calculating';
-         print('this is the time to get to the rider: $_etaTimer');
+        _etaTimer = durationText ?? 'Calculating';
+        _distance = distanceText ?? 'Calculating';
+        print('this is the time to get to the rider: $_etaTimer');
 
         notifyListeners();
       } else {}
@@ -323,11 +383,12 @@ class RideRequestProvider with ChangeNotifier {
   }
 
   ///display the trip direction for the driver
-
   String? get tripEtaTimer => _tripEtaTimer;
   String? _tripEtaTimer;
   String? get tripDistance => _tripDistance;
   String? _tripDistance;
+  late List _destinationCoordinates;
+  List get destinationCoordinate => _destinationCoordinates;
   displayDirectionForActivateTrip(imageConfiguration) async {
     /// get rider pickup coordinates
     var pickup = _googleMapService.convertDoubleToLatLng(
@@ -338,7 +399,9 @@ class RideRequestProvider with ChangeNotifier {
         _riderPickUpLat ?? 0.0, _riderPickUpLon ?? 0.0);
 
     ///assign the destination location as lan and lng
-    var destinationCoordinates = [destination.latitude, destination.longitude];
+    var destinationLocationCoordinates = [destination.latitude, destination.longitude];
+
+    _destinationCoordinates = destinationLocationCoordinates;
 
     ///assign the rider location as lan and lng
     var pickupCoordinates = [
@@ -346,7 +409,7 @@ class RideRequestProvider with ChangeNotifier {
       pickup.longitude,
     ];
     _riderLocationCoordinates = pickupCoordinates;
-    if (pickupCoordinates.isEmpty && destinationCoordinates.isEmpty) {
+    if (pickupCoordinates.isEmpty && destinationLocationCoordinates.isEmpty) {
       return Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
@@ -358,27 +421,29 @@ class RideRequestProvider with ChangeNotifier {
 
     /// Fetch directions using your API service (e.g., MapService)
     var directionsResponse = await _mapService.getDirections(
-      pickup: destinationCoordinates,
-      destination: pickupCoordinates,
+      pickup: pickupCoordinates,
+      destination: destinationLocationCoordinates,
     );
 
     if (directionsResponse != null) {
       print('Directions Response: $directionsResponse');
       if (directionsResponse == null) {
         print('The plotting is not working');
-      }
-      else if (directionsResponse.isNotEmpty &&directionsResponse.containsKey('routes') && directionsResponse['routes'].isNotEmpty) {
+      } else if (directionsResponse.isNotEmpty &&
+          directionsResponse.containsKey('routes') &&
+          directionsResponse['routes'].isNotEmpty) {
         var route = directionsResponse['routes'][0];
         print('Route: $route');
         if (route.containsKey('overview_polyline')) {
           var overviewPolyline = route['overview_polyline'];
           print('Overview Polyline: $overviewPolyline');
           var points = overviewPolyline['points'];
-          print('Points: $points');}
-        /// Extract polyline coordinates from the directions response
-        final List pointLatLngList = _polylinePointService.decodePolyPoints(
-          directionsResponse['routes'][0]['overview_polyline']['points'],
+          print('Points: $points');
+        }
 
+        /// Extract polyline coordinates from the directions response
+        final List<PointLatLng> pointLatLngList = _googleMapService.decodePolylines(
+          directionsResponse['routes'][0]['overview_polyline']['points'],
         );
 
         /// Convert List<PointLatLng> to List<LatLng>
@@ -393,8 +458,8 @@ class RideRequestProvider with ChangeNotifier {
         /// Update the map to display the polyline
         _googleMapService.setPolyLine(polylineCoordinates);
         _googleMapService.fitPolyLineToMap(
-          pickup: destinationCoordinates,
-          destination: pickupCoordinates,
+          pickup: pickupCoordinates,
+          destination: destinationLocationCoordinates,
         );
         LatLng convertPositionToLatLng(Position position) {
           return LatLng(position.latitude, position.longitude);
@@ -402,16 +467,19 @@ class RideRequestProvider with ChangeNotifier {
 
         Marker originMarker = _googleMapService.createMarker(
           id: 'origin',
-          position: destination,
+          position: pickup,
           imageConfiguration: imageConfiguration,
-          iconPath: 'assets/images/logo.png',
+          // iconPath: 'assets/images/logo.png',
         );
         Marker destinationMarker = _googleMapService.createMarker(
           id: 'destination',
-          position: pickup,
+          position: destination,
           imageConfiguration: imageConfiguration,
           // icon: Icon(Icons.add),
         );
+
+        _googleMapService.addMarkers(originMarker);
+        _googleMapService.addMarkers(destinationMarker);
 
         Circle originCircle = Circle(
             circleId: CircleId('origin'),
@@ -428,8 +496,6 @@ class RideRequestProvider with ChangeNotifier {
             strokeColor: Colors.white,
             strokeWidth: 3,
             center: pickup);
-        _googleMapService.addMarkers(originMarker);
-        _googleMapService.addMarkers(destinationMarker);
         _googleMapService.addCircle(originCircle);
         _googleMapService.addCircle(destinationCircle);
         notifyListeners();
@@ -448,38 +514,43 @@ class RideRequestProvider with ChangeNotifier {
         print('this is the time fro the rider trip: $_tripEtaTimer');
         print('this is the distance to the rider destination: $_tripDistance');
         notifyListeners();
+      } else {
+        print('No routes in directions response');
       }
-      else {
-        print('No routes in directions response');}
     } else {
-      print('Directions response is null');}
+      print('Directions response is null');
+    }
   }
 
   ///refresh connect rider code
-  // late Timer _refreshDirectionToRiderLocationTimer;
-  // restartDisplayDirectionsToPickup(imageConfiguration) {
-  //   // Start a repeating timer that triggers every 2 seconds
-  //   _refreshRideRequestTimer =
-  //       Timer.periodic(const Duration(seconds: 60), (timer) {
-  //         // Call the refreshMap function to update the map and driver locations
-  //         displayDirectionsToPickup(imageConfiguration);
-  //       });
-  // }
-  //
-  // // Start the auto-refresh timer
-  // startAutoDisplayDirectionsToPickup(imageConfiguration) {
-  //   restartDisplayDirectionsToPickup(imageConfiguration);
-  // }
-  //
-  // //stop rider request timer
-  // stopAutoDisplayDirectionsToPickup() {
-  //   if (_refreshDirectionToRiderLocationTimer.isActive) {
-  //     _refreshDirectionToRiderLocationTimer.cancel();
-  //   }
-  // }
+  late Timer _refreshDirectionToDestinationLocationTimer;
+  restartDisplayDirectionsToDestination(imageConfiguration) {
+    // Start a repeating timer that triggers every 2 seconds
+    _refreshDirectionToDestinationLocationTimer =
+        Timer.periodic(const Duration(seconds: 60), (timer) {
+          // Call the refreshMap function to update the map and driver locations
+          displayDirectionForActivateTrip(imageConfiguration);
+        });
+  }
+
+  // Start the auto-refresh timer
+  startAutoDisplayDirectionsToPickup(imageConfiguration) {
+    restartDisplayDirectionsToDestination(imageConfiguration);
+  }
+
+  //stop rider request timer
+  stopAutoDisplayDirectionsToPickup() {
+    if (_refreshDirectionToDestinationLocationTimer.isActive) {
+      _refreshDirectionToDestinationLocationTimer.cancel();
+    }
+  }
 
   ///reset app to default
   resetApp() async {
+    _tripHasEnded = false;
+    _tripHasStarted = false;
+    _newTripRequest = false;
+    _acceptedNewTripRequest = false;
     _riderName = '';
     _acceptedTripId = '';
     _riderPaymentMethod = '';
@@ -499,6 +570,7 @@ class RideRequestProvider with ChangeNotifier {
     _riderPickUpLat = 0.0;
     _googleMapService.clearPolyLines();
     _googleMapService.clearPolyLineCoordinate();
+    stopAutoDisplayDirectionsToPickup();
     listenForRideRequests();
     notifyListeners();
   }

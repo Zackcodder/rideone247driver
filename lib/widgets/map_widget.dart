@@ -17,7 +17,8 @@ class MapWidget extends StatefulWidget {
   State<MapWidget> createState() => MapWidgetState();
 }
 
-class MapWidgetState extends State<MapWidget> {
+class MapWidgetState extends State<MapWidget>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   ImageConfiguration imageConfiguration = ImageConfiguration();
   late GoogleMapController mapController;
   final Completer<GoogleMapController> _controller = Completer();
@@ -59,9 +60,9 @@ class MapWidgetState extends State<MapWidget> {
          final position = await mapProvider.currentPosition;
           mapController.animateCamera(CameraUpdate.newLatLng(
               mapProvider.convertPositionToLatLng(position)));
-          setState(() {
-            rideDetails.displayDirectionForActivateTrip(imageConfiguration);
-          });
+          // setState(() {
+          //   rideDetails.displayDirectionForActivateTrip(imageConfiguration);
+          // });
           // rideDetails.displayDirectionsToPickup(imageConfiguration);
         },
       ),
