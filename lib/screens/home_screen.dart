@@ -41,7 +41,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late final TabController tabController;
   late final ValueNotifier<TabItem> currentTabNotifier;
   List<TabItem> tabs = [const TabItem('Active'), const TabItem('Requests')];
@@ -117,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen>
           children: [
             const MapWidget(),
 
+
             ///online button
             Positioned(
               top: 60,
@@ -160,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen>
             rideDetails.newTripRequest == true &&
                     rideDetails.acceptedNewTripRequest == false
                 ? Positioned(
-              bottom: 50,
+              bottom: 70,
               left: 10,
               right: 10,
               child: AnimatedSize(
@@ -309,8 +310,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   'this is a trip id in ui: ${rideDetails.tripId ?? ''}');
                               print(
                                   'this is a driver id ui: ${rideDetails.driverId ?? ''}');
-                              context.pop();
-                              isRideActiveNotifier.value = true;
+                              // isRideActiveNotifier.value = true;
                             },
                             text: 'Accept',
                             backgroundColor: AppColors.green,
@@ -339,19 +339,17 @@ class _HomeScreenState extends State<HomeScreen>
 
                 : rideDetails.newTripRequest == false &&
                         rideDetails.acceptedNewTripRequest == true
-                    ?
-
+                ?
                     ///accepted trip screen
-            Positioned(
-              bottom: 30,
+                  Positioned(
+              bottom: 70,
               left: 10,
               right: 10,
               child: AnimatedSize(
                 duration: const Duration(milliseconds: 150),
                 curve: Curves.easeIn,
                 child: Container(
-                  height: rideDetails
-                      .acceptedTripRequestSheetHeight,
+                  height: rideDetails.acceptedTripRequestSheetHeight,
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
                     color: Colors.black,
@@ -487,24 +485,22 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
 
                       ///accept and reject trip button
-                      _acceptRequest != true
-                          ? AppElevatedButton.medium(
-                        onPressed: () async {
-                          setState(() {
-                            _acceptRequest = true;
-                          });
-                        },
-                        text: 'Arrived',
-                        backgroundColor:
-                        AppColors.green,
-                        foregroundColor:
-                        AppColors.white,
-                      ).expand()
-                          : _startTripRequest != true &&
-                          _acceptRequest != true
-                          ?
-
+                      // rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false
+                      //     ? AppElevatedButton.medium(
+                      //   onPressed: () async {
+                      //     setState(() {
+                      //     });
+                      //   },
+                      //   text: 'Arrived',
+                      //   backgroundColor:
+                      //   AppColors.green,
+                      //   foregroundColor:
+                      //   AppColors.white,
+                      // ).expand()
+                      //     : rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false
+                      //     ?
                       /// start trip button
+                      rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false ?
                       AppElevatedButton.large(
                         onPressed: () async {
                           setState(() {
@@ -523,21 +519,11 @@ class _HomeScreenState extends State<HomeScreen>
                                 'printing from the start trip button the driver id ${rideDetails.driverId}');
                             print(
                                 'printing from the start trip button the trip id ${rideDetails.acceptedTripId}');
-                            _startTripRequest =
-                            true;
-                            _acceptRequest = true;
                           });
-                          // rideDetails.displayDirectionsToPickup(imageConfiguration);
-                          // Navigator.pushReplacement(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-                          // );
-                          // setState(() {});
                         },
                         text: 'Start Trip',
                       ).expand()
                           :
-
                       ///end trip
                       AppElevatedButton.medium(
                         onPressed: () async {
@@ -554,12 +540,12 @@ class _HomeScreenState extends State<HomeScreen>
                               'printing from the end trip button the trip id ${rideDetails.acceptedTripId}');
                           context.push(
                               const TripCompletedScreen());
-                          isRideActiveNotifier
-                              .value = false;
-                          rideDetails.resetApp();
+                          // isRideActiveNotifier
+                          //     .value = false;
+                          // rideDetails.resetApp();
                           setState(() {});
                         },
-                        text: 'TAP TO COMPLETE',
+                        text: 'End Trip',
                         icon: Icons
                             .trending_flat_rounded,
                         backgroundColor:
@@ -573,7 +559,8 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             )
 
-                    : const SizedBox(),
+                :
+                  const SizedBox(),
 
           ],
         ),

@@ -135,10 +135,10 @@ class SocketService {
   }
 
   ///accept trip request
-  StreamController<Trip> _acceptedRequestController =
-      StreamController<Trip>.broadcast();
+  StreamController<Trip?> _acceptedRequestController =
+      StreamController<Trip?>.broadcast();
 
-  Stream<Trip> get acceptedRequestStream => _acceptedRequestController.stream;
+  Stream<Trip?> get acceptedRequestStream => _acceptedRequestController.stream;
 
   acceptRideRespond() {
     print('listening for accepted ride request');

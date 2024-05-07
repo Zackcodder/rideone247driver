@@ -54,8 +54,6 @@ class AuthProvider with ChangeNotifier {
   }
 
   //load the token and user name from the storage
-
-
   AuthProvider(String? driverName, String? driverLastName, String? driverEmail,
       String? token, int? walletBalance, String? id) {
     _driverName = driverName;
