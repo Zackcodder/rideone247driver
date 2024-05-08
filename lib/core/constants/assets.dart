@@ -10,6 +10,38 @@ class Assets {
   static const String assetsImagesPatternBackground =
       'assets/images/pattern_background.png';
 
+  /// Assets for assetsSvgsPaymentMethod
+  /// assets/svgs/payment_method.svg
+  static const String assetsSvgsPaymentMethod ='assets/svgs/payment_method.svg';
+
+  /// Assets for assetsSvgsUser
+  /// assets/svgs/user.svg
+  static const String assetsSvgsUser ='assets/svgs/user.svg';
+
+  /// Assets for assetsSvgsAbout
+  /// assets/svgs/about.svg
+  static const String assetsSvgsAbout ='assets/svgs/about.svg';
+
+  /// Assets for assetsSvgsTerms
+  /// assets/svgs/terms.svg
+  static const String assetsSvgsTerms ='assets/svgs/terms.svg';
+
+  /// Assets for assetsSvgsAccountWallet
+  /// assets/svgs/accountwallet.svg
+  static const String assetsSvgsAccountWallet ='assets/svgs/accountwallet.svg';
+
+  /// Assets for assetsSvgsHistory
+  /// assets/svgs/history.svg
+  static const String assetsSvgsHistory ='assets/svgs/history.svg';
+
+  /// Assets for assetsSvgsNotification
+  /// assets/svgs/notification.svg
+  static const String assetsSvgsNotification ='assets/svgs/notification.svg';
+
+  /// Assets for assetsSvgsShield
+  /// assets/svgs/shield.svg
+  static const String assetsSvgsShield ='assets/svgs/shield.svg';
+
   /// Assets for assetsFontsSfCompactDisplayThin
   /// assets/fonts/sf_compact_display_thin.otf
   static const String assetsFontsSfCompactDisplayThin = "assets/fonts/sf_compact_display_thin.otf";

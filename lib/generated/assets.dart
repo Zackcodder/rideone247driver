@@ -7,12 +7,21 @@ class Assets {
   static const String imagesDriverProfile = 'assets/images/driver_profile.png';
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesPatternBackground = 'assets/images/pattern_background.png';
+  static const String svgsAbout = 'assets/svgs/about.svg';
+  static const String svgsAccountwallet = 'assets/svgs/accountwallet.svg';
   static const String svgsCardIcon = 'assets/svgs/card_icon.svg';
   static const String svgsCheck = 'assets/svgs/check.svg';
   static const String svgsEarnedToday = 'assets/svgs/earned_today.svg';
+  static const String svgsHistory = 'assets/svgs/history.svg';
+  static const String svgsLogout = 'assets/svgs/logout.svg';
   static const String svgsNaira = 'assets/svgs/naira.svg';
+  static const String svgsNotification = 'assets/svgs/notification.svg';
   static const String svgsOffline = 'assets/svgs/offline.svg';
   static const String svgsPaymentLeading = 'assets/svgs/payment_leading.svg';
+  static const String svgsPrivacy = 'assets/svgs/privacy.svg';
+  static const String svgsSecurity = 'assets/svgs/security.svg';
+  static const String svgsTerms = 'assets/svgs/terms.svg';
+  static const String svgsUser = 'assets/svgs/user.svg';
   static const String svgsYouOwn = 'assets/svgs/you_own.svg';
 
 }

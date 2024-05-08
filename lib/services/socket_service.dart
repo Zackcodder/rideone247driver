@@ -161,6 +161,29 @@ class SocketService {
     });
   }
 
+  ///reject event
+  rejectTrip({required String id, required String tripId}) {
+    print('starting trip in socket');
+    socket.emit("REQUEST_REJECTED", {
+      'id': id,
+      'tripId': tripId,
+    });
+    print('response of rejecting trip in socket');
+    listenForSuccess();
+  }
+
+  ///arrive socket
+  driverArrival({required String id, required String tripId}) {
+    print('driver arrival in socket');
+      socket.emit("ARRIVED", {
+      'id': id,
+      'tripId': tripId,
+    });
+    print('response of rejecting trip in socket');
+    listenForSuccess();
+  }
+
+  ///start trip
   startTrip({required String id, required String tripId}) {
     print('starting trip in socket');
     socket.emit("START_TRIP", {
@@ -171,6 +194,7 @@ class SocketService {
     listenForSuccess();
   }
 
+  ///end trip event
   endTrip({required String id, required String tripId}) {
     print('sending ending trip in socket');
     socket.emit("END_TRIP", {
@@ -178,6 +202,17 @@ class SocketService {
       'tripId': tripId,
     });
     listenForTripEnd();
+  }
+
+  ///cancel trip
+  cancelTrip({required String id, required String tripId, required String role}) {
+    print('sending ending trip in socket');
+    socket.emit("CANCEL_TRIP", {
+      'id': id,
+      'tripId': tripId,
+      'role': role
+    });
+    listenForSuccess();
   }
 
   listenForTripEnd() {
