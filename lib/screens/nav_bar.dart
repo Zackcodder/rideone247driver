@@ -28,7 +28,7 @@ class _NavBarState extends State<NavBar> {
     screens = [
       const HomeScreen(),
       const RideHistoriesScreen(),
-      const ProfileEditScreen(),
+      const ProfileScreen(),
     ];
   }
 

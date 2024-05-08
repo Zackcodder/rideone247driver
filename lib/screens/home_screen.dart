@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
+import 'package:ride_on_driver/core/extensions/int_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/provider/map_provider.dart';
 import 'package:ride_on_driver/screens/active_trip_detail_view.dart';
@@ -42,12 +44,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
+  ImageConfiguration imageConfiguration = ImageConfiguration();
   late final TabController tabController;
   late final ValueNotifier<TabItem> currentTabNotifier;
   List<TabItem> tabs = [const TabItem('Active'), const TabItem('Requests')];
   late RideRequestProvider _rideRequestProvider;
   // String? _id = Provider.of<AuthProvider>(context, listen: false).id;
   String? _id;
+
 
   loadDriverDataFromSharedPreference() async {
     final prefs = await SharedPreferences.getInstance();
@@ -73,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen>
     _rideRequestProvider =
         Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.listenForRideRequests();
-    _rideRequestProvider.acceptRideRequestResponse();
+    _rideRequestProvider.acceptRideRequestResponse(imageConfiguration);
     _rideRequestProvider.driverOnlineStatus();
     setState(() {});
   }
@@ -293,28 +297,17 @@ class _HomeScreenState extends State<HomeScreen>
                           AppElevatedButton.medium(
                             onPressed: () async {
                               setState(() {
-                                // rideDetails.displayDirectionsToPickup(imageConfiguration);
                                 /// Call acceptTripRequest function when the button is pressed
                                 rideDetails.acceptRideRequest(
                                     rideDetails.driverId ?? '',
-                                    rideDetails.tripLng ??
-                                        '', // Assuming driverId is used as the id
+                                    rideDetails.tripLng ?? '',
                                     rideDetails.tripLat ?? '',
                                     rideDetails.tripId ?? '');
                               });
-                              print(
-                                  'this is a trip lat in ui: ${rideDetails.tripLat ?? ''}');
-                              print(
-                                  'this is a trip lng in ui: ${rideDetails.tripLng ?? ''}');
-                              print(
-                                  'this is a trip id in ui: ${rideDetails.tripId ?? ''}');
-                              print(
-                                  'this is a driver id ui: ${rideDetails.driverId ?? ''}');
-                              // isRideActiveNotifier.value = true;
                             },
                             text: 'Accept',
                             backgroundColor: AppColors.green,
-                            foregroundColor: AppColors.yellow,
+                            foregroundColor: AppColors.white,
                           ).expand(),
                           const SizedBox(
                             width: 15,
@@ -323,11 +316,15 @@ class _HomeScreenState extends State<HomeScreen>
                           ///reject button
                           AppElevatedButton.medium(
                             onPressed: () async {
-                              setState(() {});
+                              setState(() {
+                                rideDetails.tripRejection(
+                                    rideDetails.driverId ?? '',
+                                    rideDetails.tripId ?? '');
+                              });
                             },
                             text: 'Reject',
                             backgroundColor: AppColors.red,
-                            foregroundColor: AppColors.yellow,
+                            foregroundColor: AppColors.white,
                           ).expand(),
                         ],
                       )
@@ -485,22 +482,23 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
 
                       ///accept and reject trip button
-                      // rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false
-                      //     ? AppElevatedButton.medium(
-                      //   onPressed: () async {
-                      //     setState(() {
-                      //     });
-                      //   },
-                      //   text: 'Arrived',
-                      //   backgroundColor:
-                      //   AppColors.green,
-                      //   foregroundColor:
-                      //   AppColors.white,
-                      // ).expand()
-                      //     : rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false
-                      //     ?
+                      rideDetails.tripHasStarted == false && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == false
+                          ? AppElevatedButton.large(
+                        onPressed: () async {
+                          setState(() {
+                            rideDetails.arrivedPickup(
+                                rideDetails.driverId ?? '',
+                                rideDetails.acceptedTripId ?? '');
+                          });
+                        },
+                        text: 'Arrived',
+                        backgroundColor: AppColors.green,
+                        foregroundColor: AppColors.white,
+                      ).expand()
+                          :
+                          rideDetails.tripHasStarted == false && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == true
+                          ?
                       /// start trip button
-                      rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false ?
                       AppElevatedButton.large(
                         onPressed: () async {
                           setState(() {
@@ -515,17 +513,17 @@ class _HomeScreenState extends State<HomeScreen>
                                   .acceptedTripId ??
                                   '',
                             );
-                            print(
-                                'printing from the start trip button the driver id ${rideDetails.driverId}');
-                            print(
-                                'printing from the start trip button the trip id ${rideDetails.acceptedTripId}');
                           });
                         },
                         text: 'Start Trip',
+                        backgroundColor: AppColors.green,
+                        foregroundColor: AppColors.white,
                       ).expand()
-                          :
+                          :rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == false
+                        ?
+
                       ///end trip
-                      AppElevatedButton.medium(
+                      AppElevatedButton.large(
                         onPressed: () async {
                           rideDetails.endRiderTrip(
                               rideDetails
@@ -546,21 +544,278 @@ class _HomeScreenState extends State<HomeScreen>
                           setState(() {});
                         },
                         text: 'End Trip',
-                        icon: Icons
-                            .trending_flat_rounded,
-                        backgroundColor:
-                        AppColors.black,
-                        foregroundColor:
-                        AppColors.yellow,
-                      ).expand(),
+                        backgroundColor: AppColors.red,
+                        foregroundColor: AppColors.white,
+                      ).expand()
+                              : SizedBox()
+                          // : SizedBox(),
                     ],
                   ),
                 ),
               ),
             )
 
-                :
-                  const SizedBox(),
+                : rideDetails.newTripRequest == false && rideDetails.tripHasStarted == false &&
+                rideDetails.acceptedNewTripRequest == false && rideDetails.tripHasEnded == true ?
+                ///rating
+            Positioned(
+                bottom: 70,
+                left: 10,
+                right: 10,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.black,
+                    borderRadius: BorderRadius.circular(6.r),
+                    border: Border.all(
+                      color: AppColors
+                          .black, // Specify your border color here
+                      width: 2, // Specify the border width
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Align(
+                        alignment: Alignment.topCenter,
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: AppColors.yellow,
+                          child: Icon(
+                            Icons.location_pin,
+                            color: AppColors.black,
+                          ),
+                        ),
+                      ),
+                      const VerticalSpacing(20),
+
+                      ///title
+                      Text(
+                        'Trip has ended!.',
+                        style: context.textTheme.titleLarge!
+                            .copyWith(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                            fontFamily: 'SFCOMPACTDISPLAY'),
+                      ).padOnly(left: 20.w),
+                      const Divider(
+                        color: AppColors.grey,
+                      ),
+                      const VerticalSpacing(5),
+
+                      ///destination name
+                      Text(
+                        rideDetails.riderDestinationLocationName ?? 'hvuktfykv',
+                        style: context.textTheme.bodySmall!
+                            .copyWith(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            fontFamily: 'SFPRODISPLAYBOLD'),
+                      ).padOnly(left: 20.w),
+                      const VerticalSpacing(10),
+
+                      ///trip summary information
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: AppColors.black,
+                          borderRadius:
+                          BorderRadius.circular(6.r),
+                          border: Border.all(
+                            color: AppColors
+                                .white, // Specify your border color here
+                            width: 1, // Specify the border width
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            ///trip time
+                            Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.history,
+                                  color: AppColors.yellow,
+                                  size: 20,
+                                ),
+                                const VerticalSpacing(10),
+                                ///trip time
+                                Text(
+                                  '39 mins',
+                                  style: context
+                                      .textTheme.bodySmall!
+                                      .copyWith(
+                                      color: AppColors.white,
+                                      fontWeight:
+                                      FontWeight.w700,
+                                      fontSize: 14,
+                                      fontFamily:
+                                      'SFCOMPACTDISPLAY'),
+                                ),
+                                const VerticalSpacing(10),
+                                Text(
+                                  'Duration',
+                                  style: context
+                                      .textTheme.bodySmall!
+                                      .copyWith(
+                                      color: AppColors.white,
+                                      fontWeight:
+                                      FontWeight.w400,
+                                      fontSize: 12,
+                                      fontFamily:
+                                      'SFCOMPACTDISPLAY'),
+                                )
+                              ],
+                            ),
+
+                            ///trip distance in kilometer
+                            Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.location_pin,
+                                  color: AppColors.yellow,
+                                  size: 20,
+                                ),
+                                const VerticalSpacing(10),
+                                ///distance
+                                Text(
+                                  '15 Km',
+                                  style: context
+                                      .textTheme.bodySmall!
+                                      .copyWith(
+                                      color: AppColors.white,
+                                      fontWeight:
+                                      FontWeight.w700,
+                                      fontSize: 14,
+                                      fontFamily:
+                                      'SFCOMPACTDISPLAY'),
+                                ),
+                                const VerticalSpacing(10),
+                                Text(
+                                  'Distance',
+                                  style: context
+                                      .textTheme.bodySmall!
+                                      .copyWith(
+                                      color: AppColors.white,
+                                      fontWeight:
+                                      FontWeight.w400,
+                                      fontSize: 12,
+                                      fontFamily:
+                                      'SFCOMPACTDISPLAY'),
+                                )
+                              ],
+                            ),
+
+                            ///trip fare
+                            Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.money_rounded,
+                                  color: AppColors.yellow,
+                                  size: 20,
+                                ),
+                                const VerticalSpacing(10),
+                                CurrencyWidget(price: rideDetails.tripCost!.toInt(),
+                                  fontWeight: FontWeight.bold, fontSize: 16,color: AppColors.white,),
+                                const VerticalSpacing(10),
+                                Text(
+                                  'Trip Fee',
+                                  style: context
+                                      .textTheme.bodySmall!
+                                      .copyWith(
+                                      color: AppColors.white,
+                                      fontWeight:
+                                      FontWeight.w400,
+                                      fontSize: 12,
+                                      fontFamily:
+                                      'SFCOMPACTDISPLAY'),
+                                )
+
+
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      ///rating bar
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: AppColors.black,
+                          borderRadius:
+                          BorderRadius.circular(6.r),
+                          border: Border.all(
+                            color: AppColors
+                                .white, // Specify your border color here
+                            width: 1, // Specify the border width
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.center,
+                          children: [
+                            ///rating text
+                            Text(
+                              'How would you rate your passenger',
+                              style: context
+                                  .textTheme.bodySmall!
+                                  .copyWith(
+                                  color: AppColors.white,
+                                  fontWeight:
+                                  FontWeight.w700,
+                                  fontSize: 14,
+                                  fontFamily:
+                                  'SFCOMPACTDISPLAY'),
+                            ),
+                            const VerticalSpacing(10),
+                            Center(
+                              child: RatingBar.builder(
+                                itemSize: 50,
+                                  maxRating: 5,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  glowColor: AppColors.yellow,
+                                  unratedColor: AppColors.grey,
+                                  itemBuilder: (context, _) => Icon(
+                                    Icons.star,
+                                    size: 35.w,
+                                    color: AppColors.yellow,
+                                  ),
+                                  onRatingUpdate: (rating) {}),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      ///submit button
+                      AppElevatedButton.large(
+                        onPressed: () {
+                          rideDetails.resetApp();
+                          setState(() {});
+                          Future.delayed(
+                              1.s,
+                                  () => context.push(
+                                  const HomeScreen()));
+                        },
+                        text: 'Submit',
+                      ),
+                    ],
+                  ),
+                ))
+                : SizedBox(),
 
           ],
         ),

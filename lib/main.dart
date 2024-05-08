@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (context) => MapView()),
             ChangeNotifierProvider(
                 create: (context) =>
-                    RideRequestProvider(initialToken ?? '', initialId ?? '')),
+                    RideRequestProvider(initialToken ?? '', initialId ?? '',ImageConfiguration)),
             // ChangeNotifierProvider(
             //     create: (context) =>
             //         DriverProvider(initialToken ?? '', initialId ?? '')),

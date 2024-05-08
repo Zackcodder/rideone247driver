@@ -29,7 +29,7 @@ class MapWidgetState extends State<MapWidget>
   void initState() {
     super.initState();
     _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
-    _rideRequestProvider.acceptRideRequestResponse();
+    _rideRequestProvider.acceptRideRequestResponse(imageConfiguration);
     _rideRequestProvider.displayDirectionForActivateTrip(imageConfiguration);
     _googleMapService.markers;
   }
@@ -38,7 +38,7 @@ class MapWidgetState extends State<MapWidget>
   @override
   Widget build(BuildContext context) {
     ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
-    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse();
+    Provider.of<RideRequestProvider>(context, listen: false).acceptRideRequestResponse(imageConfiguration);
     RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
     final mapProvider = Provider.of<MapView>(context);
     return Scaffold(
