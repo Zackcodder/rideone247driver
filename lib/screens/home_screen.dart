@@ -532,15 +532,6 @@ class _HomeScreenState extends State<HomeScreen>
                               rideDetails
                                   .acceptedTripId ??
                                   '');
-                          print(
-                              'printing from the end trip button the driver id ${rideDetails.driverId}');
-                          print(
-                              'printing from the end trip button the trip id ${rideDetails.acceptedTripId}');
-                          context.push(
-                              const TripCompletedScreen());
-                          // isRideActiveNotifier
-                          //     .value = false;
-                          // rideDetails.resetApp();
                           setState(() {});
                         },
                         text: 'End Trip',
@@ -555,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             )
 
-                : rideDetails.newTripRequest == false && rideDetails.tripHasStarted == false &&
+                :  rideDetails.newTripRequest == false &&
                 rideDetails.acceptedNewTripRequest == false && rideDetails.tripHasEnded == true ?
                 ///rating
             Positioned(
