@@ -101,6 +101,7 @@ class RideRequestProvider with ChangeNotifier {
         _acceptedNewTripRequest = false;
         _tripHasStarted = false;
         _tripHasEnded = false;
+        _driverHasArrived = false;
         _tripRequestSheetHeight = 250;
         _acceptedTripRequestSheetHeight = 0;
         _rideRequests.add(newRequest);
@@ -223,14 +224,14 @@ class RideRequestProvider with ChangeNotifier {
     _driverHasArrived = true;
     _tripHasStarted = false;
     _tripHasEnded = false;
+    // _acceptedNewTripRequest = false;
+    // _newTripRequest = false;
     _socketService.socket.on('SUCCESS', (data) {
       print('starting trip status from driver: $data');
       if (data == 'rider has been notified') {
         _driverHasArrived = true;
         _tripHasStarted = false;
         _tripHasEnded = false;
-        // _acceptedNewTripRequest = false;
-        // _newTripRequest = false;
         return Fluttertoast.showToast(
             fontSize: 18,
             toastLength: Toast.LENGTH_SHORT,
@@ -265,16 +266,12 @@ class RideRequestProvider with ChangeNotifier {
     _driverHasArrived = false;
     _tripHasStarted = true;
     _tripHasEnded = false;
-    _acceptedNewTripRequest = false;
-    _newTripRequest = false;
     _socketService.socket.on('SUCCESS', (data) {
       print('starting trip status from driver: $data');
       if (data == 'Trip started successfully') {
         _driverHasArrived = false;
         _tripHasStarted = true;
         _tripHasEnded = false;
-        _acceptedNewTripRequest = false;
-        _newTripRequest = false;
         return Fluttertoast.showToast(
             fontSize: 18,
             toastLength: Toast.LENGTH_SHORT,
@@ -294,7 +291,6 @@ class RideRequestProvider with ChangeNotifier {
       }
       notifyListeners();
     });
-    // notifyListeners();
   }
 
   ///end trip
@@ -312,10 +308,10 @@ class RideRequestProvider with ChangeNotifier {
     _tripHasEnded = true;
     _acceptedNewTripRequest = false;
     _newTripRequest = false;
+    stopAutoDisplayDirectionsToPickup();
     _socketService.socket.on('TRIP_ENDED', (data) {
       print('ending trip status from driver: $data');
       if (data == 'Trip Ended Successfully') {
-        stopAutoDisplayDirectionsToPickup();
         return Fluttertoast.showToast(
             fontSize: 18,
             toastLength: Toast.LENGTH_SHORT,
@@ -333,7 +329,6 @@ class RideRequestProvider with ChangeNotifier {
             gravity: ToastGravity.TOP,
             textColor: Colors.white);
       }
-      // notifyListeners();
     });
     notifyListeners();
   }

@@ -8,6 +8,8 @@ import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/int_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
+import 'package:ride_on_driver/provider/authprovider.dart';
+import 'package:ride_on_driver/provider/driver_provider.dart';
 import 'package:ride_on_driver/provider/map_provider.dart';
 import 'package:ride_on_driver/screens/active_trip_detail_view.dart';
 import 'package:ride_on_driver/screens/profile_screen.dart';
@@ -105,6 +107,8 @@ class _HomeScreenState extends State<HomeScreen>
     ImageConfiguration imageConfiguration =
         createLocalImageConfiguration(context, size: const Size(2, 2));
     RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
+    final driverProvider = Provider.of<DriverProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
     return WillPopScope(
       onWillPop: () async {
         if (tabController.index == 0) return true;
@@ -532,15 +536,6 @@ class _HomeScreenState extends State<HomeScreen>
                               rideDetails
                                   .acceptedTripId ??
                                   '');
-                          print(
-                              'printing from the end trip button the driver id ${rideDetails.driverId}');
-                          print(
-                              'printing from the end trip button the trip id ${rideDetails.acceptedTripId}');
-                          context.push(
-                              const TripCompletedScreen());
-                          // isRideActiveNotifier
-                          //     .value = false;
-                          // rideDetails.resetApp();
                           setState(() {});
                         },
                         text: 'End Trip',
@@ -555,7 +550,7 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             )
 
-                : rideDetails.newTripRequest == false && rideDetails.tripHasStarted == false &&
+                :  rideDetails.newTripRequest == false &&
                 rideDetails.acceptedNewTripRequest == false && rideDetails.tripHasEnded == true ?
                 ///rating
             Positioned(
@@ -782,6 +777,7 @@ class _HomeScreenState extends State<HomeScreen>
                             const VerticalSpacing(10),
                             Center(
                               child: RatingBar.builder(
+                                initialRating: driverProvider.userRate ?? 0.0,
                                 itemSize: 50,
                                   maxRating: 5,
                                   minRating: 1,
@@ -794,7 +790,9 @@ class _HomeScreenState extends State<HomeScreen>
                                     size: 35.w,
                                     color: AppColors.yellow,
                                   ),
-                                  onRatingUpdate: (rating) {}),
+                                  onRatingUpdate: (rating) {
+                                  driverProvider.setDriverRating(rating);
+                                  }),
                             ),
                           ],
                         ),
@@ -802,8 +800,20 @@ class _HomeScreenState extends State<HomeScreen>
 
                       ///submit button
                       AppElevatedButton.large(
-                        onPressed: () {
+                        onPressed: () async{
                           rideDetails.resetApp();
+                          final docId = authProvider.id;
+                          const  docModel = 'driver';
+                          final  double rating = driverProvider.userRate ?? 0.0;
+                          const comment = ' ride was great';
+                          final token = authProvider.token;
+                          print('this is calling the rating function');
+                          print('this is docId $docId');
+                          print('this is docModel $docModel');
+                          print('this is rating $rating');
+                          print('this is comment $comment');
+                          print('this is token $token');
+                          driverProvider.userRating(docId!, docModel, rating.toString(), comment, token!);
                           setState(() {});
                           Future.delayed(
                               1.s,
