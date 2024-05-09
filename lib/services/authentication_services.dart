@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthService {
   final String baseUrl = 'https://rideon247-production.up.railway.app';
-  //login function
+  ///login function
   signIn(String email, String password) async {
     try {
       final headers = {
@@ -41,7 +41,7 @@ class AuthService {
     }
   }
 
-  //signup function
+  ///signup function
   signUp(String firstName, String lastName, String phone, String email,
       String password, String gender, String role) async {
     final headers = {

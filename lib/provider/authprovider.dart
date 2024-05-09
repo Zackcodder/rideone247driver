@@ -118,7 +118,6 @@ class AuthProvider with ChangeNotifier {
           /// Start location updates when user logs in
           _driverService.startLocationUpdates();
 
-
           ///start driver status
           // _socketService.driverOnlineStatus(id: _id!, availability: true);
           Navigator.pushReplacement(
