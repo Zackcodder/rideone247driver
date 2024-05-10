@@ -41,7 +41,7 @@ class DriverProvider with ChangeNotifier {
             toastLength: Toast.LENGTH_SHORT,
             backgroundColor: AppColors.green.withOpacity(0.7),
             msg: ratingResponse.message,
-            gravity: ToastGravity.TOP,
+            gravity: ToastGravity.BOTTOM,
             textColor: AppColors.black);
       }
     } catch (e) {
