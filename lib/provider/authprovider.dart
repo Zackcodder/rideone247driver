@@ -119,7 +119,7 @@ class AuthProvider with ChangeNotifier {
           _driverService.startLocationUpdates();
 
           ///start driver status
-          // _socketService.driverOnlineStatus(id: _id!, availability: true);
+          _socketService.driverOnlineStatus(id: _id!, availability: true);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -169,7 +169,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //sending of otp
+  ///sending of otp
   sendOtp(BuildContext context, String otp) async {
     final responseData = await _authService.sendOtp(otp);
 
@@ -186,7 +186,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  //forgot password
+  ///forgot password
   forgotPassword(BuildContext context, String email) async {
     final responseData = await _authService.forgetPassword(email);
 
@@ -203,7 +203,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  //reset password
+  ///reset password
   resetPassword(BuildContext context, String otp, String newPassword) async {
     final responseData = await _authService.resetPassword(otp, newPassword);
 

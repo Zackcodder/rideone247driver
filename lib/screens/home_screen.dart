@@ -100,8 +100,6 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
-  bool _acceptRequest = false;
-  bool _startTripRequest = false;
   @override
   Widget build(BuildContext context) {
     ImageConfiguration imageConfiguration =
