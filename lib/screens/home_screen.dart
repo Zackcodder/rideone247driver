@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
@@ -10,13 +8,8 @@ import 'package:ride_on_driver/core/extensions/int_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/provider/driver_provider.dart';
-import 'package:ride_on_driver/provider/map_provider.dart';
-import 'package:ride_on_driver/screens/active_trip_detail_view.dart';
 import 'package:ride_on_driver/screens/profile_screen.dart';
-import 'package:ride_on_driver/screens/requests_view.dart';
-import 'package:ride_on_driver/screens/trip_completed.dart';
 import 'package:ride_on_driver/services/driver_services.dart';
-import 'package:ride_on_driver/widgets/app_logo.dart';
 import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,11 +18,9 @@ import '../core/constants/colors.dart';
 import '../provider/ride_request_provider.dart';
 import '../widgets/app_elevated_button.dart';
 import '../widgets/currency_widget.dart';
-import '../widgets/custom_tabbar.dart';
 import '../widgets/icon_text_button.dart';
 import '../widgets/map_widget.dart';
 import 'chat_screen.dart';
-import 'trips_view.dart';
 
 // ValueNotifier isActiveNotifier = ValueNotifier(true);
 ValueNotifier<bool> isActiveNotifier = ValueNotifier<bool>(false);
@@ -46,57 +37,49 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  ImageConfiguration imageConfiguration = ImageConfiguration();
-  late final TabController tabController;
-  late final ValueNotifier<TabItem> currentTabNotifier;
-  List<TabItem> tabs = [const TabItem('Active'), const TabItem('Requests')];
+  ImageConfiguration imageConfiguration = const ImageConfiguration();
+  final DriverService _driverService = DriverService();
   late RideRequestProvider _rideRequestProvider;
-  // String? _id = Provider.of<AuthProvider>(context, listen: false).id;
-  String? _id;
+  String? _driverId;
+
+  late AuthProvider _authProvider;
 
 
   loadDriverDataFromSharedPreference() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _id = prefs.getString('id');
+      _driverId = prefs.getString('id');
     });
   }
 
-  DriverService _driverService = DriverService();
 
   @override
   initState() {
     super.initState();
     loadDriverDataFromSharedPreference();
     WidgetsBinding.instance.addObserver(this);
-    currentTabNotifier = ValueNotifier(tabs.first);
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
     _driverService.startLocationUpdates();
-    tabController = TabController(initialIndex: 0, length: 2, vsync: this);
-    _rideRequestProvider =
-        Provider.of<RideRequestProvider>(context, listen: false);
-    _rideRequestProvider.updateDriverStatus(
-        context, _id ?? '', isActiveNotifier.value);
-    _rideRequestProvider =
-        Provider.of<RideRequestProvider>(context, listen: false);
+    _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
+    _rideRequestProvider.updateDriverStatus( _driverId ?? '', isActiveNotifier.value);
+    _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.listenForRideRequests();
     _rideRequestProvider.acceptRideRequestResponse(imageConfiguration);
     _rideRequestProvider.driverOnlineStatus();
     setState(() {});
   }
 
-  @override
-  didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.detached) {
-      isActiveNotifier.dispose();
-      setState(() {});
-    }
-  }
+  // @override
+  // didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.detached) {
+  //     isActiveNotifier.dispose();
+  //     setState(() {});
+  //   }
+  // }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    tabController.dispose();
-    // isActiveNotifier.dispose();
     super.dispose();
   }
 
@@ -107,726 +90,715 @@ class _HomeScreenState extends State<HomeScreen>
     RideRequestProvider rideDetails = Provider.of<RideRequestProvider>(context);
     final driverProvider = Provider.of<DriverProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context);
-    return WillPopScope(
-      onWillPop: () async {
-        if (tabController.index == 0) return true;
-
-        currentTabNotifier.value = tabs[tabController.index - 1];
-
-        tabController.animateTo(tabController.index - 1,
-            duration: const Duration(milliseconds: 300));
-        return false;
-      },
-      child: Scaffold(
-        body: Stack(
-          alignment: AlignmentDirectional.topCenter,
-          children: [
-            const MapWidget(),
+    return Scaffold(
+      body: Stack(
+        alignment: AlignmentDirectional.topCenter,
+        children: [
+          const MapWidget(),
 
 
-            ///online button
-            Positioned(
-              top: 60,
-              child:
+          ///online button
+          Positioned(
+            top: 60,
+            child:
 
-                  ///toggle button tp go online and off line
-                  ValueListenableBuilder(
-                      valueListenable: isActiveNotifier,
-                      builder: (context, isActive, _) {
-                        return CustomSwitch(
-                            value: isActive,
-                            onChanged: (value) async {
-                              setState(() {
-                                isActiveNotifier.value = value;
-                                rideDetails.updateDriverStatus(
-                                    context, _id!, value);
-                              });
-                              setState(() {});
-                            }
-                            // (value) => isActiveNotifier.value = value,
-                            );
-                      }),
-            ),
+                ///toggle button tp go online and off line
+                ValueListenableBuilder(
+                    valueListenable: isActiveNotifier,
+                    builder: (context, isActive, _) {
+                      return CustomSwitch(
+                          value: isActive,
+                          onChanged: (value) async {
+                            setState(() {
+                              isActiveNotifier.value = value;
+                              rideDetails.driverOnlineStatus();
+                              rideDetails.updateDriverStatus(
+                                   _driverId!, value);
+                            });
+                          }
+                          // (value) => isActiveNotifier.value = value,
+                          );
+                    }),
+          ),
 
-            ///driver image
-            Positioned(
-              top: 50,
-              right: 20,
-              child:
+          ///driver image
+          Positioned(
+            top: 50,
+            right: 20,
+            child:
 
-                  ///driver image
-                  UnconstrainedBox(
-                child: Image.asset(
-                  Assets.assetsImagesDriverProfile,
-                  width: 40.w,
-                ).clip(radius: 100),
-              ).onTap(() => context.push(const ProfileScreen())),
-            ),
+                ///driver image
+                UnconstrainedBox(
+              child: Image.asset(
+                Assets.assetsImagesDriverProfile,
+                width: 40.w,
+              ).clip(radius: 100),
+            ).onTap(() => context.push(const ProfileScreen())),
+          ),
 
-            ///new trip request
-            rideDetails.newTripRequest == true &&
-                    rideDetails.acceptedNewTripRequest == false
-                ? Positioned(
-              bottom: 70,
-              left: 10,
-              right: 10,
-              child: AnimatedSize(
-                duration: const Duration(milliseconds: 150),
-                curve: Curves.easeIn,
-                child: Container(
-                  height: rideDetails.tripRequestSheetHeight,
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ///user image, name, trip distance and min, trip cost
-                      Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                        children: [
-                          ///user image
-                          UnconstrainedBox(
-                            child: Image.asset(
-                              Assets.assetsImagesDriverProfile,
-                              width: 70.w,
-                            ).clip(radius: 100),
-                          ),
-
-                          ///user name n trip info
-                          Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                rideDetails.riderName ??
-                                    'no name',
-                                style: context
-                                    .textTheme.bodySmall!
-                                    .copyWith(
-                                    color: AppColors.white),
-                              ),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: AppColors.yellow,
-                                    size: 15,
-                                  ),
-                                  Text('4.5',
-                                      style: context
-                                          .textTheme.bodySmall!
-                                          .copyWith(
-                                          color:
-                                          AppColors.white,
-                                          fontWeight:
-                                          FontWeight
-                                              .bold)),
-                                ],
-                              ),
-                              Text(
-                                  '${rideDetails.tripDistance} Kms away | ${rideDetails.etaTimer} mins',
-                                  style: context
-                                      .textTheme.bodySmall!
-                                      .copyWith(
-                                      color:
-                                      AppColors.white)),
-                            ],
-                          ),
-
-                          ///trp cost
-                          Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            children: [
-                              ///trip cost
-                              SizedBox(
-                                child: Align(
-                                    alignment:
-                                    Alignment.centerRight,
-                                    child: CurrencyWidget(
-                                      price: rideDetails.tripCost!
-                                          .toInt(),
-                                      color: AppColors.white,
-                                      fontSize: 18,
-                                    )
-                                  // price: trip.cost),
-                                ),
-                              ),
-                              Text('Trp Fee',
-                                  style: context
-                                      .textTheme.bodySmall!
-                                      .copyWith(
-                                      color: AppColors.white))
-                            ],
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-
-                      ///trip details (pickup nad dest)
-                      Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Pickup from: ${rideDetails.riderPickUpLocationName}',
-                            style: context.textTheme.bodySmall!
-                                .copyWith(color: AppColors.white),
-                          ),
-                          Text(
-                            'Dropoff at: ${rideDetails.riderDestinationLocationName}',
-                            style: context.textTheme.bodySmall!
-                                .copyWith(color: AppColors.white),
-                          )
-                        ],
-                      ),
-                      const Divider(
-                        color: AppColors.grey,
-                      ),
-
-                      ///accept and reject trip button
-                      Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ///accept button
-                          AppElevatedButton.medium(
-                            onPressed: () async {
-                              setState(() {
-                                /// Call acceptTripRequest function when the button is pressed
-                                rideDetails.acceptRideRequest(
-                                    rideDetails.driverId ?? '',
-                                    rideDetails.tripLng ?? '',
-                                    rideDetails.tripLat ?? '',
-                                    rideDetails.tripId ?? '');
-                              });
-                            },
-                            text: 'Accept',
-                            backgroundColor: AppColors.green,
-                            foregroundColor: AppColors.white,
-                          ).expand(),
-                          const SizedBox(
-                            width: 15,
-                          ),
-
-                          ///reject button
-                          AppElevatedButton.medium(
-                            onPressed: () async {
-                              setState(() {
-                                rideDetails.tripRejection(
-                                    rideDetails.driverId ?? '',
-                                    rideDetails.tripId ?? '');
-                              });
-                            },
-                            text: 'Reject',
-                            backgroundColor: AppColors.red,
-                            foregroundColor: AppColors.white,
-                          ).expand(),
-                        ],
-                      )
-                    ],
-                  ),
+          ///new trip request
+          rideDetails.newTripRequest == true &&
+                  rideDetails.acceptedNewTripRequest == false
+              ? Positioned(
+            bottom: 70,
+            left: 10,
+            right: 10,
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeIn,
+              child: Container(
+                height: rideDetails.tripRequestSheetHeight,
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
-              ),
-            )
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ///user image, name, trip distance and min, trip cost
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+                        ///user image
+                        UnconstrainedBox(
+                          child: Image.asset(
+                            Assets.assetsImagesDriverProfile,
+                            width: 70.w,
+                          ).clip(radius: 100),
+                        ),
 
-                : rideDetails.newTripRequest == false &&
-                        rideDetails.acceptedNewTripRequest == true
-                ?
-                    ///accepted trip screen
-                  Positioned(
-              bottom: 70,
-              left: 10,
-              right: 10,
-              child: AnimatedSize(
-                duration: const Duration(milliseconds: 150),
-                curve: Curves.easeIn,
-                child: Container(
-                  height: rideDetails.acceptedTripRequestSheetHeight,
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                    children: [
-                      ///user image, name, trip distance and min, trip cost
-                      Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.start,
-                        children: [
-                          ///user image
-                          UnconstrainedBox(
-                            child: Image.asset(
-                              Assets
-                                  .assetsImagesDriverProfile,
-                              width: 70.w,
-                            ).clip(radius: 100),
-                          ),
-
-                          const SizedBox(
-                            width: 15,
-                          ),
-
-                          ///user name n trip infor
-                          Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    rideDetails.riderName ??
-                                        'no name',
+                        ///user name n trip info
+                        Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              rideDetails.riderName ??
+                                  'no name',
+                              style: context
+                                  .textTheme.bodySmall!
+                                  .copyWith(
+                                  color: AppColors.white),
+                            ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  color: AppColors.yellow,
+                                  size: 15,
+                                ),
+                                Text('4.5',
                                     style: context
                                         .textTheme.bodySmall!
                                         .copyWith(
-                                        color: AppColors
-                                            .white),
-                                  ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  const Icon(
-                                    Icons.star,
-                                    color: AppColors.yellow,
-                                    size: 15,
-                                  ),
-                                  Text('4.5',
-                                      style: context.textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                          color: AppColors
-                                              .white,
-                                          fontWeight:
-                                          FontWeight
-                                              .bold)),
-                                ],
+                                        color:
+                                        AppColors.white,
+                                        fontWeight:
+                                        FontWeight
+                                            .bold)),
+                              ],
+                            ),
+                            Text(
+                                '${rideDetails.tripDistance} Kms away | ${rideDetails.etaTimer} mins',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color:
+                                    AppColors.white)),
+                          ],
+                        ),
+
+                        ///trp cost
+                        Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            ///trip cost
+                            SizedBox(
+                              child: Align(
+                                  alignment:
+                                  Alignment.centerRight,
+                                  child: CurrencyWidget(
+                                    price: rideDetails.tripCost!
+                                        .toInt(),
+                                    color: AppColors.white,
+                                    fontSize: 18,
+                                  )
+                                // price: trip.cost),
                               ),
-                              Text(
-                                  '${rideDetails.tripDistance} Kms away | ${rideDetails.etaTimer} mins',
+                            ),
+                            Text('Trp Fee',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color: AppColors.white))
+                          ],
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+
+                    ///trip details (pickup nad dest)
+                    Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Pickup from: ${rideDetails.riderPickUpLocationName}',
+                          style: context.textTheme.bodySmall!
+                              .copyWith(color: AppColors.white),
+                        ),
+                        Text(
+                          'Dropoff at: ${rideDetails.riderDestinationLocationName}',
+                          style: context.textTheme.bodySmall!
+                              .copyWith(color: AppColors.white),
+                        )
+                      ],
+                    ),
+                    const Divider(
+                      color: AppColors.grey,
+                    ),
+
+                    ///accept and reject trip button
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ///accept button
+                        AppElevatedButton.medium(
+                          onPressed: () async {
+                            setState(() {
+                              /// Call acceptTripRequest function when the button is pressed
+                              rideDetails.acceptRideRequest(
+                                  rideDetails.driverId ?? '',
+                                  rideDetails.tripLng ?? '',
+                                  rideDetails.tripLat ?? '',
+                                  rideDetails.tripId ?? '');
+                            });
+                          },
+                          text: 'Accept',
+                          backgroundColor: AppColors.green,
+                          foregroundColor: AppColors.white,
+                        ).expand(),
+                        const SizedBox(
+                          width: 15,
+                        ),
+
+                        ///reject button
+                        AppElevatedButton.medium(
+                          onPressed: () async {
+                            setState(() {
+                              rideDetails.tripRejection(
+                                  rideDetails.driverId ?? '',
+                                  rideDetails.tripId ?? '');
+                            });
+                          },
+                          text: 'Reject',
+                          backgroundColor: AppColors.red,
+                          foregroundColor: AppColors.white,
+                        ).expand(),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          )
+
+              : rideDetails.newTripRequest == false &&
+                      rideDetails.acceptedNewTripRequest == true
+              ?
+                  ///accepted trip screen
+                Positioned(
+            bottom: 70,
+            left: 10,
+            right: 10,
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeIn,
+              child: Container(
+                height: rideDetails.acceptedTripRequestSheetHeight,
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+                  children: [
+                    ///user image, name, trip distance and min, trip cost
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.start,
+                      children: [
+                        ///user image
+                        UnconstrainedBox(
+                          child: Image.asset(
+                            Assets
+                                .assetsImagesDriverProfile,
+                            width: 70.w,
+                          ).clip(radius: 100),
+                        ),
+
+                        const SizedBox(
+                          width: 15,
+                        ),
+
+                        ///user name n trip infor
+                        Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  rideDetails.riderName ??
+                                      'no name',
                                   style: context
                                       .textTheme.bodySmall!
                                       .copyWith(
                                       color: AppColors
-                                          .white)),
+                                          .white),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                const Icon(
+                                  Icons.star,
+                                  color: AppColors.yellow,
+                                  size: 15,
+                                ),
+                                Text('4.5',
+                                    style: context.textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                        color: AppColors
+                                            .white,
+                                        fontWeight:
+                                        FontWeight
+                                            .bold)),
+                              ],
+                            ),
+                            Text(
+                                '${rideDetails.tripDistance} Kms away | ${rideDetails.etaTimer} mins',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color: AppColors
+                                        .white)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+
+                    const Divider(
+                      color: AppColors.grey,
+                    ),
+
+                    ///call, chat and cancel buttons
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+                        ///chat
+                        IconTextButton(
+                          icon:
+                          Icons.question_answer_rounded,
+                          text: 'Chat',
+                          onPressed: () {
+                            context
+                                .push(const ChatScreen());
+                          },
+                          iconColor: AppColors.yellow,
+                          textColor: Colors.white,
+                          backgroundColor: AppColors.black,
+                        ),
+
+                        ///call
+                        IconTextButton(
+                          icon: Icons.wifi_calling,
+                          text: 'Call',
+                          onPressed: () {
+                            context
+                                .push(const ChatScreen());
+                          },
+                          iconColor: AppColors.yellow,
+                          textColor: Colors.white,
+                          backgroundColor: AppColors.black,
+                        ),
+
+                        ///cancel
+                        IconTextButton(
+                          icon: Icons.cancel_outlined,
+                          text: 'Cancel',
+                          onPressed: () async{
+                            const String driverRole = 'DRIVER';
+                           rideDetails.tripCancellation(rideDetails.driverId!, rideDetails.acceptedTripId!, driverRole);
+                          },
+                          iconColor: AppColors.yellow,
+                          textColor: Colors.white,
+                          backgroundColor: AppColors.black,
+                        ),
+                      ],
+                    ),
+                    const Divider(
+                      color: AppColors.grey,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+
+                    ///accept and reject trip button
+                    rideDetails.tripHasStarted == false && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == false
+                        ? AppElevatedButton.large(
+                      onPressed: () async {
+                        setState(() {
+                          rideDetails.arrivedPickup(
+                              rideDetails.driverId ?? '',
+                              rideDetails.acceptedTripId ?? '');
+                        });
+                      },
+                      text: 'Arrived',
+                      backgroundColor: AppColors.green,
+                      foregroundColor: AppColors.white,
+                    ).expand()
+                        :
+                        rideDetails.tripHasStarted == false && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == true
+                        ?
+                    /// start trip button
+                    AppElevatedButton.large(
+                      onPressed: () async {
+                        setState(() {
+                          rideDetails
+                              .displayDirectionForActivateTrip(
+                              imageConfiguration);
+                          rideDetails.startRide(
+                            rideDetails
+                                .driverId ??
+                                '',
+                            rideDetails
+                                .acceptedTripId ??
+                                '',
+                          );
+                        });
+                      },
+                      text: 'Start Trip',
+                      backgroundColor: AppColors.green,
+                      foregroundColor: AppColors.white,
+                    ).expand()
+                        :rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == false
+                      ?
+
+                    ///end trip
+                    AppElevatedButton.large(
+                      onPressed: () async {
+                        rideDetails.endRiderTrip(
+                            rideDetails
+                                .driverId ??
+                                '',
+                            rideDetails
+                                .acceptedTripId ??
+                                '');
+                        setState(() {});
+                      },
+                      text: 'End Trip',
+                      backgroundColor: AppColors.red,
+                      foregroundColor: AppColors.white,
+                    ).expand()
+                            : const SizedBox()
+                        // : SizedBox(),
+                  ],
+                ),
+              ),
+            ),
+          )
+
+              :  rideDetails.newTripRequest == false &&
+              rideDetails.acceptedNewTripRequest == false && rideDetails.tripHasEnded == true ?
+              ///rating
+          Positioned(
+              bottom: 70,
+              left: 10,
+              right: 10,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.black,
+                  borderRadius: BorderRadius.circular(6.r),
+                  border: Border.all(
+                    color: AppColors
+                        .black, // Specify your border color here
+                    width: 2, // Specify the border width
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Align(
+                      alignment: Alignment.topCenter,
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: AppColors.yellow,
+                        child: Icon(
+                          Icons.location_pin,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ),
+                    const VerticalSpacing(20),
+
+                    ///title
+                    Text(
+                      'Trip has ended!.',
+                      style: context.textTheme.titleLarge!
+                          .copyWith(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                          fontFamily: 'SFCOMPACTDISPLAY'),
+                    ).padOnly(left: 20.w),
+                    const Divider(
+                      color: AppColors.grey,
+                    ),
+                    const VerticalSpacing(5),
+
+                    ///destination name
+                    Text(
+                      rideDetails.riderDestinationLocationName ?? 'hvuktfykv',
+                      style: context.textTheme.bodySmall!
+                          .copyWith(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          fontFamily: 'SFPRODISPLAYBOLD'),
+                    ).padOnly(left: 20.w),
+                    const VerticalSpacing(10),
+
+                    ///trip summary information
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: AppColors.black,
+                        borderRadius:
+                        BorderRadius.circular(6.r),
+                        border: Border.all(
+                          color: AppColors
+                              .white, // Specify your border color here
+                          width: 1, // Specify the border width
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        children: [
+                          ///trip time
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.history,
+                                color: AppColors.yellow,
+                                size: 20,
+                              ),
+                              const VerticalSpacing(10),
+                              ///trip time
+                              Text(
+                                '39 mins',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color: AppColors.white,
+                                    fontWeight:
+                                    FontWeight.w700,
+                                    fontSize: 14,
+                                    fontFamily:
+                                    'SFCOMPACTDISPLAY'),
+                              ),
+                              const VerticalSpacing(10),
+                              Text(
+                                'Duration',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color: AppColors.white,
+                                    fontWeight:
+                                    FontWeight.w400,
+                                    fontSize: 12,
+                                    fontFamily:
+                                    'SFCOMPACTDISPLAY'),
+                              )
+                            ],
+                          ),
+
+                          ///trip distance in kilometer
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.location_pin,
+                                color: AppColors.yellow,
+                                size: 20,
+                              ),
+                              const VerticalSpacing(10),
+                              ///distance
+                              Text(
+                                '15 Km',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color: AppColors.white,
+                                    fontWeight:
+                                    FontWeight.w700,
+                                    fontSize: 14,
+                                    fontFamily:
+                                    'SFCOMPACTDISPLAY'),
+                              ),
+                              const VerticalSpacing(10),
+                              Text(
+                                'Distance',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color: AppColors.white,
+                                    fontWeight:
+                                    FontWeight.w400,
+                                    fontSize: 12,
+                                    fontFamily:
+                                    'SFCOMPACTDISPLAY'),
+                              )
+                            ],
+                          ),
+
+                          ///trip fare
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.money_rounded,
+                                color: AppColors.yellow,
+                                size: 20,
+                              ),
+                              const VerticalSpacing(10),
+                              CurrencyWidget(price: rideDetails.tripCost!.toInt(),
+                                fontWeight: FontWeight.bold, fontSize: 16,color: AppColors.white,),
+                              const VerticalSpacing(10),
+                              Text(
+                                'Trip Fee',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color: AppColors.white,
+                                    fontWeight:
+                                    FontWeight.w400,
+                                    fontSize: 12,
+                                    fontFamily:
+                                    'SFCOMPACTDISPLAY'),
+                              )
+
+
                             ],
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                    ),
 
-                      const Divider(
-                        color: AppColors.grey,
+                    ///rating bar
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: AppColors.black,
+                        borderRadius:
+                        BorderRadius.circular(6.r),
+                        border: Border.all(
+                          color: AppColors
+                              .white, // Specify your border color here
+                          width: 1, // Specify the border width
+                        ),
                       ),
-
-                      ///call, chat and cancel buttons
-                      Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.center,
                         children: [
-                          ///chat
-                          IconTextButton(
-                            icon:
-                            Icons.question_answer_rounded,
-                            text: 'Chat',
-                            onPressed: () {
-                              context
-                                  .push(const ChatScreen());
-                            },
-                            iconColor: AppColors.yellow,
-                            textColor: Colors.white,
-                            backgroundColor: AppColors.black,
+                          ///rating text
+                          Text(
+                            'How would you rate your passenger',
+                            style: context
+                                .textTheme.bodySmall!
+                                .copyWith(
+                                color: AppColors.white,
+                                fontWeight:
+                                FontWeight.w700,
+                                fontSize: 14,
+                                fontFamily:
+                                'SFCOMPACTDISPLAY'),
                           ),
-
-                          ///call
-                          IconTextButton(
-                            icon: Icons.wifi_calling,
-                            text: 'Call',
-                            onPressed: () {
-                              context
-                                  .push(const ChatScreen());
-                            },
-                            iconColor: AppColors.yellow,
-                            textColor: Colors.white,
-                            backgroundColor: AppColors.black,
-                          ),
-
-                          ///cancel
-                          IconTextButton(
-                            icon: Icons.cancel_outlined,
-                            text: 'Cancel',
-                            onPressed: () {
-                              context
-                                  .push(const ChatScreen());
-                            },
-                            iconColor: AppColors.yellow,
-                            textColor: Colors.white,
-                            backgroundColor: AppColors.black,
+                          const VerticalSpacing(10),
+                          Center(
+                            child: RatingBar.builder(
+                              initialRating: driverProvider.userRate ?? 0.0,
+                              itemSize: 50,
+                                maxRating: 5,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                glowColor: AppColors.yellow,
+                                unratedColor: AppColors.grey,
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  size: 35.w,
+                                  color: AppColors.yellow,
+                                ),
+                                onRatingUpdate: (rating) {
+                                driverProvider.setDriverRating(rating);
+                                }),
                           ),
                         ],
                       ),
-                      const Divider(
-                        color: AppColors.grey,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-
-                      ///accept and reject trip button
-                      rideDetails.tripHasStarted == false && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == false
-                          ? AppElevatedButton.large(
-                        onPressed: () async {
-                          setState(() {
-                            rideDetails.arrivedPickup(
-                                rideDetails.driverId ?? '',
-                                rideDetails.acceptedTripId ?? '');
-                          });
-                        },
-                        text: 'Arrived',
-                        backgroundColor: AppColors.green,
-                        foregroundColor: AppColors.white,
-                      ).expand()
-                          :
-                          rideDetails.tripHasStarted == false && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == true
-                          ?
-                      /// start trip button
-                      AppElevatedButton.large(
-                        onPressed: () async {
-                          setState(() {
-                            rideDetails
-                                .displayDirectionForActivateTrip(
-                                imageConfiguration);
-                            rideDetails.startRide(
-                              rideDetails
-                                  .driverId ??
-                                  '',
-                              rideDetails
-                                  .acceptedTripId ??
-                                  '',
-                            );
-                          });
-                        },
-                        text: 'Start Trip',
-                        backgroundColor: AppColors.green,
-                        foregroundColor: AppColors.white,
-                      ).expand()
-                          :rideDetails.tripHasStarted == true && rideDetails.tripHasEnded == false && rideDetails.driverHasArrived == false
-                        ?
-
-                      ///end trip
-                      AppElevatedButton.large(
-                        onPressed: () async {
-                          rideDetails.endRiderTrip(
-                              rideDetails
-                                  .driverId ??
-                                  '',
-                              rideDetails
-                                  .acceptedTripId ??
-                                  '');
-                          setState(() {});
-                        },
-                        text: 'End Trip',
-                        backgroundColor: AppColors.red,
-                        foregroundColor: AppColors.white,
-                      ).expand()
-                              : SizedBox()
-                          // : SizedBox(),
-                    ],
-                  ),
-                ),
-              ),
-            )
-
-                :  rideDetails.newTripRequest == false &&
-                rideDetails.acceptedNewTripRequest == false && rideDetails.tripHasEnded == true ?
-                ///rating
-            Positioned(
-                bottom: 70,
-                left: 10,
-                right: 10,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppColors.black,
-                    borderRadius: BorderRadius.circular(6.r),
-                    border: Border.all(
-                      color: AppColors
-                          .black, // Specify your border color here
-                      width: 2, // Specify the border width
                     ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Align(
-                        alignment: Alignment.topCenter,
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: AppColors.yellow,
-                          child: Icon(
-                            Icons.location_pin,
-                            color: AppColors.black,
-                          ),
-                        ),
-                      ),
-                      const VerticalSpacing(20),
 
-                      ///title
-                      Text(
-                        'Trip has ended!.',
-                        style: context.textTheme.titleLarge!
-                            .copyWith(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20,
-                            fontFamily: 'SFCOMPACTDISPLAY'),
-                      ).padOnly(left: 20.w),
-                      const Divider(
-                        color: AppColors.grey,
-                      ),
-                      const VerticalSpacing(5),
+                    ///submit button
+                    AppElevatedButton.large(
+                      onPressed: () async{
+                        rideDetails.resetApp();
+                        final docId = authProvider.id;
+                        const  docModel = 'driver';
+                        final  double rating = driverProvider.userRate ?? 0.0;
+                        const comment = ' ride was great';
+                        final token = authProvider.token;
+                        print('this is calling the rating function');
+                        print('this is docId $docId');
+                        print('this is docModel $docModel');
+                        print('this is rating $rating');
+                        print('this is comment $comment');
+                        print('this is token $token');
+                        driverProvider.userRating(docId!, docModel, rating.toString(), comment, token!);
+                        setState(() {});
+                        Future.delayed(
+                            1.s,
+                                () => context.push(
+                                const HomeScreen()));
+                      },
+                      text: 'Submit',
+                    ),
+                  ],
+                ),
+              ))
+              : const SizedBox(),
 
-                      ///destination name
-                      Text(
-                        rideDetails.riderDestinationLocationName ?? 'hvuktfykv',
-                        style: context.textTheme.bodySmall!
-                            .copyWith(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            fontFamily: 'SFPRODISPLAYBOLD'),
-                      ).padOnly(left: 20.w),
-                      const VerticalSpacing(10),
-
-                      ///trip summary information
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: AppColors.black,
-                          borderRadius:
-                          BorderRadius.circular(6.r),
-                          border: Border.all(
-                            color: AppColors
-                                .white, // Specify your border color here
-                            width: 1, // Specify the border width
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            ///trip time
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.history,
-                                  color: AppColors.yellow,
-                                  size: 20,
-                                ),
-                                const VerticalSpacing(10),
-                                ///trip time
-                                Text(
-                                  '39 mins',
-                                  style: context
-                                      .textTheme.bodySmall!
-                                      .copyWith(
-                                      color: AppColors.white,
-                                      fontWeight:
-                                      FontWeight.w700,
-                                      fontSize: 14,
-                                      fontFamily:
-                                      'SFCOMPACTDISPLAY'),
-                                ),
-                                const VerticalSpacing(10),
-                                Text(
-                                  'Duration',
-                                  style: context
-                                      .textTheme.bodySmall!
-                                      .copyWith(
-                                      color: AppColors.white,
-                                      fontWeight:
-                                      FontWeight.w400,
-                                      fontSize: 12,
-                                      fontFamily:
-                                      'SFCOMPACTDISPLAY'),
-                                )
-                              ],
-                            ),
-
-                            ///trip distance in kilometer
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.location_pin,
-                                  color: AppColors.yellow,
-                                  size: 20,
-                                ),
-                                const VerticalSpacing(10),
-                                ///distance
-                                Text(
-                                  '15 Km',
-                                  style: context
-                                      .textTheme.bodySmall!
-                                      .copyWith(
-                                      color: AppColors.white,
-                                      fontWeight:
-                                      FontWeight.w700,
-                                      fontSize: 14,
-                                      fontFamily:
-                                      'SFCOMPACTDISPLAY'),
-                                ),
-                                const VerticalSpacing(10),
-                                Text(
-                                  'Distance',
-                                  style: context
-                                      .textTheme.bodySmall!
-                                      .copyWith(
-                                      color: AppColors.white,
-                                      fontWeight:
-                                      FontWeight.w400,
-                                      fontSize: 12,
-                                      fontFamily:
-                                      'SFCOMPACTDISPLAY'),
-                                )
-                              ],
-                            ),
-
-                            ///trip fare
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.money_rounded,
-                                  color: AppColors.yellow,
-                                  size: 20,
-                                ),
-                                const VerticalSpacing(10),
-                                CurrencyWidget(price: rideDetails.tripCost!.toInt(),
-                                  fontWeight: FontWeight.bold, fontSize: 16,color: AppColors.white,),
-                                const VerticalSpacing(10),
-                                Text(
-                                  'Trip Fee',
-                                  style: context
-                                      .textTheme.bodySmall!
-                                      .copyWith(
-                                      color: AppColors.white,
-                                      fontWeight:
-                                      FontWeight.w400,
-                                      fontSize: 12,
-                                      fontFamily:
-                                      'SFCOMPACTDISPLAY'),
-                                )
-
-
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      ///rating bar
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: AppColors.black,
-                          borderRadius:
-                          BorderRadius.circular(6.r),
-                          border: Border.all(
-                            color: AppColors
-                                .white, // Specify your border color here
-                            width: 1, // Specify the border width
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.center,
-                          children: [
-                            ///rating text
-                            Text(
-                              'How would you rate your passenger',
-                              style: context
-                                  .textTheme.bodySmall!
-                                  .copyWith(
-                                  color: AppColors.white,
-                                  fontWeight:
-                                  FontWeight.w700,
-                                  fontSize: 14,
-                                  fontFamily:
-                                  'SFCOMPACTDISPLAY'),
-                            ),
-                            const VerticalSpacing(10),
-                            Center(
-                              child: RatingBar.builder(
-                                initialRating: driverProvider.userRate ?? 0.0,
-                                itemSize: 50,
-                                  maxRating: 5,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  glowColor: AppColors.yellow,
-                                  unratedColor: AppColors.grey,
-                                  itemBuilder: (context, _) => Icon(
-                                    Icons.star,
-                                    size: 35.w,
-                                    color: AppColors.yellow,
-                                  ),
-                                  onRatingUpdate: (rating) {
-                                  driverProvider.setDriverRating(rating);
-                                  }),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      ///submit button
-                      AppElevatedButton.large(
-                        onPressed: () async{
-                          rideDetails.resetApp();
-                          final docId = authProvider.id;
-                          const  docModel = 'driver';
-                          final  double rating = driverProvider.userRate ?? 0.0;
-                          const comment = ' ride was great';
-                          final token = authProvider.token;
-                          print('this is calling the rating function');
-                          print('this is docId $docId');
-                          print('this is docModel $docModel');
-                          print('this is rating $rating');
-                          print('this is comment $comment');
-                          print('this is token $token');
-                          driverProvider.userRating(docId!, docModel, rating.toString(), comment, token!);
-                          setState(() {});
-                          Future.delayed(
-                              1.s,
-                                  () => context.push(
-                                  const HomeScreen()));
-                        },
-                        text: 'Submit',
-                      ),
-                    ],
-                  ),
-                ))
-                : SizedBox(),
-
-          ],
-        ),
+        ],
       ),
     );
   }

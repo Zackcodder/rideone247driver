@@ -43,10 +43,6 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
   @override
   Widget build(BuildContext context) {
     DriverProvider rideHistory = Provider.of<DriverProvider>(context);
-
-    // rideHistory.allRideHistory!.length;
-    // RidesHistories rides =
-    // rideHistory.allRideHistory!.length as RidesHistories;
     return Scaffold(
       appBar: AppBar(
         title: Text('Ride History',
@@ -405,7 +401,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                     RidesHistories rides =
                     rideHistory.allRideHistory![index];
                     return
-                      rides.status == 'accepted' ? GestureDetector(
+                      rides.status == 'ended' ? GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
@@ -516,7 +512,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                       decoration: BoxDecoration(
                                         color: AppColors.white,
                                         border: Border.all(
-                                          color: rides.status == 'ended' ? AppColors.red : AppColors.yellow,
+                                          color:  AppColors.yellow,
                                           width: 1.0,
                                         ),
                                       ),
@@ -524,9 +520,9 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                         child: Text(
                                             rides.status,
                                             style: context.textTheme.bodyMedium!.copyWith(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12,
-                                                color:  rides.status == 'ended' ? AppColors.red :AppColors.green,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14,
+                                                color:  AppColors.green,
                                                 fontFamily: 'SFPRODISPLAYREGULAR')
                                         ),
                                       ),
@@ -691,7 +687,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                       decoration: BoxDecoration(
                                         color: AppColors.white,
                                         border: Border.all(
-                                          color: rides.status == 'ended' ? AppColors.red : AppColors.yellow,
+                                          color:  AppColors.red,
                                           width: 1.0,
                                         ),
                                       ),
@@ -699,9 +695,9 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                         child: Text(
                                             rides.status,
                                             style: context.textTheme.bodyMedium!.copyWith(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12,
-                                                color:  rides.status == 'ended' ? AppColors.red :AppColors.green,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14,
+                                                color:  AppColors.red,
                                                 fontFamily: 'SFPRODISPLAYREGULAR')
                                         ),
                                       ),

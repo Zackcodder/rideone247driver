@@ -36,7 +36,7 @@ class RideRequestProvider with ChangeNotifier {
   bool get onLine => _onLine;
 
   ///updating driver online status
-  updateDriverStatus(BuildContext context, String id, bool availability) async {
+  updateDriverStatus( String id, bool availability) async {
     await _socketService.driverOnlineStatus(id: id, availability: availability);
     driverOnlineStatus();
     notifyListeners();

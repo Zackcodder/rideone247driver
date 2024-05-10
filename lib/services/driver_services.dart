@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as https;
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/model/rides_histories_model.dart';
+import '../provider/authprovider.dart';
 import 'geo_locator_service.dart';
 import 'socket_service.dart';
 
@@ -42,12 +43,14 @@ class DriverService {
   }
 
   /// Update location using socket
+
   updateLocation() async {
     final position =
         await _geoLocationService.getCurrentPosition(asPosition: false);
     _socketService.updateLocation(
-      id: id!,
-          // '65aa5dbab2e8f20021fcac83', // Provide the driver ID
+      id:
+      // id!,
+          '65aa5dbab2e8f20021fcac83', // Provide the driver ID
       role: 'DRIVER',
       lat: position[0].toString(),
       lon: position[1].toString(),
