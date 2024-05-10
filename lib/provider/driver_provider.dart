@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ride_on_driver/model/rides_histories_model.dart';
 import 'package:ride_on_driver/services/driver_services.dart';
 
 import '../core/constants/colors.dart';
@@ -11,12 +12,10 @@ class DriverProvider with ChangeNotifier {
   ///user rating
   double? _userRate;
   double? get userRate => _userRate;
-
   setDriverRating(double rating) {
     _userRate = rating;
     notifyListeners();
   }
-
   userRating(
     String docId,
     String docModel,
@@ -46,6 +45,21 @@ class DriverProvider with ChangeNotifier {
       }
     } catch (e) {
       print('error from rating user by driver $e');
+    }
+  }
+
+  ///ride histories
+  List<RidesHistories>? allRideHistory;
+
+  fetchRideHistory(String token) async {
+    print('oya ooo');
+    try {
+      allRideHistory = await _driverService.getRideHistory(token);
+      print('ahhhh');
+      notifyListeners();
+    } catch (error) {
+      // Handle error
+      print('Error fetching ride history: $error');
     }
   }
 }

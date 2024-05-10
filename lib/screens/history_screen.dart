@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
+import 'package:ride_on_driver/model/rides_histories_model.dart';
+import 'package:ride_on_driver/provider/driver_provider.dart';
+import 'package:ride_on_driver/screens/ride_histories_detials_screen.dart';
 
 import '../core/constants/assets.dart';
 import '../core/constants/colors.dart';
@@ -27,17 +30,23 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
   bool ride = true;
   bool completed = false;
   bool rejected = false;
+
   late AuthProvider _authProvider;
   @override
   void initState() {
     super.initState();
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
-    // Provider.of<AuthProvider>(context, listen: false) .fetchRideHistory(_authProvider.token!);
+    Provider.of<DriverProvider>(context, listen: false)
+        .fetchRideHistory(_authProvider.token!);
   }
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider rideHistory = Provider.of<AuthProvider>(context);
+    DriverProvider rideHistory = Provider.of<DriverProvider>(context);
+
+    // rideHistory.allRideHistory!.length;
+    // RidesHistories rides =
+    // rideHistory.allRideHistory!.length as RidesHistories;
     return Scaffold(
       appBar: AppBar(
         title: Text('Ride History',
@@ -145,7 +154,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                   ),
                   const SizedBox(width: 10),
 
-                  ///REJECTED
+                  ///CANCELLED
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -186,144 +195,172 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
               ride == true && completed == false && rejected == false
                   ?
 
-              ///all
+              ///All
               Builder(builder: (context) {
-                return ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                return rideHistory.allRideHistory == null
+                    ? const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    VerticalSpacing(150),
+                    CircularProgressIndicator(),
+                  ],
+                )
+                    : rideHistory.allRideHistory!.isEmpty
+                    ? const SizedBox(
+                  child: Column(
+                    mainAxisAlignment:
+                    MainAxisAlignment.center,
+                    children: [
+                      // Image.asset(
+                      //     Assets.assetsImagesNothingtosee),
+                      VerticalSpacing(10),
+                      Text(
+                        'Select a category to view history',
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ).expand()
+                    : ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20.w, vertical: 70.w),
                   physics: const BouncingScrollPhysics(),
-                  itemCount: 9,
+                  itemCount:
+                  rideHistory.allRideHistory!.length,
                   itemBuilder: (context, index) {
+                    RidesHistories rides =
+                    rideHistory.allRideHistory![index];
                     return GestureDetector(
-                      onTap: (){},
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            padding: EdgeInsets.all(15.w),
-                            margin: EdgeInsets.symmetric(vertical: 5.h),
-                            child: IntrinsicHeight(
-                              child: Row(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  RidesHistoriesDetailsScreen(rides)),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                          BorderRadius.circular(10.r),
+                        ),
+                        padding: EdgeInsets.all(15.w),
+                        margin: EdgeInsets.symmetric(
+                            vertical: 5.h),
+                        child: IntrinsicHeight(
+                          child: Row(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// pickup and destination icon
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  /// pickup and destination icon
-                                  Column(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on,
-                                        color: AppColors.black,
-                                        size: 20.w,
-                                      ),
-                                      const Spacer(),
-                                      // CustomPaint(
-                                      //   size: Size(1, 60.h),
-                                      //   painter: const DashedLineVerticalPainter(
-                                      //     color: AppColors.black,
-                                      //   ),
-                                      // ),
-                                      Icon(
-                                        Icons.send_outlined,
-                                        // Icons.electric_bike,
-                                        color: AppColors.black,
-                                        size: 20.w,
-                                      ).rotate(-0.6),
-                                    ],
+                                  Icon(
+                                    Icons.location_on,
+                                    color: AppColors.black,
+                                    size: 20.w,
                                   ),
-                                  const HorizontalSpacing(10),
-
-                                  /// pickup and destination names and time n date
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '11, Shai Hulud Crescent, Ikeja.',
-                                        style: context.textTheme.bodyMedium,
-                                      ),
-                                        const VerticalSpacing(10),
-                                      Text(
-                                        'ShopRite Event Center, Ikeja.',
-                                        style: context.textTheme.bodyMedium,
-                                      ),
-                                      Text(
-                                        '29 May, 2024  10:00am',
-                                        style: context.textTheme.bodySmall,
-                                      ),
-
-                                    ],
-                                  ).expand(),
-                                  const HorizontalSpacing(10),
-
-                                  /// price
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      const CurrencyWidget(
-                                        price: 1500,
-                                        // model.cost,
-                                        color: AppColors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                      const Spacer(),
-                                      Container(
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.white,
-                                          border: Border.all(
-                                            color: AppColors.yellow,
-                                            width: 1.0,
-                                          ),
-                                        ),
-                                        child:  Center(
-                                          child: Text(
-                                              'COMPLETED',
-                                              style: context.textTheme.bodyMedium!.copyWith(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12,
-                                                  color:  AppColors.green,
-                                                  fontFamily: 'SFPRODISPLAYREGULAR')
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  CustomPaint(
+                                    size: Size(1, 60.h),
+                                    painter: const DashedLineVerticalPainter(
+                                      color: AppColors.black,
+                                    ),
                                   ),
-                                  // Column(
-                                  //   crossAxisAlignment: CrossAxisAlignment.end,
-                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     Text(
-                                  //       model.date,
-                                  //       style: context.textTheme.bodySmall,
-                                  //     ),
-                                  //     const VerticalSpacing(5),
-                                  //     Row(
-                                  //       mainAxisSize: MainAxisSize.min,
-                                  //       children: List.generate(
-                                  //         5,
-                                  //         (index) => Icon(
-                                  //           Icons.star,
-                                  //           color: index < model.rating ? AppColors.yellow : AppColors.grey,
-                                  //           size: 15.w,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //     SizedBox(
-                                  //       width: 50.w,
-                                  //       height: 20.h,
-                                  //       child: Align(
-                                  //         alignment: Alignment.centerRight,
-                                  //         child: CurrencyWidget(price: model.cost, color: AppColors.grey),
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // )
+                                  Icon(
+                                    Icons.send_outlined,
+                                    // Icons.electric_bike,
+                                    color: AppColors.black,
+                                    size: 20.w,
+                                  ).rotate(-0.6),
                                 ],
                               ),
-                            ),
+                              const HorizontalSpacing(10),
+
+                              /// pickup location and destination name and date
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .start,
+                                mainAxisAlignment:
+                                MainAxisAlignment
+                                    .spaceBetween,
+                                children: [
+                                  Text(
+                                    rides.pickUpName ?? 'sss',
+                                    style: context.textTheme
+                                        .bodyMedium,
+                                        // !.copyWith(
+                                        // fontFamily:
+                                        // 'SFPRODISPLAYREGULAR',
+                                        // fontWeight:
+                                        // FontWeight
+                                        //     .w400,
+                                        // color: AppColors
+                                        //     .black),
+                                  ),
+                                  const VerticalSpacing(10),
+                                  Text(
+                                    rides.dropOffName,
+                                    style: context.textTheme
+                                        .bodyMedium,
+                                  ),
+                                  Text(
+                                    rides.createdAt
+                                        .toString(),
+                                    // '20 Dec 2024. 10:20am',
+                                    style: context.textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                        fontFamily:
+                                        'SFPRODISPLAYREGULAR',
+                                        fontWeight:
+                                        FontWeight
+                                            .w400,
+                                        color: AppColors
+                                            .black),
+                                  ),
+                                ],
+                              ).expand(),
+                              const HorizontalSpacing(10),
+                              ///price and status
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  CurrencyWidget(
+                                    price: rides.fare ?? 0,
+                                    color: AppColors.black,
+                                    fontWeight:
+                                    FontWeight.w500,
+                                  ),
+                                  VerticalSpacing(30),
+                                  ///status
+                            Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.white,
+                                      border: Border.all(
+                                        color: rides.status == 'ended' ? AppColors.red : AppColors.yellow,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    child:  Center(
+                                      child: Text(
+                                          rides.status,
+                                          style: context.textTheme.bodyMedium!.copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12,
+                                              color:  rides.status == 'ended' ? AppColors.red :AppColors.green,
+                                              fontFamily: 'SFPRODISPLAYREGULAR')
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
-                          Divider(color: AppColors.grey.withOpacity(0.3),)
-                        ],
+                        ),
                       ),
                     );
                   },
@@ -334,140 +371,173 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
 
               ///  completed
               Builder(builder: (context) {
-                return ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                return rideHistory.allRideHistory == null
+                    ? const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    VerticalSpacing(150),
+                    CircularProgressIndicator(),
+                  ],
+                )
+                    : rideHistory.allRideHistory!.isEmpty
+                    ? const SizedBox(
+                  child: Column(
+                    mainAxisAlignment:
+                    MainAxisAlignment.center,
+                    children: [
+                      // Image.asset(
+                      //     Assets.assetsImagesNothingtosee),
+                      VerticalSpacing(10),
+                      Text(
+                        'Select a category to view history',
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ).expand()
+                    : ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20.w, vertical: 60.w),
                   physics: const BouncingScrollPhysics(),
-                  itemCount: 9,
+                  itemCount:
+                  rideHistory.allRideHistory!.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: (){},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.grey.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        padding: EdgeInsets.all(15.w),
-                        margin: EdgeInsets.symmetric(vertical: 5.h),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            children: [
-                              /// pickup and destination icon
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: AppColors.black,
-                                    size: 20.w,
-                                  ),
-                                  CustomPaint(
-                                    size: Size(1, 30.h),
-                                    painter: const DashedLineVerticalPainter(
+                    RidesHistories rides =
+                    rideHistory.allRideHistory![index];
+                    return
+                      rides.status == 'accepted' ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    RidesHistoriesDetailsScreen(rides)),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                            BorderRadius.circular(10.r),
+                          ),
+                          padding: EdgeInsets.all(15.w),
+                          margin: EdgeInsets.symmetric(
+                              vertical: 5.h),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                /// pickup and destination icon
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Icon(
+                                      Icons.location_on,
                                       color: AppColors.black,
+                                      size: 20.w,
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.send_outlined,
-                                    // Icons.electric_bike,
-                                    color: AppColors.black,
-                                    size: 20.w,
-                                  ).rotate(-0.6),
-                                ],
-                              ),
-                              const HorizontalSpacing(10),
-
-                              /// pickup and destination names and time n date
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '11, Shai Hulud Crescent, Ikeja',
-                                    style: context.textTheme.bodyMedium,
-                                  ),
-                                  const VerticalSpacing(10),
-                                  Text(
-                                    'ShopRite Event Center, Ikeja',
-                                    style: context.textTheme.bodyMedium,
-                                  ),
-                                  Text(
-                                    '29 May, 2024  10:00am',
-                                    style: context.textTheme.bodySmall,
-                                  ),
-
-                                ],
-                              ).expand(),
-                              const HorizontalSpacing(10),
-
-                              /// price
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const CurrencyWidget(
-                                    price: 1500,
-                                    // model.cost,
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white,
-                                      border: Border.all(
-                                        color: AppColors.yellow,
-                                        width: 1.0,
+                                    CustomPaint(
+                                      size: Size(1, 60.h),
+                                      painter: const DashedLineVerticalPainter(
+                                        color: AppColors.black,
                                       ),
                                     ),
-                                    child:  Center(
-                                      child: Text(
-                                          'COMPLETED',
-                                          style: context.textTheme.bodyMedium!.copyWith(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 12,
-                                              color:  AppColors.green,
-                                              fontFamily: 'SFPRODISPLAYREGULAR')
+                                    Icon(
+                                      Icons.send_outlined,
+                                      // Icons.electric_bike,
+                                      color: AppColors.black,
+                                      size: 20.w,
+                                    ).rotate(-0.6),
+                                  ],
+                                ),
+                                const HorizontalSpacing(10),
+
+                                /// pickup location and destination name and date
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    Text(
+                                      rides.pickUpName ?? 'sss',
+                                      style: context.textTheme
+                                          .bodyMedium,
+                                      // !.copyWith(
+                                      // fontFamily:
+                                      // 'SFPRODISPLAYREGULAR',
+                                      // fontWeight:
+                                      // FontWeight
+                                      //     .w400,
+                                      // color: AppColors
+                                      //     .black),
+                                    ),
+                                    const VerticalSpacing(10),
+                                    Text(
+                                      rides.dropOffName,
+                                      style: context.textTheme
+                                          .bodyMedium,
+                                    ),
+                                    Text(
+                                      rides.createdAt
+                                          .toString(),
+                                      // '20 Dec 2024. 10:20am',
+                                      style: context.textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                          fontFamily:
+                                          'SFPRODISPLAYREGULAR',
+                                          fontWeight:
+                                          FontWeight
+                                              .w400,
+                                          color: AppColors
+                                              .black),
+                                    ),
+                                  ],
+                                ).expand(),
+                                const HorizontalSpacing(10),
+                                ///price and status
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    CurrencyWidget(
+                                      price: rides.fare ?? 0,
+                                      color: AppColors.black,
+                                      fontWeight:
+                                      FontWeight.w500,
+                                    ),
+                                    VerticalSpacing(30),
+                                    ///status
+                                    Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.white,
+                                        border: Border.all(
+                                          color: rides.status == 'ended' ? AppColors.red : AppColors.yellow,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      child:  Center(
+                                        child: Text(
+                                            rides.status,
+                                            style: context.textTheme.bodyMedium!.copyWith(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 12,
+                                                color:  rides.status == 'ended' ? AppColors.red :AppColors.green,
+                                                fontFamily: 'SFPRODISPLAYREGULAR')
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              // Column(
-                              //   crossAxisAlignment: CrossAxisAlignment.end,
-                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //   children: [
-                              //     Text(
-                              //       model.date,
-                              //       style: context.textTheme.bodySmall,
-                              //     ),
-                              //     const VerticalSpacing(5),
-                              //     Row(
-                              //       mainAxisSize: MainAxisSize.min,
-                              //       children: List.generate(
-                              //         5,
-                              //         (index) => Icon(
-                              //           Icons.star,
-                              //           color: index < model.rating ? AppColors.yellow : AppColors.grey,
-                              //           size: 15.w,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     SizedBox(
-                              //       width: 50.w,
-                              //       height: 20.h,
-                              //       child: Align(
-                              //         alignment: Alignment.centerRight,
-                              //         child: CurrencyWidget(price: model.cost, color: AppColors.grey),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // )
-                            ],
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
+                      ) : SizedBox();
                   },
                 ).expand();
               })
@@ -476,156 +546,177 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
 
               ///  rejected history
               Builder(builder: (context) {
-                return ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                return rideHistory.allRideHistory == null
+                    ? const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    VerticalSpacing(150),
+                    CircularProgressIndicator(),
+                  ],
+                )
+                    : rideHistory.allRideHistory!.isEmpty
+                    ? const SizedBox(
+                  child: Column(
+                    mainAxisAlignment:
+                    MainAxisAlignment.center,
+                    children: [
+                      // Image.asset(
+                      //     Assets.assetsImagesNothingtosee),
+                      VerticalSpacing(10),
+                      Text(
+                        'Select a category to view history',
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ).expand()
+                    : ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,vertical: 60.w),
                   physics: const BouncingScrollPhysics(),
-                  itemCount: 9,
+                  itemCount:
+                  rideHistory.allRideHistory!.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: (){},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.grey.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        padding: EdgeInsets.all(15.w),
-                        margin: EdgeInsets.symmetric(vertical: 5.h),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            children: [
-                              /// pickup and destination icon
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: AppColors.black,
-                                    size: 20.w,
-                                  ),
-                                  CustomPaint(
-                                    size: Size(1, 30.h),
-                                    painter: const DashedLineVerticalPainter(
+                    RidesHistories rides =
+                    rideHistory.allRideHistory![index];
+                    return
+                      rides.status == 'transit' ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    RidesHistoriesDetailsScreen(rides)),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                            BorderRadius.circular(10.r),
+                          ),
+                          padding: EdgeInsets.all(15.w),
+                          margin: EdgeInsets.symmetric(
+                              vertical: 5.h),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                /// pickup and destination icon
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Icon(
+                                      Icons.location_on,
                                       color: AppColors.black,
+                                      size: 20.w,
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.send_outlined,
-                                    // Icons.electric_bike,
-                                    color: AppColors.black,
-                                    size: 20.w,
-                                  ).rotate(-0.6),
-                                ],
-                              ),
-                              const HorizontalSpacing(10),
-
-                              /// pickup and destination names and time n date
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '11, Shai Hulud Crescent, Ikeja',
-                                    style: context.textTheme.bodyMedium,
-                                  ),
-                                  const VerticalSpacing(10),
-                                  Text(
-                                    'ShopRite Event Center, Ikeja',
-                                    style: context.textTheme.bodyMedium,
-                                  ),
-                                  Text(
-                                    '29 May, 2024  10:00am',
-                                    style: context.textTheme.bodySmall,
-                                  ),
-
-                                ],
-                              ).expand(),
-                              const HorizontalSpacing(10),
-
-                              /// price
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const CurrencyWidget(
-                                    price: 1500,
-                                    // model.cost,
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white,
-                                      border: Border.all(
-                                        color: AppColors.red,
-                                        width: 1.0,
+                                    CustomPaint(
+                                      size: Size(1, 60.h),
+                                      painter: const DashedLineVerticalPainter(
+                                        color: AppColors.black,
                                       ),
                                     ),
-                                    child:  Center(
-                                      child: Text(
-                                          'CANCELLED',
-                                          style: context.textTheme.bodyMedium!.copyWith(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 12,
-                                              color:  AppColors.red,
-                                              fontFamily: 'SFPRODISPLAYREGULAR')
+                                    Icon(
+                                      Icons.send_outlined,
+                                      // Icons.electric_bike,
+                                      color: AppColors.black,
+                                      size: 20.w,
+                                    ).rotate(-0.6),
+                                  ],
+                                ),
+                                const HorizontalSpacing(10),
+
+                                /// pickup location and destination name and date
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    Text(
+                                      rides.pickUpName ?? 'sss',
+                                      style: context.textTheme
+                                          .bodyMedium,
+                                      // !.copyWith(
+                                      // fontFamily:
+                                      // 'SFPRODISPLAYREGULAR',
+                                      // fontWeight:
+                                      // FontWeight
+                                      //     .w400,
+                                      // color: AppColors
+                                      //     .black),
+                                    ),
+                                    const VerticalSpacing(10),
+                                    Text(
+                                      rides.dropOffName,
+                                      style: context.textTheme
+                                          .bodyMedium,
+                                    ),
+                                    Text(
+                                      rides.createdAt
+                                          .toString(),
+                                      // '20 Dec 2024. 10:20am',
+                                      style: context.textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                          fontFamily:
+                                          'SFPRODISPLAYREGULAR',
+                                          fontWeight:
+                                          FontWeight
+                                              .w400,
+                                          color: AppColors
+                                              .black),
+                                    ),
+                                  ],
+                                ).expand(),
+                                const HorizontalSpacing(10),
+                                ///price and status
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    CurrencyWidget(
+                                      price: rides.fare ?? 0,
+                                      color: AppColors.black,
+                                      fontWeight:
+                                      FontWeight.w500,
+                                    ),
+                                    VerticalSpacing(30),
+                                    ///status
+                                    Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.white,
+                                        border: Border.all(
+                                          color: rides.status == 'ended' ? AppColors.red : AppColors.yellow,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      child:  Center(
+                                        child: Text(
+                                            rides.status,
+                                            style: context.textTheme.bodyMedium!.copyWith(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 12,
+                                                color:  rides.status == 'ended' ? AppColors.red :AppColors.green,
+                                                fontFamily: 'SFPRODISPLAYREGULAR')
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              // Column(
-                              //   crossAxisAlignment: CrossAxisAlignment.end,
-                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //   children: [
-                              //     Text(
-                              //       model.date,
-                              //       style: context.textTheme.bodySmall,
-                              //     ),
-                              //     const VerticalSpacing(5),
-                              //     Row(
-                              //       mainAxisSize: MainAxisSize.min,
-                              //       children: List.generate(
-                              //         5,
-                              //         (index) => Icon(
-                              //           Icons.star,
-                              //           color: index < model.rating ? AppColors.yellow : AppColors.grey,
-                              //           size: 15.w,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     SizedBox(
-                              //       width: 50.w,
-                              //       height: 20.h,
-                              //       child: Align(
-                              //         alignment: Alignment.centerRight,
-                              //         child: CurrencyWidget(price: model.cost, color: AppColors.grey),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // )
-                            ],
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
+                      ) : SizedBox();
                   },
                 ).expand();
               })
-                  : const SizedBox(
-                // child: Column(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     Image.asset(Assets.assetsImagesNothingtosee),
-                //     const VerticalSpacing(10),
-                //     const Text(
-                //       'Select a category to view history',
-                //       textAlign: TextAlign.center,
-                //     ),
-                //   ],
-                // ),
-              ).expand(),
+                  : const SizedBox().expand(),
             ],
           ),
         ),
