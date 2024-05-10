@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
@@ -9,11 +10,20 @@ import 'package:ride_on_driver/widgets/check_widget.dart';
 import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 
-class TripCompletedScreen extends StatelessWidget {
+import '../provider/ride_request_provider.dart';
+
+class TripCompletedScreen extends StatefulWidget {
   const TripCompletedScreen({super.key});
 
   @override
+  State<TripCompletedScreen> createState() => _TripCompletedScreenState();
+}
+
+class _TripCompletedScreenState extends State<TripCompletedScreen> {
+  @override
   Widget build(BuildContext context) {
+    final rideDetails =
+    Provider.of<RideRequestProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.lightGrey,
@@ -24,17 +34,17 @@ class TripCompletedScreen extends StatelessWidget {
             width: 40.w,
           ).clip(radius: 100),
         ),
-        actions: [
-          ValueListenableBuilder(
-              valueListenable: isActiveNotifier,
-              builder: (context, isActive, _) {
-                return CustomSwitch(
-                  value: isActive,
-                  onChanged: (value) => isActiveNotifier.value = value,
-                );
-              }),
-          const HorizontalSpacing(10),
-        ],
+        // actions: [
+        //   ValueListenableBuilder(
+        //       valueListenable: isActiveNotifier,
+        //       builder: (context, isActive, _) {
+        //         return CustomSwitch(
+        //           value: isActive,
+        //           onChanged: (value) => isActiveNotifier.value = value,
+        //         );
+        //       }),
+        //   const HorizontalSpacing(10),
+        // ],
       ),
       body: Center(
         child: Column(
@@ -63,10 +73,22 @@ class TripCompletedScreen extends StatelessWidget {
                   size: 15,
                 ),
                 const HorizontalSpacing(10),
-                Text(
-                  'GO BACK HOME',
-                  style: context.textTheme.bodyMedium!.copyWith(color: AppColors.green),
-                ).onTap(context.popToHome),
+                GestureDetector(
+                  onTap: () async{
+                    rideDetails.resetApp();
+                    setState(() { });
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );
+                    // context.push(const HomeScreen());
+                  },
+                  child: Text(
+                    'GO BACK HOME',
+                    style: context.textTheme.bodyMedium!.copyWith(color: AppColors.green),
+                  )
+                      // .onTap(context.popToHome),
+                ),
               ],
             ),
             const Spacer(),

@@ -123,17 +123,21 @@ class _SignupScreenState extends State<SignupScreen> {
                     )
                   : AppElevatedButton.large(
                       onPressed: () async {
-                        final firstName = firstNameController.text;
-                        final lastName = lastNameController.text;
-                        final phone = phoneNumberController.text;
-                        final password = passwordController.text;
-                        final email = emailController.text;
-                        final gender = genderController.text;
-                        const String role = 'driver';
-                        authProvider.signUp(context, firstName, lastName, phone,
-                            password, email, gender, role);
-                        setState(() {
-                        });
+                        if(mounted){
+                          final firstName = firstNameController.text;
+                          final lastName = lastNameController.text;
+                          final phone = phoneNumberController.text;
+                          final password = passwordController.text;
+                          final email = emailController.text;
+                          final gender = genderController.text;
+                          const String role = 'driver';
+                          authProvider.signUp(context, firstName, lastName, phone,
+                              password, email, gender, role);
+
+                          setState(() {
+                            authProvider.signUpLoading;
+                          });
+                        }
                       },
                       text: 'Sign Up',
                     ),

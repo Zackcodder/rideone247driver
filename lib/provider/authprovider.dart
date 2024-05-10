@@ -1,14 +1,15 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:ride_on_driver/model/login_model.dart';
 import 'package:ride_on_driver/model/signup_model.dart';
+import 'package:ride_on_driver/provider/driver_provider.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/services/authentication_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 
 import '../screens/mail_sent_screen.dart';
+import '../services/driver_services.dart';
 import '../services/socket_service.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -26,10 +27,14 @@ class AuthProvider with ChangeNotifier {
   String? get driverEmail => _driverEmail;
   String? _driverLastName;
   String? get driverLastName => _driverLastName;
+  // String? _driverImage;
+  // String? get driverImage => _driverImage;
   String? _error;
   String? get error => _error;
   String? _token;
   String? get token => _token;
+  String? _id;
+  String? get id => _id;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   int? _walletBalance;
@@ -37,7 +42,7 @@ class AuthProvider with ChangeNotifier {
 
   final AuthService _authService = AuthService();
   final SocketService _socketService = SocketService();
-
+  final DriverService _driverService = DriverService();
   setError(String message) {
     _error = message;
     notifyListeners();
@@ -49,29 +54,30 @@ class AuthProvider with ChangeNotifier {
   }
 
   //load the token and user name from the storage
-
   AuthProvider(String? driverName, String? driverLastName, String? driverEmail,
-      String? token, int? walletBalance) {
+      String? token, int? walletBalance, String? id) {
     _driverName = driverName;
     _driverLastName = driverLastName;
     _driverEmail = driverEmail;
     _token = token;
     _walletBalance = walletBalance;
+    _id = id;
   }
 
   //save the driver information data
   saveDriverData(String driverName, String driverLastName, String driverEmail,
-      String token, int walletBalance) async {
+      String token, int walletBalance, String id) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('driver_name', driverName);
     await prefs.setString('driver_lastname', driverLastName);
     await prefs.setString('driver_email', driverEmail);
     await prefs.setString('auth_token', token);
     await prefs.setInt('wallet_balance', walletBalance);
+    await prefs.setString('id', id);
     notifyListeners();
   }
 
-  //login function
+  ///login function
   signIn(BuildContext context, String email, String password) async {
     try {
       print('signing method in provider service');
@@ -82,41 +88,54 @@ class AuthProvider with ChangeNotifier {
       print(responseData);
       if (loginResponse.message == 'success') {
         print('data gotten');
-        _driverName = loginResponse.data.userDetails.firstName;
+        _driverName = loginResponse.data.driver.firstName;
         print(' driver name $_driverName');
-        _driverEmail = loginResponse.data.userDetails.email;
+        _driverEmail = loginResponse.data.driver.email;
         print(_driverEmail);
-        _driverLastName = loginResponse.data.userDetails.lastName;
+        _driverLastName = loginResponse.data.driver.lastName;
         print(_driverLastName);
-        _walletBalance = loginResponse.data.userDetails.walletBalance;
-
-
-
+        _walletBalance = loginResponse.data.driver.walletBalance;
         print('driver wallet balance $_walletBalance');
-
         _token = loginResponse.data.token;
         print(_token);
-        // Initialize the socket with the user token
-        _socketService.initSocket(_token!);
+        _id = loginResponse.data.driver.id;
+        print('driver id $_id');
+        // _driverImage = loginResponse.data.userDetails.image;
+        // print('driver id $_driverImage');
+        /// Initialize the socket with the user token
+        _socketService.initSocket(_token!, _id!);
 
-        // Authenticate the socket connection
-        _socketService.authenticate();
-        await saveDriverData( _driverName!, _driverLastName!,_driverEmail!,_token!, _walletBalance!);
+
+        await saveDriverData( _driverName!, _driverLastName!,_driverEmail!,_token!, _walletBalance!, _id!);
+        notifyListeners();
         _signInLoading = false;
         //navigate to home page
-        Future.delayed(Duration.zero, () {
+        if(_driverName !=null && _driverLastName != null &&_driverEmail!=null &&_token!=null && _walletBalance!=null && _id!=null) {
+          Future.delayed(Duration.zero, () {
+          /// Authenticate the socket connection
+          _socketService.authenticate();
+
+          /// Start location updates when user logs in
+          _driverService.startLocationUpdates();
+
+          ///start driver status
+          // _socketService.driverOnlineStatus(id: _id!, availability: true);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         });
+        }
       } else {
+        _signInLoading = false;
+        notifyListeners();
         print('error');
         setError(responseData['message']);
-        _signInLoading = false;
       }
     }catch(e){
+    _signInLoading = false;
       print('printing the eroor in provide login $e');
+      notifyListeners();
     }
   }
 
@@ -139,12 +158,15 @@ class AuthProvider with ChangeNotifier {
         );
       });
       _signUpLoading = false;
+      notifyListeners();
     } else {
+      _signUpLoading = false;
       print('error');
       setError(responseData['message']);
-      _signUpLoading = false;
+      notifyListeners();
     }
     _signUpLoading = false;
+    notifyListeners();
   }
 
   //sending of otp
@@ -216,6 +238,9 @@ class AuthProvider with ChangeNotifier {
 
     // Disconnect the socket
     _socketService.disconnectSocket();
+
+    // Stop location updates when user logs out
+    _driverService.stopLocationUpdates();
     ///navigate to login page
     Future.delayed(Duration.zero, () {
       Navigator.pushReplacement(
