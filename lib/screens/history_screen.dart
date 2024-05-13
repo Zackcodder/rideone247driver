@@ -202,15 +202,15 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                   ],
                 )
                     : rideHistory.allRideHistory!.isEmpty
-                    ? const SizedBox(
+                    ?  SizedBox(
                   child: Column(
                     mainAxisAlignment:
                     MainAxisAlignment.center,
                     children: [
-                      // Image.asset(
-                      //     Assets.assetsImagesNothingtosee),
-                      VerticalSpacing(10),
-                      Text(
+                      Image.asset(
+                          Assets.assetsImagesNothingtosee),
+                      const VerticalSpacing(10),
+                      const Text(
                         'Select a category to view history',
                         textAlign: TextAlign.center,
                       ),
@@ -219,7 +219,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                 ).expand()
                     : ListView.builder(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 20.w, vertical: 70.w),
+                      horizontal: 20.w,),
                   physics: const BouncingScrollPhysics(),
                   itemCount:
                   rideHistory.allRideHistory!.length,
@@ -228,12 +228,12 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                     rideHistory.allRideHistory![index];
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  RidesHistoriesDetailsScreen(rides)),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) =>
+                        //           RidesHistoriesDetailsScreen(rides)),
+                        // );
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -330,7 +330,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                     fontWeight:
                                     FontWeight.w500,
                                   ),
-                                  VerticalSpacing(30),
+                                  const VerticalSpacing(30),
                                   ///status
                             Container(
                                     padding: const EdgeInsets.all(5),
@@ -376,15 +376,15 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                   ],
                 )
                     : rideHistory.allRideHistory!.isEmpty
-                    ? const SizedBox(
+                    ?  SizedBox(
                   child: Column(
                     mainAxisAlignment:
                     MainAxisAlignment.center,
                     children: [
-                      // Image.asset(
-                      //     Assets.assetsImagesNothingtosee),
-                      VerticalSpacing(10),
-                      Text(
+                      Image.asset(
+                          Assets.assetsImagesNothingtosee),
+                      const VerticalSpacing(10),
+                      const Text(
                         'Select a category to view history',
                         textAlign: TextAlign.center,
                       ),
@@ -393,7 +393,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                 ).expand()
                     : ListView.builder(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 20.w, vertical: 60.w),
+                      horizontal: 20.w,),
                   physics: const BouncingScrollPhysics(),
                   itemCount:
                   rideHistory.allRideHistory!.length,
@@ -403,12 +403,12 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                     return
                       rides.status == 'ended' ? GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    RidesHistoriesDetailsScreen(rides)),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) =>
+                          //           RidesHistoriesDetailsScreen(rides)),
+                          // );
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -505,7 +505,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                       fontWeight:
                                       FontWeight.w500,
                                     ),
-                                    VerticalSpacing(30),
+                                    const VerticalSpacing(30),
                                     ///status
                                     Container(
                                       padding: const EdgeInsets.all(5),
@@ -533,7 +533,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                             ),
                           ),
                         ),
-                      ) : SizedBox();
+                      ) : const SizedBox();
                   },
                 ).expand();
               })
@@ -551,15 +551,15 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                   ],
                 )
                     : rideHistory.allRideHistory!.isEmpty
-                    ? const SizedBox(
+                    ?  SizedBox(
                   child: Column(
                     mainAxisAlignment:
                     MainAxisAlignment.center,
                     children: [
-                      // Image.asset(
-                      //     Assets.assetsImagesNothingtosee),
-                      VerticalSpacing(10),
-                      Text(
+                      Image.asset(
+                          Assets.assetsImagesNothingtosee),
+                      const VerticalSpacing(10),
+                      const Text(
                         'Select a category to view history',
                         textAlign: TextAlign.center,
                       ),
@@ -568,7 +568,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                 ).expand()
                     : ListView.builder(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,vertical: 60.w),
+                      horizontal: 20.w,),
                   physics: const BouncingScrollPhysics(),
                   itemCount:
                   rideHistory.allRideHistory!.length,
@@ -578,12 +578,12 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                     return
                       rides.status == 'transit' ? GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    RidesHistoriesDetailsScreen(rides)),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) =>
+                          //           RidesHistoriesDetailsScreen(rides)),
+                          // );
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -680,7 +680,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                       fontWeight:
                                       FontWeight.w500,
                                     ),
-                                    VerticalSpacing(30),
+                                    const VerticalSpacing(30),
                                     ///status
                                     Container(
                                       padding: const EdgeInsets.all(5),
@@ -708,11 +708,14 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                             ),
                           ),
                         ),
-                      ) : SizedBox();
+                      ) : const SizedBox();
                   },
                 ).expand();
               })
-                  : const SizedBox().expand(),
+                  :  SizedBox(
+                child: Image.asset(
+                    Assets.assetsImagesNothingtosee),
+              ).expand(),
             ],
           ),
         ),

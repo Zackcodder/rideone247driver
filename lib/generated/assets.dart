@@ -6,6 +6,7 @@ class Assets {
   static const String fontsSfCompactDisplayThin = 'assets/fonts/sf_compact_display_thin.otf';
   static const String imagesDriverProfile = 'assets/images/driver_profile.png';
   static const String imagesLogo = 'assets/images/logo.png';
+  static const String imagesNotin = 'assets/images/notin.png';
   static const String imagesPatternBackground = 'assets/images/pattern_background.png';
   static const String svgsAbout = 'assets/svgs/about.svg';
   static const String svgsAccountwallet = 'assets/svgs/accountwallet.svg';

@@ -384,13 +384,13 @@ class _HomeScreenState extends State<HomeScreen>
                                             .bold)),
                               ],
                             ),
-                            Text(
-                                '${rideDetails.tripDistance} Kms away | ${rideDetails.etaTimer} mins',
-                                style: context
-                                    .textTheme.bodySmall!
-                                    .copyWith(
-                                    color: AppColors
-                                        .white)),
+                            // Text(
+                            //     '${rideDetails.tripDistance} Kms away | ${rideDetails.etaTimer} mins',
+                            //     style: context
+                            //         .textTheme.bodySmall!
+                            //         .copyWith(
+                            //         color: AppColors
+                            //             .white)),
                           ],
                         ),
                       ],

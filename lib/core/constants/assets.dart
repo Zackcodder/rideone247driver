@@ -34,6 +34,10 @@ class Assets {
   /// assets/svgs/history.svg
   static const String assetsSvgsHistory ='assets/svgs/history.svg';
 
+  /// Assets for assetsImagesNothingToSee
+  /// assets/images/Nothingtosee.svg
+  static const String assetsImagesNothingtosee = 'assets/images/notin.png';
+
   /// Assets for assetsSvgsNotification
   /// assets/svgs/notification.svg
   static const String assetsSvgsNotification ='assets/svgs/notification.svg';
