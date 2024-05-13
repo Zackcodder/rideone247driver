@@ -139,7 +139,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  //SignUp
+  ///SignUp
   signUp(BuildContext context, String firstName, String lastName, String phone,
       String email, String password, String gender, String role) async {
     print('signing method in provider service');

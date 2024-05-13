@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker_widget/image_picker_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
@@ -12,11 +13,13 @@ import 'package:ride_on_driver/core/painters_clippers/profile_clipper.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/screens/profile_edit_screen.dart';
+import 'package:ride_on_driver/screens/vehicle_dtails_screen.dart';
 import 'package:ride_on_driver/widgets/currency_widget.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 import 'package:ride_on_driver/widgets/trip_list_viewer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../provider/driver_provider.dart';
 import '../widgets/app_text_button.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -31,12 +34,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    Provider.of<DriverProvider>(context, listen: false)
+        .fetchDriverProfile(_authProvider.token!);
     loadDriverDataFromSharedPreference();
   }
 
   num? _walletBalance;
   String? _driverName;
   String? _driverLastName;
+  late AuthProvider _authProvider;
   loadDriverDataFromSharedPreference() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -50,6 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    DriverProvider driverProfile = Provider.of<DriverProvider>(context);
     var wallet = authProvider.walletBalance;
     return Scaffold(
       body: Container(
@@ -80,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const VerticalSpacing(10),
 
               /// driver details
-              Container(
+              driverProfile == null && driverProfile.profileLoading == true ? CircularProgressIndicator() :Container(
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(left: 20, right: 20),
                 // height: 65.h,
@@ -102,12 +110,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ///name and image
                         Column(
                           children: [
-                                CircleAvatar(
-                                  radius: 25.r,
-                                  backgroundImage: const AssetImage(
-                                    Assets.assetsImagesDriverProfile,
-                                  ),
+                            ///image
+                            ImagePickerWidget(
+                              backgroundColor: AppColors.lightGrey,
+                              diameter: 60.r,
+                              initialImage: AssetImage(
+                                driverProfile.driverInformation!.profile!.driver!.avatar ??
+                                    Assets.assetsImagesDriverProfile,),
+                              iconAlignment: Alignment.bottomRight,
+                              shape: ImagePickerWidgetShape.circle,
+                              editIcon: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(50.r)),
                                 ),
+                                color: AppColors.yellow,
+                                child: const Icon(Icons.edit, color: AppColors.black, size: 15,),
+                              ),
+                              isEditable: true,
+                              shouldCrop: false,
+                              imagePickerOptions: ImagePickerOptions(imageQuality: 65),
+                              modalOptions: ModalOptions(
+                                title: const Text(''),
+                                cameraColor: AppColors.black,
+                                cameraText: const Text('Camera'),
+                                galleryColor: AppColors.black,
+                                galleryText: const Text('Gallery'),
+                              ),
+                              onChange: (file) {},
+                            ),
+
                             Text(
                                _driverLastName ??'',
                               style: context.textTheme.bodySmall!
@@ -124,12 +155,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Column(
                           children: [
                             Icon(Icons.car_repair, color: AppColors.black, size: 35,),
+                            ///car color
                             Text(
-                              'Black',
+                              driverProfile.driverInformation!.profile!.vehicleDetails!.color ?? '' ,
                               style: context.textTheme.bodySmall!
                                   .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
-                            ),Text(
-                              'Toyota Corolla',
+                            ),
+                            ///car model
+                            Text(
+                              '${driverProfile.driverInformation!.profile!.vehicleDetails!.make }',
+                              style: context.textTheme.bodySmall!
+                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
+                            ),
+                            ///car model
+                            Text(
+                              '${driverProfile.driverInformation!.profile!.vehicleDetails!.model }',
                               style: context.textTheme.bodySmall!
                                   .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
                             ),
@@ -140,8 +180,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Column(
                           children: [
                             Icon(Icons.verified, color: AppColors.yellow, size: 35,),
+                            ///rides complatred
                             Text(
-                              '123',
+                              driverProfile.driverInformation!.profile!.completedTrips.toString() ?? '' ,
                               style: context.textTheme.bodySmall!
                                   .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
                             ),Text(
@@ -157,7 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             Icon(Icons.star, color: AppColors.yellow, size: 35,),
                             Text(
-                              '4.7',
+                              driverProfile.driverInformation!.profile!.averageRating.toString() ?? '',
                               style: context.textTheme.bodySmall!
                                   .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
                             ),Text(
@@ -196,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CurrencyWidget(price: _walletBalance!.toDouble(), fontWeight: FontWeight.bold, fontSize: 14,),
+                                CurrencyWidget(price: driverProfile.driverInformation!.profile!.balance!.toDouble(), fontWeight: FontWeight.bold, fontSize: 14,),
                                 Text(
                                   'Available balance',
                                   style: context.textTheme.bodySmall!
@@ -248,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leadingIcon: Assets.assetsSvgsHistory,
                     text: 'Vehicle Information',
                     onTap: () {
-                      // context.push(const TripHistoryScreen());
+                      context.push(const VehicleDetailsScreen());
                     },
                   ),
 

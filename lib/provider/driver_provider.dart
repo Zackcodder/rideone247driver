@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ride_on_driver/model/rides_histories_model.dart';
 import 'package:ride_on_driver/services/driver_services.dart';
 
 import '../core/constants/colors.dart';
+import '../model/account_profile_model.dart';
 import '../model/login_model.dart';
 
 class DriverProvider with ChangeNotifier {
@@ -60,6 +62,36 @@ class DriverProvider with ChangeNotifier {
     } catch (error) {
       // Handle error
       print('Error fetching ride history: $error');
+    }
+  }
+
+  ///driver profile
+  DriverInformation? driverInformation;
+  bool _profileLoading = false;
+  bool get profileLoading => _profileLoading;
+
+   fetchDriverProfile(String token) async {
+    try {
+      _profileLoading = true;
+      notifyListeners();
+
+      var response = await DriverService().getDriverProfile(token);
+      driverInformation = DriverInformation.fromJson(response);
+
+      _profileLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _profileLoading = false;
+      notifyListeners();
+
+      Fluttertoast.showToast(
+        fontSize: 18,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red.withOpacity(0.7),
+        msg: e.toString(),
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white,
+      );
     }
   }
 }

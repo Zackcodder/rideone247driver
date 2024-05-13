@@ -49,7 +49,7 @@ class DriverService {
         await _geoLocationService.getCurrentPosition(asPosition: false);
     _socketService.updateLocation(
       id:
-      // id!,
+          // id!,
           '65aa5dbab2e8f20021fcac83', // Provide the driver ID
       role: 'DRIVER',
       lat: position[0].toString(),
@@ -63,7 +63,8 @@ class DriverService {
   }
 
   ///user rating
-  rateUser(String docId, String docModel, String rating, String comment, String token) async {
+  rateUser(String docId, String docModel, String rating, String comment,
+      String token) async {
     try {
       final headers = {
         'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ class DriverService {
           'docId': docId,
           'docModel': docModel,
           'rating': rating,
-          'comment' : 'The ride was ok'
+          'comment': 'The ride was ok'
         }),
         headers: headers,
       );
@@ -104,7 +105,6 @@ class DriverService {
     }
   }
 
-
   ///ride history
   Future<List<RidesHistories>> getRideHistory(String token) async {
     final headers = {
@@ -126,8 +126,9 @@ class DriverService {
           List<dynamic> tripListJson = responseData['data']['Trips'];
           print(tripListJson);
           print('hmmm');
-          List<RidesHistories> tripList =
-          tripListJson.map((json) => RidesHistories.fromJson(json)).toList();
+          List<RidesHistories> tripList = tripListJson
+              .map((json) => RidesHistories.fromJson(json))
+              .toList();
           print('ahahahahah');
           return tripList;
         } else {
@@ -140,6 +141,29 @@ class DriverService {
     } catch (error) {
       // Handle any other errors
       throw Exception('Failed to load ride history: $error');
+    }
+  }
+
+  /// driver profile
+  getDriverProfile(String token) async {
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var response = await https.get(Uri.parse('$baseUrl/api/drivers'), headers: headers);
+    final driverProfileResponseData = jsonDecode(response.body);
+    print('this is the response $driverProfileResponseData');
+    if (response.statusCode == 200 &&
+        driverProfileResponseData['message'] == 'success') {
+      return driverProfileResponseData;
+    } else {
+      throw Fluttertoast.showToast(
+          fontSize: 18,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red.withOpacity(0.7),
+          msg: driverProfileResponseData['message'],
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white);
     }
   }
 }
