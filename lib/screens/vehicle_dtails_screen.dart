@@ -51,7 +51,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
       ),
       body: Container(
         margin: const EdgeInsets.only(left: 15, right: 15,),
-        child: Column(
+        child: ListView(
           children: [
             Divider(color: AppColors.grey.withOpacity(0.7),),
             ///vehicle make

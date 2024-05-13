@@ -27,8 +27,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     // TODO: implement initState
     super.initState();
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
-    Provider.of<DriverProvider>(context, listen: false)
-        .fetchDriverProfile(_authProvider.token!);
+    Provider.of<DriverProvider>(context, listen: false).fetchDriverProfile(_authProvider.token!);
     loadDriverDataFromSharedPreference();
   }
 
@@ -372,104 +371,104 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             const VerticalSpacing(15),
 
             ///date of birth
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                    4.r), // Adjust the radius as needed
-                border: Border.all(
-                  color:
-                  AppColors.yellow, // Specify the border color here
-                  width: 1.0, // Adjust the border width as needed
-                ),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Date of Birth',
-                            style: context.textTheme.bodyLarge!.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                          _isEditing3
-                              ? SizedBox(
-                            width: 250,
-                            child: TextField(
-                              style: context.textTheme.bodyMedium!
-                                  .copyWith(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                              ),
-                              controller: _dobController,
-                              decoration: InputDecoration(
-                                hintText: 'DOB',
-                                hintStyle: context
-                                    .textTheme.bodyMedium!
-                                    .copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          )
-                              : Text(
-                            _driverName ?? 'DOB',
-                            style: context.textTheme.bodyMedium!
-                                .copyWith(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _isEditing3 = !_isEditing3;
-                              if (_isEditing3) {
-                                // If entering edit mode, populate the text field with the current account name
-                                _dobController.text = _driverName ?? '';
-                              } else {
-                                // If saving, update the account name and dispose the text controller
-                                _driverName = _dobController.text;
-                                // _textEditingController.dispose();
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            _isEditing3
-                                ? Icons.cancel
-                                : Icons.perm_contact_calendar_outlined,
-                            // Icons.edit,
-                            color: AppColors.black,
-                            size: 15,
-                          ))
-                    ],
-                  ),
-                  const VerticalSpacing(15),
-                  _isEditing3
-                      ? AppElevatedButton.large(
-                    onPressed: () {
-                      _isEditing3 = !_isEditing3;
-                      setState(() {});
-                    },
-                    // context.pop,
-                    text: 'Save',
-                    backgroundColor: AppColors.black,
-                    foregroundColor: AppColors.yellow,
-                  )
-                      : const SizedBox(),
-                  const VerticalSpacing(15),
-                ],
-              ),
-            ),
+            // Container(
+            //   padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(
+            //         4.r), // Adjust the radius as needed
+            //     border: Border.all(
+            //       color:
+            //       AppColors.yellow, // Specify the border color here
+            //       width: 1.0, // Adjust the border width as needed
+            //     ),
+            //   ),
+            //   child: Column(
+            //     children: [
+            //       Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           Column(
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: [
+            //               Text(
+            //                 'Date of Birth',
+            //                 style: context.textTheme.bodyLarge!.copyWith(
+            //                   fontWeight: FontWeight.w500,
+            //                   fontSize: 14.sp,
+            //                 ),
+            //               ),
+            //               _isEditing3
+            //                   ? SizedBox(
+            //                 width: 250,
+            //                 child: TextField(
+            //                   style: context.textTheme.bodyMedium!
+            //                       .copyWith(
+            //                     fontWeight: FontWeight.w400,
+            //                     fontSize: 12,
+            //                   ),
+            //                   controller: _dobController,
+            //                   decoration: InputDecoration(
+            //                     hintText: 'DOB',
+            //                     hintStyle: context
+            //                         .textTheme.bodyMedium!
+            //                         .copyWith(
+            //                       fontWeight: FontWeight.w400,
+            //                       fontSize: 12,
+            //                     ),
+            //                   ),
+            //                 ),
+            //               )
+            //                   : Text(
+            //                 _driverName ?? 'DOB',
+            //                 style: context.textTheme.bodyMedium!
+            //                     .copyWith(
+            //                   fontWeight: FontWeight.w400,
+            //                   fontSize: 12.sp,
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //           IconButton(
+            //               onPressed: () {
+            //                 setState(() {
+            //                   _isEditing3 = !_isEditing3;
+            //                   if (_isEditing3) {
+            //                     // If entering edit mode, populate the text field with the current account name
+            //                     _dobController.text = _driverName ?? '';
+            //                   } else {
+            //                     // If saving, update the account name and dispose the text controller
+            //                     _driverName = _dobController.text;
+            //                     // _textEditingController.dispose();
+            //                   }
+            //                 });
+            //               },
+            //               icon: Icon(
+            //                 _isEditing3
+            //                     ? Icons.cancel
+            //                     : Icons.perm_contact_calendar_outlined,
+            //                 // Icons.edit,
+            //                 color: AppColors.black,
+            //                 size: 15,
+            //               ))
+            //         ],
+            //       ),
+            //       const VerticalSpacing(15),
+            //       _isEditing3
+            //           ? AppElevatedButton.large(
+            //         onPressed: () {
+            //           _isEditing3 = !_isEditing3;
+            //           setState(() {});
+            //         },
+            //         // context.pop,
+            //         text: 'Save',
+            //         backgroundColor: AppColors.black,
+            //         foregroundColor: AppColors.yellow,
+            //       )
+            //           : const SizedBox(),
+            //       const VerticalSpacing(15),
+            //     ],
+            //   ),
+            // ),
 
             const VerticalSpacing(20),
 

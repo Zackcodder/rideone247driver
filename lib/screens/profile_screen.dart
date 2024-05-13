@@ -77,7 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.only(left: 20),
                 child: Text(
                   'Account Settings',
-                  // 'Hello $_driverLastName $_driverName!',
                   style: context.textTheme.bodyLarge!
                       .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
                 ),
@@ -88,7 +87,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const VerticalSpacing(10),
 
               /// driver details
-              driverProfile == null && driverProfile.profileLoading == true ? CircularProgressIndicator() :Container(
+              driverProfile.driverInformation == null && driverProfile.profileLoading == true ?
+              Center(child: Column(
+                children: [
+                   Text('Loading Information ......',
+                    style: context.textTheme.bodyLarge!
+                        .copyWith(fontWeight: FontWeight.w500, fontSize: 14),),
+                  CircularProgressIndicator(),
+                ],
+              )) :
+              Container(
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(left: 20, right: 20),
                 // height: 65.h,
