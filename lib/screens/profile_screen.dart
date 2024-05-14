@@ -13,6 +13,7 @@ import 'package:ride_on_driver/core/painters_clippers/profile_clipper.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/screens/profile_edit_screen.dart';
+import 'package:ride_on_driver/screens/security_screen.dart';
 import 'package:ride_on_driver/screens/vehicle_dtails_screen.dart';
 import 'package:ride_on_driver/widgets/currency_widget.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
@@ -40,7 +41,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     loadDriverDataFromSharedPreference();
   }
 
-  num? _walletBalance;
   String? _driverName;
   String? _driverLastName;
   late AuthProvider _authProvider;
@@ -49,16 +49,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _driverLastName = prefs.getString('driver_lastname');
       _driverName = prefs.getString('driver_name');
-      _walletBalance = prefs.getInt('wallet_balance') as num;
     });
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
     DriverProvider driverProfile = Provider.of<DriverProvider>(context);
-    var wallet = authProvider.walletBalance;
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -87,19 +84,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const VerticalSpacing(10),
 
               /// driver details
-              driverProfile.driverInformation == null && driverProfile.profileLoading == true ?
+              driverProfile.driverInformation == null && driverProfile.profileLoadingError==false && driverProfile.profileLoading == true ?
               Center(child: Column(
                 children: [
                    Text('Loading Information ......',
                     style: context.textTheme.bodyLarge!
                         .copyWith(fontWeight: FontWeight.w500, fontSize: 14),),
-                  CircularProgressIndicator(),
+                  const CircularProgressIndicator(),
                 ],
               )) :
+                  driverProfile.profileLoadingError == true ?
+                  Center(child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Oops! Check your internet connect and try again',
+                        style: context.textTheme.bodyLarge!
+                            .copyWith(fontWeight: FontWeight.w500, fontSize: 14),),
+                      const Icon(Icons.error, color: AppColors.error,size: 25,)
+                    ],
+                  )) :
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 margin: const EdgeInsets.only(left: 20, right: 20),
-                // height: 65.h,
                 decoration: BoxDecoration(
                   borderRadius:
                   BorderRadius.circular(4.r), // Adjust the radius as needed
@@ -162,24 +168,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ///car details
                         Column(
                           children: [
-                            Icon(Icons.car_repair, color: AppColors.black, size: 35,),
+                            const Icon(Icons.car_repair, color: AppColors.black, size: 35,),
+                            ///car plate number
+                            Text(
+                              driverProfile.driverInformation!.profile!.vehicleDetails!.numberPlate ?? '' ,
+                              style: context.textTheme.bodySmall!
+                                  .copyWith(fontWeight: FontWeight.w700, fontSize: 12),
+                            ),
                             ///car color
                             Text(
                               driverProfile.driverInformation!.profile!.vehicleDetails!.color ?? '' ,
                               style: context.textTheme.bodySmall!
                                   .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
                             ),
-                            ///car model
+                            ///car model and make
                             Text(
-                              '${driverProfile.driverInformation!.profile!.vehicleDetails!.make }',
+                              '${driverProfile.driverInformation!.profile!.vehicleDetails!.make } ${driverProfile.driverInformation!.profile!.vehicleDetails!.model }',
                               style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
-                            ),
-                            ///car model
-                            Text(
-                              '${driverProfile.driverInformation!.profile!.vehicleDetails!.model }',
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
+                                  .copyWith(fontWeight: FontWeight.w600, fontSize: 10),
                             ),
                           ],
                         ),
@@ -187,8 +193,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ///ride complete
                         Column(
                           children: [
-                            Icon(Icons.verified, color: AppColors.yellow, size: 35,),
-                            ///rides complatred
+                            // Image.asset(Assets.assetsSvgsHistory),
+                            const Icon(Icons.verified, color: AppColors.yellow, size: 35,),
+                            ///rides completed
                             Text(
                               driverProfile.driverInformation!.profile!.completedTrips.toString() ?? '' ,
                               style: context.textTheme.bodySmall!
@@ -204,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ///rating
                         Column(
                           children: [
-                            Icon(Icons.star, color: AppColors.yellow, size: 35,),
+                            const Icon(Icons.star, color: AppColors.yellow, size: 35,),
                             Text(
                               driverProfile.driverInformation!.profile!.averageRating.toString() ?? '',
                               style: context.textTheme.bodySmall!
@@ -257,12 +264,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         ///withdraw button
                         Container(
-                          padding: const EdgeInsets.all(5),
-                          height: 40.h,
+                          padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
                           decoration: BoxDecoration(
                             color: AppColors.black,
                             borderRadius:
-                            BorderRadius.circular(4.r), // Adjust the radius as needed
+                            BorderRadius.circular(6.r), // Adjust the radius as needed
                             border: Border.all(
                               color: AppColors.black, // Specify the border color here
                               width: 1.0, // Adjust the border width as needed
@@ -271,7 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Center(
                             child: Text('WITHDRAW',
                               style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w400, fontSize: 12, color: AppColors.yellow),),
+                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 10, color: AppColors.yellow),),
                           ),
                         )
                       ],
@@ -294,29 +300,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   ///vehicle Details
                   ProfileScreenTile(
-                    leadingIcon: Assets.assetsSvgsHistory,
+                    leadingIcon:  Assets.assetsSvgsHistory,
                     text: 'Vehicle Information',
                     onTap: () {
                       context.push(const VehicleDetailsScreen());
                     },
                   ),
 
-                  ///wallet
-                  ProfileScreenTile(
-                    onTap: () {
-                      // balanceProvider.userWalletBalance(_token!);
-                      // context.push(const WalletScreen());
-                    },
-                    leadingIcon: Assets.assetsSvgsAccountWallet,
-                    text: 'Wallet',
-                  ),
+                  // ///wallet
+                  // ProfileScreenTile(
+                  //   onTap: () {
+                  //     // balanceProvider.userWalletBalance(_token!);
+                  //     // context.push(const WalletScreen());
+                  //   },
+                  //   leadingIcon: Assets.assetsSvgsAccountWallet,
+                  //   text: 'Wallet',
+                  // ),
 
                   ///security
                   ProfileScreenTile(
                     leadingIcon: Assets.assetsSvgsShield,
                     text: 'Security',
                     onTap: () {
-                      // context.push(const SecurityScreen());
+                      context.push(const SecurityScreen());
                     },
                   ),
 
@@ -373,221 +379,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
-    //   Scaffold(
-    //   body: SafeArea(
-    //     child: Column(
-    //       children: [
-    //         const ClippedView(),
-    //         Card(
-    //           child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //             children: [
-    //               [
-    //                 SvgPicture.asset(Assets.assetsSvgsEarnedToday),
-    //                 Text(
-    //                   'Earned Today',
-    //                   style: context.textTheme.bodySmall,
-    //                 ),
-    //                 CurrencyWidget(price: authProvider.walletBalance ?? 0),
-    //               ].toColumn(
-    //                 crossAxisAlignment: CrossAxisAlignment.center,
-    //               ),
-    //               [
-    //                 SvgPicture.asset(Assets.assetsSvgsYouOwn),
-    //                 Text(
-    //                   'You Owe',
-    //                   style: context.textTheme.bodySmall,
-    //                 ),
-    //                 const CurrencyWidget(price: 0),
-    //               ].toColumn(
-    //                 crossAxisAlignment: CrossAxisAlignment.center,
-    //               )
-    //             ],
-    //           ),
-    //         ).padHorizontal(20.w),
-    //         const VerticalSpacing(20),
-    //         const TripListViewer().expand(),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }
 
-// class ClippedView extends StatefulWidget {
-//   const ClippedView({super.key});
-//
-//   @override
-//   State<ClippedView> createState() => _ClippedViewState();
-// }
-//
-// class _ClippedViewState extends State<ClippedView> {
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     super.initState();
-//     loadDriverDataFromSharedPreference();
-//   }
-//
-//   String? _driverName;
-//   String? _driverLastName;
-//   loadDriverDataFromSharedPreference() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     setState(() {
-//       _driverLastName = prefs.getString('driver_lastname');
-//       _driverName = prefs.getString('driver_name');
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final authProvider = Provider.of<AuthProvider>(context);
-//     return Scaffold(
-//       body: Container(
-//         decoration: const BoxDecoration(
-//           image: DecorationImage(
-//             image: AssetImage(Assets.assetsImagesPatternBackground),
-//             fit: BoxFit.cover,
-//           ),
-//         ),
-//         child: SafeArea(
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               const VerticalSpacing(40),
-//               // Row(
-//               //   children: [
-//               //     CircleAvatar(
-//               //       radius: 40.r,
-//               //       backgroundImage: const AssetImage(
-//               //         Assets.assetsImagesDriverProfile,
-//               //       ),
-//               //     ),
-//               //     const HorizontalSpacing(20),
-//               //     Column(
-//               //       crossAxisAlignment: CrossAxisAlignment.start,
-//               //       children: [
-//               //         Text(
-//               //           '$_userLastName $_userName',
-//               //           style: context.textTheme.bodyLarge,
-//               //         ),
-//               //         AppElevatedButton(
-//               //           onPressed: () {
-//               //             context.push(const EditProfileScreen());
-//               //           },
-//               //           text: 'Edit Profile',
-//               //         ),
-//               //       ],
-//               //     ),
-//               //   ],
-//               // ).padOnly(left: 20),
-//               ///user name
-//               Text(
-//                 'Hello $_driverLastName $_driverName!',
-//                 style: context.textTheme.bodyLarge!
-//                     .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
-//               ),
-//               Divider(
-//                 color: AppColors.grey.withOpacity(0.7),
-//               ),
-//               const VerticalSpacing(20),
-//               ListView(
-//                 padding: EdgeInsets.symmetric(horizontal: 20.w),
-//                 children: [
-//                   ///user profile
-//                   ProfileScreenTile(
-//                     onTap: () {
-//                       context.push(const ProfileEditScreen());
-//                     },
-//                     leadingIcon: Assets.assetsSvgsUser,
-//                     text: 'Profile Information',
-//                   ),
-//
-//                   ///trip history
-//                   ProfileScreenTile(
-//                     leadingIcon: Assets.assetsSvgsHistory,
-//                     text: 'Order Histories',
-//                     onTap: () {
-//                       // context.push(const TripHistoryScreen());
-//                     },
-//                   ),
-//
-//                   ///wallet
-//                   ProfileScreenTile(
-//                     onTap: () {
-//                       // balanceProvider.userWalletBalance(_token!);
-//                       // context.push(const WalletScreen());
-//                     },
-//                     leadingIcon: Assets.assetsSvgsAccountWallet,
-//                     text: 'Wallet',
-//                   ),
-//
-//                   ///security
-//                   ProfileScreenTile(
-//                     leadingIcon: Assets.assetsSvgsShield,
-//                     text: 'Security',
-//                     onTap: () {
-//                       // context.push(const SecurityScreen());
-//                     },
-//                   ),
-//
-//                   ///notification
-//                   ProfileScreenTile(
-//                     leadingIcon: Assets.assetsSvgsNotification,
-//                     text: 'Notification',
-//                     onTap: () {},
-//                   ),
-//
-//                   ///terms and conditions
-//                   ProfileScreenTile(
-//                     leadingIcon: Assets.assetsSvgsTerms,
-//                     text: 'Terms and Policy',
-//                     onTap: () {},
-//                   ),
-//
-//                   ///about
-//                   ProfileScreenTile(
-//                     leadingIcon: Assets.assetsSvgsAbout,
-//                     text: 'About',
-//                     onTap: () {},
-//                   ),
-//                   const VerticalSpacing(10),
-//
-//                   Divider(
-//                     color: AppColors.grey.withOpacity(0.7),
-//                   ),
-//
-//                   Row(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     children: [
-//                       const Icon(
-//                         Icons.logout,
-//                         color: AppColors.yellow,
-//                       ),
-//                       AppTextButton(
-//                           onPressed: () async {
-//                             final SharedPreferences sharedPreferences =
-//                             await SharedPreferences.getInstance();
-//                             sharedPreferences.setBool('autoLogin', false);
-//                             // Navigator.pushNamedAndRemoveUntil(context, LoginScreen(), (Route<dynamic> route) => false);
-//                             // context.pushReplacement(const AuthScreen());
-//                             // currentPageIndexNotifier.value = 0;
-//                           },
-//                           text: 'Logout')
-//                     ],
-//                   ),
-//                 ],
-//               ).expand(),
-//               const VerticalSpacing(50)
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//
-//   }
-// }
-//
 
 class ProfileScreenTile extends StatelessWidget {
   const ProfileScreenTile({
@@ -643,88 +437,3 @@ class ProfileScreenTile extends StatelessWidget {
         ));
   }
 }
-
-
-
-//   ClipPath(
-//   clipper: ProfileClipper(),
-//   child: Container(
-//     height: 300.h,
-//     color: AppColors.black,
-//     child: Column(
-//       children: [
-//         const VerticalSpacing(20),
-//         AppBar(
-//           backgroundColor: AppColors.black,
-//           title: Text(
-//             'PROFILE',
-//             style: context.textTheme.bodyMedium!.copyWith(
-//               color: Colors.white,
-//             ),
-//           ),
-//           leading: IconButton(
-//             icon: const Icon(
-//               Icons.arrow_back,
-//               color: Colors.white,
-//             ),
-//             onPressed: context.pop,
-//           ),
-//           actions: [
-//             IconButton(
-//               onPressed: (){
-//                 authProvider.logout(context);
-//               },
-//               //=> context.pushReplacement(const LoginScreen()),
-//               icon: const Icon(
-//                 Icons.logout,
-//                 color: Colors.white,
-//               ),
-//             ),
-//             const HorizontalSpacing(10),
-//           ],
-//         ),
-//         const VerticalSpacing(20),
-//         ListTile(
-//           onTap: () {
-//             context.push(const ProfileEditScreen());
-//           },
-//           contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-//           leading: Image.asset(Assets.assetsImagesDriverProfile)
-//               .clip(radius: 100),
-//           trailing: const Icon(
-//             Icons.settings,
-//             color: Colors.white,
-//           ),
-//           title: Text(
-//             '$_driverName ',
-//             style: context.textTheme.bodyMedium!.copyWith(
-//               color: Colors.white,
-//             ),
-//           ),
-//           subtitle: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 '134 Completed Trips',
-//                 style: context.textTheme.bodySmall!.copyWith(
-//                   color: Colors.white,
-//                 ),
-//               ),
-//               Row(
-//                 mainAxisSize: MainAxisSize.min,
-//                 children: List.generate(
-//                   5,
-//                   (index) => Icon(
-//                     Icons.star,
-//                     color: index < 4 ? AppColors.yellow : AppColors.grey,
-//                     size: 15.w,
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         )
-//       ],
-//     ),
-//   ),
-// );

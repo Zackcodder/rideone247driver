@@ -12,15 +12,15 @@ import '../widgets/app_text_field.dart';
 import '../widgets/spacing.dart';
 import 'home_screen.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
+class ResetPasswordScreen extends StatefulWidget {
   static String id = 'change_password';
-  const ChangePasswordScreen({super.key});
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   @override

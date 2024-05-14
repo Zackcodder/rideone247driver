@@ -38,6 +38,10 @@ class Assets {
   /// assets/images/Nothingtosee.svg
   static const String assetsImagesNothingtosee = 'assets/images/notin.png';
 
+  /// Assets for assetsImageVehicle
+  /// assets/images/vehicle.svg
+  static const String assetsImageVehicle ='assets/images/vehicle.png';
+
   /// Assets for assetsSvgsNotification
   /// assets/svgs/notification.svg
   static const String assetsSvgsNotification ='assets/svgs/notification.svg';
@@ -45,6 +49,18 @@ class Assets {
   /// Assets for assetsSvgsShield
   /// assets/svgs/shield.svg
   static const String assetsSvgsShield ='assets/svgs/shield.svg';
+
+  /// Assets for assetsSvgsVehicle
+  /// assets/svgs/vehicle.svg
+  static const String assetsSvgsVehicle ='assets/svgs/vehicle.svg';
+
+  /// Assets for assetsSvgsPadlock
+  /// assets/svgs/padloack.svg
+  static const String assetsSvgsPadlock = 'assets/svgs/padlock.svg';
+
+  /// Assets for assetsSvgsDelete
+  /// assets/svgs/delete.svg
+  static const String assetsSvgsDelete = 'assets/svgs/delete.svg';
 
   /// Assets for assetsFontsSfCompactDisplayThin
   /// assets/fonts/sf_compact_display_thin.otf

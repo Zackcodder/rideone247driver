@@ -4,9 +4,10 @@ import '../core/constants/colors.dart';
 import '../core/extensions/build_context_extensions.dart';
 
 class AppTextButton extends StatelessWidget {
-  const AppTextButton({super.key, required this.onPressed, required this.text});
+  const AppTextButton({super.key, required this.onPressed, required this.text, this.textColor,});
   final VoidCallback onPressed;
   final String text;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class AppTextButton extends StatelessWidget {
       child: Text(
         text,
         style: context.textTheme.bodySmall!.copyWith(
-          color: AppColors.yellow,
+          color: textColor,
         ),
       ),
     );

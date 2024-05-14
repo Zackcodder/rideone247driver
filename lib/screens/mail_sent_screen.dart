@@ -8,7 +8,7 @@ import '../widgets/app_elevated_button.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/app_text_button.dart';
 import '../widgets/spacing.dart';
-import 'change_password.dart';
+import 'reset_password.dart';
 
 class MailSentScreen extends StatelessWidget {
   const MailSentScreen({super.key});
@@ -33,7 +33,7 @@ class MailSentScreen extends StatelessWidget {
               const VerticalSpacing(20),
               AppElevatedButton.large(
                 onPressed: () {
-                  context.push(const ChangePasswordScreen());
+                  context.push(const ResetPasswordScreen());
                 },
                 text: 'Open Email App',
               ),

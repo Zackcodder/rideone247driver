@@ -41,12 +41,12 @@ class _NavBarState extends State<NavBar> {
     return Scaffold(
       body: Container(
         ///background deco image
-        // decoration:  BoxDecoration(
-        //   image: DecorationImage(
-        //     image: AssetImage(Assets.assetsImagesPatternBackground),
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),
+        decoration:  const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(Assets.assetsImagesPatternBackground),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: ValueListenableBuilder(
           valueListenable: currentPageIndexNotifier,
           builder: (ctx, int currentPageIndex, _) => Stack(

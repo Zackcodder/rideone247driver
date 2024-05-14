@@ -49,7 +49,26 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
         // scrolledUnderElevation: 0,
 
       ),
-      body: Container(
+      body: driverProfile.driverInformation == null && driverProfile.profileLoading == true ?
+      Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Loading Information ......',
+            style: context.textTheme.bodyLarge!
+                .copyWith(fontWeight: FontWeight.w500, fontSize: 14),),
+          CircularProgressIndicator(),
+        ],
+      )) :
+      driverProfile.profileLoadingError == true ?
+      Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Oops! Check your internet connect and try again',
+            style: context.textTheme.bodyLarge!
+                .copyWith(fontWeight: FontWeight.w500, fontSize: 14),),
+          Icon(Icons.error, color: AppColors.error,size: 25,)
+        ],
+      )) : Container(
         margin: const EdgeInsets.only(left: 15, right: 15,),
         child: ListView(
           children: [
