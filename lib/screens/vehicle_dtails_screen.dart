@@ -1,63 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker_widget/image_picker_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:ride_on_driver/core/constants/assets.dart';
+
+import '../provider/authprovider.dart';
+import '../provider/driver_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/widgets/app_elevated_button.dart';
-import 'package:ride_on_driver/widgets/app_text_field.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../provider/authprovider.dart';
-import '../provider/driver_provider.dart';
 
-class ProfileEditScreen extends StatefulWidget {
-  const ProfileEditScreen({super.key});
+class VehicleDetailsScreen extends StatefulWidget {
+  const VehicleDetailsScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProfileEditScreen> createState() => _ProfileEditScreenState();
+  State<VehicleDetailsScreen> createState() => _VehicleDetailsScreenState();
 }
 
-class _ProfileEditScreenState extends State<ProfileEditScreen> {
+class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
+  late AuthProvider _authProvider;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
-    Provider.of<DriverProvider>(context, listen: false).fetchDriverProfile(_authProvider.token!);
-    loadDriverDataFromSharedPreference();
-  }
-
-  String? _driverName;
-  String? _driverLastName;
-  String? _driverEmail;
-  late AuthProvider _authProvider;
-  loadDriverDataFromSharedPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _driverLastName = prefs.getString('driver_lastname');
-      _driverName = prefs.getString('driver_name');
-      _driverEmail = prefs.getString('driver_email');
-    });
+    Provider.of<DriverProvider>(context, listen: false)
+        .fetchDriverProfile(_authProvider.token!);
   }
   bool _isEditing = false;
   bool _isEditing1 = false;
   bool _isEditing2 = false;
   bool _isEditing3 = false;
-  final TextEditingController _nameEditingController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _vehicleMakeController = TextEditingController();
+  final TextEditingController _vehicleModelController = TextEditingController();
+  final TextEditingController _vehicleYearController = TextEditingController();
+  final TextEditingController _vehicleColorController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     DriverProvider driverProfile = Provider.of<DriverProvider>(context);
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title:  Text('Profile Information',
+        title:  Text('Vehicle Information',
             style: context.textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
@@ -67,10 +51,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       ),
       body: Container(
         margin: const EdgeInsets.only(left: 15, right: 15,),
-        child: Column(
+        child: ListView(
           children: [
             Divider(color: AppColors.grey.withOpacity(0.7),),
-            ///account name
+            ///vehicle make
             Container(
               margin: const EdgeInsets.only(top: 20,),
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
@@ -92,10 +76,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Account name',
+                            'Vehicle Make',
                             style: context.textTheme.bodyLarge!.copyWith(
                               fontWeight: FontWeight.w500,
-                              fontSize: 14.sp,
+                              fontSize: 16.sp,
+                                fontFamily: 'SFPRODISPLAYREGULAR'
                             ),
                           ),
                           _isEditing
@@ -105,26 +90,29 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               style: context.textTheme.bodyMedium!
                                   .copyWith(
                                 fontWeight: FontWeight.w400,
-                                fontSize: 12,
+                                fontSize: 14,
+                                  fontFamily: 'SFPRODISPLAYREGULAR'
                               ),
-                              controller: _nameEditingController,
+                              controller: _vehicleMakeController,
                               decoration: InputDecoration(
-                                hintText: 'Enter New Account name',
+                                hintText: 'Vehicle Make',
                                 hintStyle: context
                                     .textTheme.bodyMedium!
                                     .copyWith(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 12,
+                                  fontSize: 14,
+                                    fontFamily: 'SFPRODISPLAYREGULAR'
                                 ),
                               ),
                             ),
                           )
                               : Text(
-                            '$_driverName $_driverLastName',
+                            driverProfile.driverInformation!.profile!.vehicleDetails!.make ??'',
                             style: context.textTheme.bodyMedium!
                                 .copyWith(
                               fontWeight: FontWeight.w400,
-                              fontSize: 12.sp,
+                              fontSize: 14.sp,
+                                fontFamily: 'SFPRODISPLAYREGULAR'
                             ),
                           ),
                         ],
@@ -135,11 +123,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               _isEditing = !_isEditing;
                               if (_isEditing) {
                                 // If entering edit mode, populate the text field with the current account name
-                                _nameEditingController.text =
-                                    _driverName ?? '';
+                                _vehicleMakeController.text =
+                                    driverProfile.driverInformation!.profile!.vehicleDetails!.make ?? '';
                               } else {
                                 // If saving, update the account name and dispose the text controller
-                                _driverName = _nameEditingController.text;
+                                driverProfile.driverInformation!.profile!.vehicleDetails!.make = _vehicleMakeController.text;
                                 // _textEditingController.dispose();
                               }
                             });
@@ -171,7 +159,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             ),
             const VerticalSpacing(15),
 
-            ///phone number
+            ///vehicle model
             Container(
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
               decoration: BoxDecoration(
@@ -192,10 +180,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Phone Number',
+                            'Vehicle Model',
                             style: context.textTheme.bodyLarge!.copyWith(
                               fontWeight: FontWeight.w500,
-                              fontSize: 14.sp,
+                              fontSize: 16.sp,
+                                fontFamily: 'SFPRODISPLAYREGULAR'
                             ),
                           ),
                           _isEditing1
@@ -205,26 +194,29 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               style: context.textTheme.bodyMedium!
                                   .copyWith(
                                 fontWeight: FontWeight.w400,
-                                fontSize: 12,
+                                fontSize: 14,
+                                  fontFamily: 'SFPRODISPLAYREGULAR'
                               ),
-                              controller: _phoneNumberController,
+                              controller: _vehicleModelController,
                               decoration: InputDecoration(
-                                hintText: '090*******',
+                                hintText: 'e.g Camry',
                                 hintStyle: context
                                     .textTheme.bodyMedium!
                                     .copyWith(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 12,
+                                  fontSize: 14,
+                                    fontFamily: 'SFPRODISPLAYREGULAR'
                                 ),
                               ),
                             ),
                           )
                               : Text(
-                            driverProfile.driverInformation!.profile!.driver!.phone ?? 'Phone number',
+                            driverProfile.driverInformation!.profile!.vehicleDetails!.model ?? 'Model',
                             style: context.textTheme.bodyMedium!
                                 .copyWith(
                               fontWeight: FontWeight.w400,
-                              fontSize: 12.sp,
+                              fontSize: 14.sp,
+                                fontFamily: 'SFPRODISPLAYREGULAR'
                             ),
                           ),
                         ],
@@ -235,12 +227,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               _isEditing1 = !_isEditing1;
                               if (_isEditing1) {
                                 // If entering edit mode, populate the text field with the current account name
-                                _phoneNumberController.text =
-                                    driverProfile.driverInformation!.profile!.driver!.phone ?? '';
+                                _vehicleModelController.text =
+                                    driverProfile.driverInformation!.profile!.vehicleDetails!.model?? '';
                               } else {
                                 // If saving, update the account name and dispose the text controller
-                                driverProfile.driverInformation!.profile!.driver!.phone =
-                                    _phoneNumberController.text;
+                                driverProfile.driverInformation!.profile!.vehicleDetails!.model =
+                                    _vehicleModelController.text;
                                 // _textEditingController.dispose();
                               }
                             });
@@ -272,7 +264,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             ),
             const VerticalSpacing(15),
 
-            ///email
+            ///year of vehicle
             Container(
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
               decoration: BoxDecoration(
@@ -293,10 +285,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Email',
+                            'Vehicle Year',
                             style: context.textTheme.bodyLarge!.copyWith(
                               fontWeight: FontWeight.w500,
-                              fontSize: 14.sp,
+                              fontSize: 16.sp,
+                                fontFamily: 'SFPRODISPLAYREGULAR'
                             ),
                           ),
                           _isEditing2
@@ -306,26 +299,26 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               style: context.textTheme.bodyMedium!
                                   .copyWith(
                                 fontWeight: FontWeight.w400,
-                                fontSize: 12,
+                                fontSize: 14,
                               ),
-                              controller: _emailController,
+                              controller: _vehicleYearController,
                               decoration: InputDecoration(
-                                hintText: '@.com',
+                                hintText: 'YYYY',
                                 hintStyle: context
                                     .textTheme.bodyMedium!
                                     .copyWith(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 12,
+                                  fontSize: 14,
                                 ),
                               ),
                             ),
                           )
                               : Text(
-                            _driverEmail ?? 'email',
+                            driverProfile.driverInformation!.profile!.vehicleDetails!.year.toString() ?? 'Year',
                             style: context.textTheme.bodyMedium!
                                 .copyWith(
                               fontWeight: FontWeight.w400,
-                              fontSize: 12.sp,
+                              fontSize: 14.sp,
                             ),
                           ),
                         ],
@@ -336,10 +329,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               _isEditing2 = !_isEditing2;
                               if (_isEditing2) {
                                 // If entering edit mode, populate the text field with the current account name
-                                _emailController.text = _driverEmail ?? '';
+                                _vehicleYearController.text = driverProfile.driverInformation!.profile!.vehicleDetails!.year.toString() ?? '';
                               } else {
                                 // If saving, update the account name and dispose the text controller
-                                _driverEmail = _emailController.text;
+                                driverProfile.driverInformation!.profile!.vehicleDetails!.year = _vehicleYearController.text as int?;
                                 // _textEditingController.dispose();
                               }
                             });
@@ -370,108 +363,108 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             ),
             const VerticalSpacing(15),
 
-            ///date of birth
-            // Container(
-            //   padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(
-            //         4.r), // Adjust the radius as needed
-            //     border: Border.all(
-            //       color:
-            //       AppColors.yellow, // Specify the border color here
-            //       width: 1.0, // Adjust the border width as needed
-            //     ),
-            //   ),
-            //   child: Column(
-            //     children: [
-            //       Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //         children: [
-            //           Column(
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             children: [
-            //               Text(
-            //                 'Date of Birth',
-            //                 style: context.textTheme.bodyLarge!.copyWith(
-            //                   fontWeight: FontWeight.w500,
-            //                   fontSize: 14.sp,
-            //                 ),
-            //               ),
-            //               _isEditing3
-            //                   ? SizedBox(
-            //                 width: 250,
-            //                 child: TextField(
-            //                   style: context.textTheme.bodyMedium!
-            //                       .copyWith(
-            //                     fontWeight: FontWeight.w400,
-            //                     fontSize: 12,
-            //                   ),
-            //                   controller: _dobController,
-            //                   decoration: InputDecoration(
-            //                     hintText: 'DOB',
-            //                     hintStyle: context
-            //                         .textTheme.bodyMedium!
-            //                         .copyWith(
-            //                       fontWeight: FontWeight.w400,
-            //                       fontSize: 12,
-            //                     ),
-            //                   ),
-            //                 ),
-            //               )
-            //                   : Text(
-            //                 _driverName ?? 'DOB',
-            //                 style: context.textTheme.bodyMedium!
-            //                     .copyWith(
-            //                   fontWeight: FontWeight.w400,
-            //                   fontSize: 12.sp,
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //           IconButton(
-            //               onPressed: () {
-            //                 setState(() {
-            //                   _isEditing3 = !_isEditing3;
-            //                   if (_isEditing3) {
-            //                     // If entering edit mode, populate the text field with the current account name
-            //                     _dobController.text = _driverName ?? '';
-            //                   } else {
-            //                     // If saving, update the account name and dispose the text controller
-            //                     _driverName = _dobController.text;
-            //                     // _textEditingController.dispose();
-            //                   }
-            //                 });
-            //               },
-            //               icon: Icon(
-            //                 _isEditing3
-            //                     ? Icons.cancel
-            //                     : Icons.perm_contact_calendar_outlined,
-            //                 // Icons.edit,
-            //                 color: AppColors.black,
-            //                 size: 15,
-            //               ))
-            //         ],
-            //       ),
-            //       const VerticalSpacing(15),
-            //       _isEditing3
-            //           ? AppElevatedButton.large(
-            //         onPressed: () {
-            //           _isEditing3 = !_isEditing3;
-            //           setState(() {});
-            //         },
-            //         // context.pop,
-            //         text: 'Save',
-            //         backgroundColor: AppColors.black,
-            //         foregroundColor: AppColors.yellow,
-            //       )
-            //           : const SizedBox(),
-            //       const VerticalSpacing(15),
-            //     ],
-            //   ),
-            // ),
+            ///color of car
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                    4.r), // Adjust the radius as needed
+                border: Border.all(
+                  color:
+                  AppColors.yellow, // Specify the border color here
+                  width: 1.0, // Adjust the border width as needed
+                ),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Vehicle Color',
+                            style: context.textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16.sp,
+                                fontFamily: 'SFPRODISPLAYREGULAR'
+                            ),
+                          ),
+                          _isEditing3
+                              ? SizedBox(
+                            width: 250,
+                            child: TextField(
+                              style: context.textTheme.bodyMedium!
+                                  .copyWith(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                              ),
+                              controller: _vehicleColorController,
+                              decoration: InputDecoration(
+                                hintText: 'color',
+                                hintStyle: context
+                                    .textTheme.bodyMedium!
+                                    .copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          )
+                              : Text(
+                            driverProfile.driverInformation!.profile!.vehicleDetails!.color ?? 'color',
+                            style: context.textTheme.bodyMedium!
+                                .copyWith(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _isEditing3 = !_isEditing3;
+                              if (_isEditing3) {
+                                // If entering edit mode, populate the text field with the current account name
+                                _vehicleColorController.text = driverProfile.driverInformation!.profile!.vehicleDetails!.color ?? '';
+                              } else {
+                                // If saving, update the account name and dispose the text controller
+                                driverProfile.driverInformation!.profile!.vehicleDetails!.color = _vehicleColorController.text;
+                                // _textEditingController.dispose();
+                              }
+                            });
+                          },
+                          icon: Icon(
+                            _isEditing3
+                                ? Icons.cancel
+                                : Icons.edit,
+                            // Icons.edit,
+                            color: AppColors.black,
+                            size: 15,
+                          ))
+                    ],
+                  ),
+                  const VerticalSpacing(15),
+                  _isEditing3
+                      ? AppElevatedButton.large(
+                    onPressed: () {
+                      _isEditing3 = !_isEditing3;
+                      setState(() {});
+                    },
+                    // context.pop,
+                    text: 'Save',
+                    backgroundColor: AppColors.black,
+                    foregroundColor: AppColors.yellow,
+                  )
+                      : const SizedBox(),
+                  const VerticalSpacing(15),
+                ],
+              ),
+            ),
 
             const VerticalSpacing(20),
-
 
           ],
         ),
