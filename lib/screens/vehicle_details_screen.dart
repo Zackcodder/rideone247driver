@@ -41,6 +41,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
+        centerTitle: false,
         title:  Text('Vehicle Information',
             style: context.textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w500,
