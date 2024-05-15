@@ -21,10 +21,7 @@ class RideRequestProvider with ChangeNotifier {
 
   final SocketService _socketService = SocketService();
 
-  RideRequestProvider(
-    String token,
-    String id,imageConfiguration
-  ) {
+  RideRequestProvider(String token, String id, imageConfiguration) {
     listenForRideRequests();
     acceptRideRequestResponse(imageConfiguration);
     _socketService.initSocket(token, id);
@@ -36,7 +33,7 @@ class RideRequestProvider with ChangeNotifier {
   bool get onLine => _onLine;
 
   ///updating driver online status
-  updateDriverStatus( String id, bool availability) async {
+  updateDriverStatus(String id, bool availability) async {
     await _socketService.driverOnlineStatus(id: id, availability: availability);
     driverOnlineStatus();
     notifyListeners();
@@ -119,7 +116,6 @@ class RideRequestProvider with ChangeNotifier {
     });
   }
 
-
   ///accept rider request
   List<Trip> _rideAcceptedRequests = [];
   List<Trip> get rideAcceptedRequests => _rideAcceptedRequests;
@@ -184,22 +180,20 @@ class RideRequestProvider with ChangeNotifier {
     });
   }
 
-
   ///cancel trip
-  tripCancellation(String id, String tripId, String role) async{
+  tripCancellation(String id, String tripId, String role) async {
     print('driver cancelling trip');
     await _socketService.cancelTrip(id: id, tripId: tripId, role: role);
     print('printing driver cancel trip status');
     _socketService.listenForSuccess();
     resetApp();
     notifyListeners();
-
   }
 
   ///reject trip
   bool _tripRejected = false;
   bool get tripRejected => _tripRejected;
-  tripRejection(String id, String tripId) async{
+  tripRejection(String id, String tripId) async {
     print('driver rejecting trip');
     await _socketService.rejectTrip(id: id, tripId: tripId);
     print('printing driver rejection status');
@@ -212,11 +206,10 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
   ///arrived rider location
   bool _driverHasArrived = false;
   bool get driverHasArrived => _driverHasArrived;
-  arrivedPickup(String id, String tripId) async{
+  arrivedPickup(String id, String tripId) async {
     print('arrival of driver');
     await _socketService.driverArrival(id: id, tripId: tripId);
     print('printing driver arrival status');
@@ -333,13 +326,6 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  ///extracting of coordinate
-  List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
-    return points
-        .map((point) => LatLng(point.latitude, point.longitude))
-        .toList();
-  }
-
   ///poly line from driver location to rider pickup location
 
   final GoogleMapService _googleMapService = GoogleMapService();
@@ -352,6 +338,13 @@ class RideRequestProvider with ChangeNotifier {
   String? _etaTimer;
   String? get distance => _distance;
   String? _distance;
+
+  ///extracting of coordinate
+  List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
+    return points
+        .map((point) => LatLng(point.latitude, point.longitude))
+        .toList();
+  }
 
   ///displaying the location to the rider fromt he driver location
   displayDirectionsToPickup(imageConfiguration) async {
@@ -479,7 +472,6 @@ class RideRequestProvider with ChangeNotifier {
     /// get rider destination coordinate
     var destination = [_riderPickUpLat ?? 0.0, _riderPickUpLon ?? 0.0];
 
-
     ///assign the destination location as lan and lng
     // var destinationLocationCoordinates = [destination.latitude, destination.longitude];
     //
@@ -528,7 +520,8 @@ class RideRequestProvider with ChangeNotifier {
         }
 
         /// Extract polyline coordinates from the directions response
-        final List<PointLatLng> pointLatLngList = _googleMapService.decodePolylines(
+        final List<PointLatLng> pointLatLngList =
+            _googleMapService.decodePolylines(
           directionsResponse['routes'][0]['overview_polyline']['points'],
         );
 
@@ -544,7 +537,7 @@ class RideRequestProvider with ChangeNotifier {
         /// Update the map to display the polyline
         _googleMapService.setPolyLine(polylineCoordinates);
         _googleMapService.fitPolyLineToMap(
-          pickup:pickup,
+          pickup: pickup,
           // pickupCoordinates,
           destination: destination,
           // destinationLocationCoordinates,
@@ -616,9 +609,9 @@ class RideRequestProvider with ChangeNotifier {
     // Start a repeating timer that triggers every 2 seconds
     _refreshDirectionToDestinationLocationTimer =
         Timer.periodic(const Duration(seconds: 60), (timer) {
-          // Call the refreshMap function to update the map and driver locations
-          displayDirectionForActivateTrip(imageConfiguration);
-        });
+      // Call the refreshMap function to update the map and driver locations
+      displayDirectionForActivateTrip(imageConfiguration);
+    });
   }
 
   // Start the auto-refresh timer

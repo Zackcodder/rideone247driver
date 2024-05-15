@@ -45,17 +45,16 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   bool _isEditing = false;
   bool _isEditing1 = false;
   bool _isEditing2 = false;
-  bool _isEditing3 = false;
   final TextEditingController _nameEditingController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     DriverProvider driverProfile = Provider.of<DriverProvider>(context);
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
+        centerTitle: false,
         title: Text('Profile Information',
             style: context.textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w500,
@@ -74,7 +73,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   style: context.textTheme.bodyLarge!
                       .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
                 ),
-                CircularProgressIndicator(),
+                const CircularProgressIndicator(),
               ],
             ))
           : driverProfile.profileLoadingError == true
@@ -87,7 +86,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       style: context.textTheme.bodyLarge!
                           .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
                     ),
-                    Icon(
+                    const Icon(
                       Icons.error,
                       color: AppColors.error,
                       size: 25,
