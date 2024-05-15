@@ -20,7 +20,7 @@ class CurrencyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      '₦$price',
+      '₦ $price',
       overflow: TextOverflow.ellipsis,
       style: GoogleFonts.notoSans().copyWith(
         color: color,

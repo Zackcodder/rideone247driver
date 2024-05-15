@@ -69,10 +69,13 @@ class DriverProvider with ChangeNotifier {
   DriverInformation? driverInformation;
   bool _profileLoading = false;
   bool get profileLoading => _profileLoading;
+  bool _profileLoadingError = false;
+  bool get profileLoadingError => _profileLoadingError;
 
    fetchDriverProfile(String token) async {
     try {
       _profileLoading = true;
+      _profileLoadingError = false;
       notifyListeners();
 
       var response = await DriverService().getDriverProfile(token);
@@ -82,16 +85,8 @@ class DriverProvider with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _profileLoading = false;
-      notifyListeners();
-
-      Fluttertoast.showToast(
-        fontSize: 18,
-        toastLength: Toast.LENGTH_LONG,
-        backgroundColor: Colors.red.withOpacity(0.7),
-        msg: e.toString(),
-        gravity: ToastGravity.BOTTOM,
-        textColor: Colors.white,
-      );
+      _profileLoadingError = true;
+      notifyListeners();;
     }
   }
 }
