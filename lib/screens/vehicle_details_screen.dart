@@ -41,6 +41,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
+        centerTitle: false,
         title:  Text('Vehicle Information',
             style: context.textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w500,
@@ -56,7 +57,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
           Text('Loading Information ......',
             style: context.textTheme.bodyLarge!
                 .copyWith(fontWeight: FontWeight.w500, fontSize: 14),),
-          CircularProgressIndicator(),
+          const CircularProgressIndicator(),
         ],
       )) :
       driverProfile.profileLoadingError == true ?
@@ -66,7 +67,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
           Text('Oops! Check your internet connect and try again',
             style: context.textTheme.bodyLarge!
                 .copyWith(fontWeight: FontWeight.w500, fontSize: 14),),
-          Icon(Icons.error, color: AppColors.error,size: 25,)
+          const Icon(Icons.error, color: AppColors.error,size: 25,)
         ],
       )) : Container(
         margin: const EdgeInsets.only(left: 15, right: 15,),
@@ -333,7 +334,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
                             ),
                           )
                               : Text(
-                            driverProfile.driverInformation!.profile!.vehicleDetails!.year.toString() ?? 'Year',
+                            driverProfile.driverInformation!.profile!.vehicleDetails!.year.toString(),
                             style: context.textTheme.bodyMedium!
                                 .copyWith(
                               fontWeight: FontWeight.w400,
@@ -348,7 +349,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
                               _isEditing2 = !_isEditing2;
                               if (_isEditing2) {
                                 // If entering edit mode, populate the text field with the current account name
-                                _vehicleYearController.text = driverProfile.driverInformation!.profile!.vehicleDetails!.year.toString() ?? '';
+                                _vehicleYearController.text = driverProfile.driverInformation!.profile!.vehicleDetails!.year.toString();
                               } else {
                                 // If saving, update the account name and dispose the text controller
                                 driverProfile.driverInformation!.profile!.vehicleDetails!.year = _vehicleYearController.text as int?;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/screens/change_password_screen.dart';
-import 'package:ride_on_driver/screens/reset_password.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/screens/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +25,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         title: Text('Security',
             style: context.textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w400,
