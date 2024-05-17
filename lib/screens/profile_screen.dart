@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,17 +6,14 @@ import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
-import 'package:ride_on_driver/core/extensions/list_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
-import 'package:ride_on_driver/core/painters_clippers/profile_clipper.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
-import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/screens/profile_edit_screen.dart';
 import 'package:ride_on_driver/screens/security_screen.dart';
-import 'package:ride_on_driver/screens/vehicle_dtails_screen.dart';
+import 'package:ride_on_driver/screens/vehicle_details_screen.dart';
+import 'package:ride_on_driver/screens/wallet_screen.dart';
 import 'package:ride_on_driver/widgets/currency_widget.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
-import 'package:ride_on_driver/widgets/trip_list_viewer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../provider/driver_provider.dart';
@@ -103,9 +99,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const Icon(Icons.error, color: AppColors.error,size: 25,)
                     ],
                   )) :
+                  ///details info card
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                margin: const EdgeInsets.only(left: 20, right: 20),
+                margin: const EdgeInsets.only(left: 18, right: 18),
                 decoration: BoxDecoration(
                   borderRadius:
                   BorderRadius.circular(4.r), // Adjust the radius as needed
@@ -119,92 +116,135 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     ///name, car details, rating n ride done
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ///name and image
-                        Column(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ///image
-                            ImagePickerWidget(
-                              backgroundColor: AppColors.lightGrey,
-                              diameter: 60.r,
-                              initialImage: AssetImage(
-                                driverProfile.driverInformation!.profile!.driver!.avatar ??
-                                    Assets.assetsImagesDriverProfile,),
-                              iconAlignment: Alignment.bottomRight,
-                              shape: ImagePickerWidgetShape.circle,
-                              editIcon: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(50.r)),
+                            Column(
+                              children: [
+                                ///image
+                                ImagePickerWidget(
+                                  backgroundColor: AppColors.black,
+                                  diameter: 60.r,
+                                  initialImage: AssetImage(
+                                    driverProfile.driverInformation!.profile!.driver!.avatar ??
+                                        Assets.assetsImagesDriverProfile,),
+                                  iconAlignment: Alignment.bottomRight,
+                                  shape: ImagePickerWidgetShape.circle,
+                                  editIcon: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(50.r)),
+                                    ),
+                                    color: AppColors.yellow,
+                                    child: const Icon(Icons.edit, color: AppColors.black, size: 15,),
+                                  ),
+                                  isEditable: true,
+                                  shouldCrop: false,
+                                  imagePickerOptions: ImagePickerOptions(imageQuality: 65),
+                                  modalOptions: ModalOptions(
+                                    title:  Text('Profile Photo',
+                                      style: context.textTheme.bodySmall!
+                                          .copyWith(fontWeight: FontWeight.w500, fontSize: 14),),
+                                    cameraColor: AppColors.black,
+                                    cameraText:  Text('Camera',
+                                      style: context.textTheme.bodySmall!
+                                          .copyWith(fontWeight: FontWeight.w500, fontSize: 12),),
+                                    galleryColor: AppColors.black,
+                                    galleryText:  Text('Gallery',
+                                        style: context.textTheme.bodySmall!
+                                            .copyWith(fontWeight: FontWeight.w500, fontSize: 12),),
+                                    galleryIcon: Icons.image
+                                  ),
+                                  onChange: (file) {},
                                 ),
-                                color: AppColors.yellow,
-                                child: const Icon(Icons.edit, color: AppColors.black, size: 15,),
-                              ),
-                              isEditable: true,
-                              shouldCrop: false,
-                              imagePickerOptions: ImagePickerOptions(imageQuality: 65),
-                              modalOptions: ModalOptions(
-                                title: const Text(''),
-                                cameraColor: AppColors.black,
-                                cameraText: const Text('Camera'),
-                                galleryColor: AppColors.black,
-                                galleryText: const Text('Gallery'),
-                              ),
-                              onChange: (file) {},
-                            ),
 
-                            Text(
-                               _driverLastName ??'',
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
-                            ),Text(
-                              _driverName! ??'',
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
+                                Text(
+                                   _driverLastName ??'',
+                                  style: context.textTheme.bodySmall!
+                                      .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
+                                ),Text(
+                                  _driverName!,
+                                  style: context.textTheme.bodySmall!
+                                      .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
+                                ),
+                              ],
                             ),
+                          ///divider line
+                          Container(
+                            margin: const EdgeInsets.only(left: 5, right: 5),
+                            width: 1,
+                            height: 100,
+                            color: AppColors.grey.withOpacity(0.7),
+                          )
                           ],
                         ),
 
                         ///car details
-                        Column(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Icon(Icons.car_repair, color: AppColors.black, size: 35,),
-                            ///car plate number
-                            Text(
-                              driverProfile.driverInformation!.profile!.vehicleDetails!.numberPlate ?? '' ,
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w700, fontSize: 12),
+                            Column(
+                              children: [
+                                const Icon(Icons.car_repair, color: AppColors.black, size: 35,),
+                                ///car plate number
+                                Text(
+                                  driverProfile.driverInformation!.profile!.vehicleDetails!.numberPlate ?? '' ,
+                                  style: context.textTheme.bodySmall!
+                                      .copyWith(fontWeight: FontWeight.w700, fontSize: 12),
+                                ),
+                                ///car color
+                                Text(
+                                  driverProfile.driverInformation!.profile!.vehicleDetails!.color ?? '' ,
+                                  style: context.textTheme.bodySmall!
+                                      .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
+                                ),
+                                ///car model and make
+                                Text(
+                                  '${driverProfile.driverInformation!.profile!.vehicleDetails!.make } ${driverProfile.driverInformation!.profile!.vehicleDetails!.model }',
+                                  style: context.textTheme.bodySmall!
+                                      .copyWith(fontWeight: FontWeight.w600, fontSize: 10),
+                                ),
+                              ],
                             ),
-                            ///car color
-                            Text(
-                              driverProfile.driverInformation!.profile!.vehicleDetails!.color ?? '' ,
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
-                            ),
-                            ///car model and make
-                            Text(
-                              '${driverProfile.driverInformation!.profile!.vehicleDetails!.make } ${driverProfile.driverInformation!.profile!.vehicleDetails!.model }',
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w600, fontSize: 10),
-                            ),
+                            ///divider line
+                            Container(
+                              margin: const EdgeInsets.only(left: 5, right: 5),
+                              width: 1,
+                              height: 100,
+                              color: AppColors.grey.withOpacity(0.7),
+                            )
                           ],
                         ),
 
                         ///ride complete
-                        Column(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Image.asset(Assets.assetsSvgsHistory),
-                            const Icon(Icons.verified, color: AppColors.yellow, size: 35,),
-                            ///rides completed
-                            Text(
-                              driverProfile.driverInformation!.profile!.completedTrips.toString() ?? '' ,
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
-                            ),Text(
-                              'Completed \n    Trips',
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
+                            Column(
+                              children: [
+                                // Image.asset(Assets.assetsSvgsHistory),
+                                const Icon(Icons.verified, color: AppColors.yellow, size: 35,),
+                                ///rides completed
+                                Text(
+                                  driverProfile.driverInformation!.profile!.completedTrips.toString(),
+                                  style: context.textTheme.bodySmall!
+                                      .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
+                                ),Text(
+                                  'Completed \n    Trips',
+                                  style: context.textTheme.bodySmall!
+                                      .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
+                                ),
+                              ],
                             ),
+                            ///divider line
+                            Container(
+                              margin: const EdgeInsets.only(left: 5, right: 5),
+                              width: 1,
+                              height: 100,
+                              color: AppColors.grey.withOpacity(0.7),
+                            )
                           ],
                         ),
 
@@ -213,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             const Icon(Icons.star, color: AppColors.yellow, size: 35,),
                             Text(
-                              driverProfile.driverInformation!.profile!.averageRating.toString() ?? '',
+                              driverProfile.driverInformation!.profile!.averageRating.toString(),
                               style: context.textTheme.bodySmall!
                                   .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
                             ),Text(
@@ -225,8 +265,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
+                     const VerticalSpacing(15),
 
-                    const Divider(color: AppColors.grey,endIndent: 10, indent: 10,),
+                     Divider(color: AppColors.grey.withOpacity(0.7),endIndent: 10, indent: 10,),
 
                     ///account balance
                     Row(
@@ -263,21 +304,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                         ///withdraw button
-                        Container(
-                          padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-                          decoration: BoxDecoration(
-                            color: AppColors.black,
-                            borderRadius:
-                            BorderRadius.circular(6.r), // Adjust the radius as needed
-                            border: Border.all(
-                              color: AppColors.black, // Specify the border color here
-                              width: 1.0, // Adjust the border width as needed
+                        GestureDetector(
+                          onTap: (){
+                            context.push(const WalletScreen());},
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                            decoration: BoxDecoration(
+                              color: AppColors.black,
+                              borderRadius:
+                              BorderRadius.circular(6.r), // Adjust the radius as needed
+                              border: Border.all(
+                                color: AppColors.black, // Specify the border color here
+                                width: 1.0, // Adjust the border width as needed
+                              ),
                             ),
-                          ),
-                          child: Center(
-                            child: Text('WITHDRAW',
-                              style: context.textTheme.bodySmall!
-                                  .copyWith(fontWeight: FontWeight.w500, fontSize: 10, color: AppColors.yellow),),
+                            child: Center(
+                              child: Text('WITHDRAW',
+                                style: context.textTheme.bodySmall!
+                                    .copyWith(fontWeight: FontWeight.w500, fontSize: 10, color: AppColors.yellow),),
+                            ),
                           ),
                         )
                       ],
@@ -286,6 +331,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               const VerticalSpacing(20),
+              /// setting menu list
               ListView(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 children: [

@@ -41,7 +41,7 @@ class AppElevatedButton extends StatelessWidget {
     required this.text,
     this.backgroundColor,
     this.foregroundColor,
-  })  : _size = const Size(50, 30),
+  })  : _size = const Size(50, 40),
         isLarge = true,
         icon = null;
 
