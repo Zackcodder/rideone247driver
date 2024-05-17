@@ -323,7 +323,6 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-<<<<<<< HEAD
   ///trying new code
   final GoogleMapService _googleMapService = GoogleMapService();
   final PolylinePointService _polylinePointService = PolylinePointService();
@@ -353,53 +352,14 @@ class RideRequestProvider with ChangeNotifier {
         forceUseCurrentLocation: true,
         asPosition: true,
       );
-=======
-  ///poly line from driver location to rider pickup location
->>>>>>> 144aa387b3b3849a396300a11aeb827021e8b364
 
       // Get rider's coordinates
       var pickup = _googleMapService.convertDoubleToLatLng(
           _riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
 
-<<<<<<< HEAD
       // Check if coordinates are valid
       if (currentPosition == null) {
         Fluttertoast.showToast(
-=======
-  ///extracting of coordinate
-  List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
-    return points
-        .map((point) => LatLng(point.latitude, point.longitude))
-        .toList();
-  }
-
-  ///displaying the location to the rider fromt he driver location
-  displayDirectionsToPickup(imageConfiguration) async {
-    ///get driver current location
-    var currentPosition = await _geoLocationService.getCurrentPosition(
-      forceUseCurrentLocation: true,
-      asPosition: true,
-    );
-
-    /// get rider  coordinates
-    var pickup = _googleMapService.convertDoubleToLatLng(
-        _riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
-
-    ///assign the driver location as lan and lng
-    var currentLocationCoordinates = [
-      currentPosition.latitude,
-      currentPosition.longitude
-    ];
-
-    ///assign the rider location as lan and lng
-    var pickupCoordinates = [
-      pickup.latitude,
-      pickup.longitude,
-    ];
-    _riderLocationCoordinates = pickupCoordinates;
-    if (pickupCoordinates.isEmpty && currentLocationCoordinates.isEmpty) {
-      return Fluttertoast.showToast(
->>>>>>> 144aa387b3b3849a396300a11aeb827021e8b364
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
@@ -668,19 +628,6 @@ class RideRequestProvider with ChangeNotifier {
     //   destination: destinationLocationCoordinates,
     // );
 
-<<<<<<< HEAD
-    print('Directions Response: $directionsResponse');
-    if (directionsResponse.isNotEmpty &&
-        directionsResponse.containsKey('routes') &&
-        directionsResponse['routes'].isNotEmpty) {
-      var route = directionsResponse['routes'][0];
-      print('Route: $route');
-      if (route.containsKey('overview_polyline')) {
-        var overviewPolyline = route['overview_polyline'];
-        print('Overview Polyline: $overviewPolyline');
-        var points = overviewPolyline['points'];
-        print('Points: $points');
-=======
     if (directionsResponse != null) {
       print('Directions Response: $directionsResponse');
       if (directionsResponse == null) {
@@ -775,7 +722,6 @@ class RideRequestProvider with ChangeNotifier {
         notifyListeners();
       } else {
         print('No routes in directions response');
->>>>>>> 144aa387b3b3849a396300a11aeb827021e8b364
       }
 
       /// Extract polyline coordinates from the directions response
