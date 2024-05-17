@@ -74,7 +74,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   style: context.textTheme.bodyLarge!
                       .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
                 ),
-                CircularProgressIndicator(),
+                const CircularProgressIndicator(),
               ],
             ))
           : driverProfile.profileLoadingError == true
@@ -87,7 +87,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       style: context.textTheme.bodyLarge!
                           .copyWith(fontWeight: FontWeight.w500, fontSize: 14),
                     ),
-                    Icon(
+                    const Icon(
                       Icons.error,
                       color: AppColors.error,
                       size: 25,
