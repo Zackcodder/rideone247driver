@@ -10,7 +10,6 @@ import 'package:ride_on_driver/services/geo_locator_service.dart';
 import 'package:ride_on_driver/services/polyline_point_service.dart';
 
 import '../model/trip.dart';
-import '../screens/home_screen.dart';
 import '../services/google_map_service.dart';
 import '../services/map_service.dart';
 import '../services/socket_service.dart';
@@ -93,26 +92,24 @@ class RideRequestProvider with ChangeNotifier {
   ///
   listenForRideRequests() {
     _socketService.rideRequestStream.listen((newRequest) {
-      if (newRequest != null) {
-        _newTripRequest = true;
-        _acceptedNewTripRequest = false;
-        _tripHasStarted = false;
-        _tripHasEnded = false;
-        _driverHasArrived = false;
-        _tripRequestSheetHeight = 250;
-        _acceptedTripRequestSheetHeight = 0;
-        _rideRequests.add(newRequest);
-        _riderName = newRequest.riderName;
-        _riderPickUpLocationName = newRequest.riderPickUpName;
-        _riderDestinationLocationName = newRequest.riderDestinationName;
-        _tripCost = newRequest.cost;
-        _tripId = newRequest.tripId;
-        _tripLat = newRequest.dropOffLon.toString();
-        _tripLng = newRequest.pickUpLat.toString();
-        _driverId = newRequest.driverId;
-        _paymentMethod = newRequest.paymentMethod;
-        notifyListeners();
-      }
+      _newTripRequest = true;
+      _acceptedNewTripRequest = false;
+      _tripHasStarted = false;
+      _tripHasEnded = false;
+      _driverHasArrived = false;
+      _tripRequestSheetHeight = 250;
+      _acceptedTripRequestSheetHeight = 0;
+      _rideRequests.add(newRequest);
+      _riderName = newRequest.riderName;
+      _riderPickUpLocationName = newRequest.riderPickUpName;
+      _riderDestinationLocationName = newRequest.riderDestinationName;
+      _tripCost = newRequest.cost;
+      _tripId = newRequest.tripId;
+      _tripLat = newRequest.dropOffLon.toString();
+      _tripLng = newRequest.pickUpLat.toString();
+      _driverId = newRequest.driverId;
+      _paymentMethod = newRequest.paymentMethod;
+      notifyListeners();
     });
   }
 
@@ -326,19 +323,49 @@ class RideRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  ///poly line from driver location to rider pickup location
-
+<<<<<<< HEAD
+  ///trying new code
   final GoogleMapService _googleMapService = GoogleMapService();
   final PolylinePointService _polylinePointService = PolylinePointService();
   final MapService _mapService = MapService();
   final GeoLocationService _geoLocationService = GeoLocationService();
-  late List _riderLocationCoordinates;
-  List get riderLocationCoordinates => _riderLocationCoordinates;
-  String? get etaTimer => _etaTimer;
-  String? _etaTimer;
-  String? get distance => _distance;
-  String? _distance;
 
+  late List<double> _riderLocationCoordinates;
+  List<double> get riderLocationCoordinates => _riderLocationCoordinates;
+  String? _etaTimer;
+  String? get etaTimer => _etaTimer;
+  String? _distance;
+  String? get distance => _distance;
+
+  /// Extracting coordinates from PointLatLng
+  List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
+    return points
+        .map((point) => LatLng(point.latitude, point.longitude))
+        .toList();
+  }
+
+  /// Displaying the directions from the driver location to the rider pickup location
+  Future<void> displayDirectionsToPickup(
+      ImageConfiguration imageConfiguration) async {
+    try {
+      // Get driver's current location
+      var currentPosition = await _geoLocationService.getCurrentPosition(
+        forceUseCurrentLocation: true,
+        asPosition: true,
+      );
+=======
+  ///poly line from driver location to rider pickup location
+>>>>>>> 144aa387b3b3849a396300a11aeb827021e8b364
+
+      // Get rider's coordinates
+      var pickup = _googleMapService.convertDoubleToLatLng(
+          _riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
+
+<<<<<<< HEAD
+      // Check if coordinates are valid
+      if (currentPosition == null) {
+        Fluttertoast.showToast(
+=======
   ///extracting of coordinate
   List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
     return points
@@ -372,84 +399,222 @@ class RideRequestProvider with ChangeNotifier {
     _riderLocationCoordinates = pickupCoordinates;
     if (pickupCoordinates.isEmpty && currentLocationCoordinates.isEmpty) {
       return Fluttertoast.showToast(
+>>>>>>> 144aa387b3b3849a396300a11aeb827021e8b364
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: 'no dest and pickup',
+          msg: 'Invalid pickup or destination coordinates',
           gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white);
+          textColor: Colors.white,
+        );
+        return;
+      }
+
+      // Fetch directions
+      var directionsResponse = await _mapService.getDirection1(
+        pickup: [currentPosition.latitude, currentPosition.longitude],
+        destination: [pickup.latitude, pickup.longitude],
+      );
+
+      // Check if directionsResponse is valid
+      if (directionsResponse == null || directionsResponse.isEmpty) {
+        Fluttertoast.showToast(
+          fontSize: 18,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red.withOpacity(0.7),
+          msg: 'Unable to fetch directions',
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white,
+        );
+        return;
+      }
+
+      // Extract polyline points from the response
+      final List<LatLng> polylineCoordinates =
+          _polylinePointService.decodePolyPoints(
+        directionsResponse['routes'][0]['overview_polyline']['points'],
+      );
+
+      // Convert List<PointLatLng> to List<LatLng>
+      // final List<LatLng> polylineCoordinates = extractPolylineCoordinates(pointLatLngList);
+
+      // Clear previous map data
+      _googleMapService.clearCircles();
+      _googleMapService.clearMarkers();
+      _googleMapService.clearPolyLines();
+      _googleMapService.clearPolyLineCoordinate();
+
+      // Update the map with the new polyline
+      _googleMapService.setPolyLine(polylineCoordinates);
+      _googleMapService.fitPolyLineToMap(
+        pickup: [currentPosition.latitude, currentPosition.longitude],
+        destination: [pickup.latitude, pickup.longitude],
+      );
+
+      // Create and add markers
+      var driverMarker = _googleMapService.createMarker(
+        id: 'pickup',
+        position: LatLng(currentPosition.latitude, currentPosition.longitude),
+        imageConfiguration: imageConfiguration,
+      );
+      var riderMarker = _googleMapService.createMarker(
+        id: 'destination',
+        position: pickup,
+        imageConfiguration: imageConfiguration,
+      );
+      _googleMapService.addMarkers(driverMarker);
+      _googleMapService.addMarkers(riderMarker);
+
+      // Update ETA and distance
+      final durationText =
+          directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+      final distanceText =
+          directionsResponse['routes'][0]['legs'][0]['distance']['text'];
+      _etaTimer = durationText ?? 'Calculating';
+      _distance = distanceText ?? 'Calculating';
+
+      print('Time to get to the rider: $_etaTimer');
+
+      notifyListeners();
+    } catch (e) {
+      print('Error in displayDirectionsToPickup: $e');
+      Fluttertoast.showToast(
+        fontSize: 18,
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red.withOpacity(0.7),
+        msg: 'An error occurred while fetching directions',
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white,
+      );
     }
-
-    /// Fetch directions using your API service (e.g., MapService)
-    var directionsResponse = await _mapService.getDirections(
-      pickup: currentPosition,
-      destination: pickupCoordinates,
-    );
-
-    if (directionsResponse != null) {
-      if (directionsResponse == null) {
-        print('The plotting is not working');
-      } else if (directionsResponse.isNotEmpty) {
-        /// Extract polyline coordinates from the directions response
-        final List pointLatLngList = _polylinePointService.decodePolyPoints(
-          directionsResponse['routes'][0]['overview_polyline']['points'],
-        );
-        // final List<PointLatLng> pointLatLngList =
-        // _googleMapService.decodePolylines(
-        //   directionsResponse ['routes'][0]['overview_polyline']['points'],
-        // );
-
-        /// Convert List<PointLatLng> to List<LatLng>
-        final List<LatLng> polylineCoordinates = pointLatLngList
-            .map((point) => LatLng(point.latitude, point.longitude))
-            .toList();
-        _googleMapService.clearCircles();
-        _googleMapService.clearMarkers();
-        _googleMapService.clearPolyLines();
-        _googleMapService.clearPolyLineCoordinate();
-
-        /// Update the map to display the polyline
-        _googleMapService.setPolyLine(polylineCoordinates);
-        _googleMapService.fitPolyLineToMap(
-          pickup: currentLocationCoordinates,
-          destination: pickupCoordinates,
-        );
-        LatLng convertPositionToLatLng(Position position) {
-          return LatLng(position.latitude, position.longitude);
-        }
-
-        var driverMarker = _googleMapService.createMarker(
-          id: 'pickup',
-          position: convertPositionToLatLng(currentPosition),
-          imageConfiguration: imageConfiguration,
-          // icon: carIcon,
-        );
-        var riderMarker = _googleMapService.createMarker(
-          id: 'destination',
-          position: pickup,
-          imageConfiguration: imageConfiguration,
-          // icon: personIcon,
-        );
-        _googleMapService.addMarkers(driverMarker);
-        _googleMapService.addMarkers(riderMarker);
-
-        final durationText =
-            directionsResponse['routes'][0]['legs'][0]['duration']['text'];
-        final distanceText =
-            directionsResponse['routes'][0]['legs'][0]['distance']['text'];
-        // final etaTimer1 =
-        //     int.parse(RegExp(r"(\d+)").stringMatch(durationText) ?? '0');
-
-        // _tripDistance = distanceText;
-        // _etaTimer1 = etaTimer1.toString();
-        _etaTimer = durationText ?? 'Calculating';
-        _distance = distanceText ?? 'Calculating';
-        print('this is the time to get to the rider: $_etaTimer');
-
-        notifyListeners();
-      } else {}
-    } else {}
   }
+
+  ///
+
+  // ///extracting of coordinate
+  // List<LatLng> extractPolylineCoordinates(List<PointLatLng> points) {
+  //   return points
+  //       .map((point) => LatLng(point.latitude, point.longitude))
+  //       .toList();
+  // }
+
+  // ///poly line from driver location to rider pickup location
+
+  // final GoogleMapService _googleMapService = GoogleMapService();
+  // final PolylinePointService _polylinePointService = PolylinePointService();
+  // final MapService _mapService = MapService();
+  // final GeoLocationService _geoLocationService = GeoLocationService();
+  // late List _riderLocationCoordinates;
+  // List get riderLocationCoordinates => _riderLocationCoordinates;
+  // String? get etaTimer => _etaTimer;
+  // String? _etaTimer;
+  // String? get distance => _distance;
+  // String? _distance;
+
+  // ///displaying the location to the rider fromt he driver location
+  // displayDirectionsToPickup(imageConfiguration) async {
+  //   ///get driver current location
+  //   var currentPosition = await _geoLocationService.getCurrentPosition(
+  //     forceUseCurrentLocation: true,
+  //     asPosition: true,
+  //   );
+
+  //   /// get rider  coordinates
+  //   var pickup = _googleMapService.convertDoubleToLatLng(
+  //       _riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
+
+  //   ///assign the driver location as lan and lng
+  //   var currentLocationCoordinates = [
+  //     currentPosition.latitude,
+  //     currentPosition.longitude
+  //   ];
+
+  //   ///assign the rider location as lan and lng
+  //   var pickupCoordinates = [
+  //     pickup.latitude,
+  //     pickup.longitude,
+  //   ];
+  //   _riderLocationCoordinates = pickupCoordinates;
+  //   if (pickupCoordinates.isEmpty && currentLocationCoordinates.isEmpty) {
+  //     return Fluttertoast.showToast(
+  //         fontSize: 18,
+  //         toastLength: Toast.LENGTH_LONG,
+  //         backgroundColor: Colors.red.withOpacity(0.7),
+  //         msg: 'no dest and pickup',
+  //         gravity: ToastGravity.BOTTOM,
+  //         textColor: Colors.white);
+  //   }
+
+  //   /// Fetch directions using your API service (e.g., MapService)
+  //   var directionsResponse = await _mapService.getDirections(
+  //     pickup: currentPosition,
+  //     destination: pickupCoordinates,
+  //   );
+
+  //   if (directionsResponse != null) {
+  //     if (directionsResponse == null) {
+  //       print('The plotting is not working');
+  //     } else if (directionsResponse.isNotEmpty) {
+  //       /// Extract polyline coordinates from the directions response
+  //       final List pointLatLngList = _polylinePointService.decodePolyPoints(
+  //         directionsResponse['routes'][0]['overview_polyline']['points'],
+  //       );
+  //       // final List<PointLatLng> pointLatLngList =
+  //       // _googleMapService.decodePolylines(
+  //       //   directionsResponse ['routes'][0]['overview_polyline']['points'],
+  //       // );
+
+  //       /// Convert List<PointLatLng> to List<LatLng>
+  //       final List<LatLng> polylineCoordinates = pointLatLngList
+  //           .map((point) => LatLng(point.latitude, point.longitude))
+  //           .toList();
+  //       _googleMapService.clearCircles();
+  //       _googleMapService.clearMarkers();
+  //       _googleMapService.clearPolyLines();
+  //       _googleMapService.clearPolyLineCoordinate();
+
+  //       /// Update the map to display the polyline
+  //       _googleMapService.setPolyLine(polylineCoordinates);
+  //       _googleMapService.fitPolyLineToMap(
+  //         pickup: currentLocationCoordinates,
+  //         destination: pickupCoordinates,
+  //       );
+  //       LatLng convertPositionToLatLng(Position position) {
+  //         return LatLng(position.latitude, position.longitude);
+  //       }
+
+  //       var driverMarker = _googleMapService.createMarker(
+  //         id: 'pickup',
+  //         position: convertPositionToLatLng(currentPosition),
+  //         imageConfiguration: imageConfiguration,
+  //         // icon: carIcon,
+  //       );
+  //       var riderMarker = _googleMapService.createMarker(
+  //         id: 'destination',
+  //         position: pickup,
+  //         imageConfiguration: imageConfiguration,
+  //         // icon: personIcon,
+  //       );
+  //       _googleMapService.addMarkers(driverMarker);
+  //       _googleMapService.addMarkers(riderMarker);
+
+  //       final durationText =
+  //           directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+  //       final distanceText =
+  //           directionsResponse['routes'][0]['legs'][0]['distance']['text'];
+  //       // final etaTimer1 =
+  //       //     int.parse(RegExp(r"(\d+)").stringMatch(durationText) ?? '0');
+
+  //       // _tripDistance = distanceText;
+  //       // _etaTimer1 = etaTimer1.toString();
+  //       _etaTimer = durationText ?? 'Calculating';
+  //       _distance = distanceText ?? 'Calculating';
+  //       print('this is the time to get to the rider: $_etaTimer');
+
+  //       notifyListeners();
+  //     } else {}
+  //   } else {}
+  // }
 
   ///display the trip direction for the driver
   String? get tripEtaTimer => _tripEtaTimer;
@@ -503,6 +668,19 @@ class RideRequestProvider with ChangeNotifier {
     //   destination: destinationLocationCoordinates,
     // );
 
+<<<<<<< HEAD
+    print('Directions Response: $directionsResponse');
+    if (directionsResponse.isNotEmpty &&
+        directionsResponse.containsKey('routes') &&
+        directionsResponse['routes'].isNotEmpty) {
+      var route = directionsResponse['routes'][0];
+      print('Route: $route');
+      if (route.containsKey('overview_polyline')) {
+        var overviewPolyline = route['overview_polyline'];
+        print('Overview Polyline: $overviewPolyline');
+        var points = overviewPolyline['points'];
+        print('Points: $points');
+=======
     if (directionsResponse != null) {
       print('Directions Response: $directionsResponse');
       if (directionsResponse == null) {
@@ -597,9 +775,87 @@ class RideRequestProvider with ChangeNotifier {
         notifyListeners();
       } else {
         print('No routes in directions response');
+>>>>>>> 144aa387b3b3849a396300a11aeb827021e8b364
       }
+
+      /// Extract polyline coordinates from the directions response
+      final List<PointLatLng> pointLatLngList =
+          _googleMapService.decodePolylines(
+        directionsResponse['routes'][0]['overview_polyline']['points'],
+      );
+
+      /// Convert List<PointLatLng> to List<LatLng>
+      final List<LatLng> polylineCoordinates = pointLatLngList
+          .map((point) => LatLng(point.latitude, point.longitude))
+          .toList();
+      _googleMapService.clearCircles();
+      _googleMapService.clearMarkers();
+      _googleMapService.clearPolyLines();
+      _googleMapService.clearPolyLineCoordinate();
+
+      /// Update the map to display the polyline
+      _googleMapService.setPolyLine(polylineCoordinates);
+      _googleMapService.fitPolyLineToMap(
+        pickup: pickup,
+        // pickupCoordinates,
+        destination: destination,
+        // destinationLocationCoordinates,
+      );
+      LatLng convertPositionToLatLng(Position position) {
+        return LatLng(position.latitude, position.longitude);
+      }
+
+      // Marker originMarker = _googleMapService.createMarker(
+      //   id: 'origin',
+      //   position: pickup,
+      //   imageConfiguration: imageConfiguration,
+      //   // iconPath: 'assets/images/logo.png',
+      // );
+      // Marker destinationMarker = _googleMapService.createMarker(
+      //   id: 'destination',
+      //   position: destination,
+      //   imageConfiguration: imageConfiguration,
+      //   // icon: Icon(Icons.add),
+      // );
+      //
+      // _googleMapService.addMarkers(originMarker);
+      // _googleMapService.addMarkers(destinationMarker);
+      //
+      // Circle originCircle = Circle(
+      //     circleId: CircleId('origin'),
+      //     fillColor: Colors.green,
+      //     radius: 12,
+      //     strokeColor: Colors.white,
+      //     strokeWidth: 3,
+      //     center: pickup);
+      //
+      // Circle destinationCircle = Circle(
+      //     circleId: CircleId('destination'),
+      //     fillColor: Colors.black,
+      //     radius: 12,
+      //     strokeColor: Colors.white,
+      //     strokeWidth: 3,
+      //     center: pickup);
+      // _googleMapService.addCircle(originCircle);
+      // _googleMapService.addCircle(destinationCircle);
+      notifyListeners();
+
+      final durationText =
+          directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+      final distanceText =
+          directionsResponse['routes'][0]['legs'][0]['distance']['text'];
+      // final etaTimer1 =
+      //     int.parse(RegExp(r"(\d+)").stringMatch(durationText) ?? '0');
+
+      // _tripDistance = distanceText;
+      // _etaTimer1 = etaTimer1.toString();
+      _tripEtaTimer = durationText ?? 'Calculating';
+      _tripDistance = distanceText ?? 'Calculating';
+      print('this is the time fro the rider trip: $_tripEtaTimer');
+      print('this is the distance to the rider destination: $_tripDistance');
+      notifyListeners();
     } else {
-      print('Directions response is null');
+      print('No routes in directions response');
     }
   }
 
