@@ -384,13 +384,13 @@ class _HomeScreenState extends State<HomeScreen>
                                             .bold)),
                               ],
                             ),
-                            // Text(
-                            //     '${rideDetails.tripDistance} Kms away | ${rideDetails.etaTimer} mins',
-                            //     style: context
-                            //         .textTheme.bodySmall!
-                            //         .copyWith(
-                            //         color: AppColors
-                            //             .white)),
+                            Text(
+                                '${rideDetails.distance} Kms away | ${rideDetails.etaTimer} mins',
+                                style: context
+                                    .textTheme.bodySmall!
+                                    .copyWith(
+                                    color: AppColors
+                                        .white)),
                           ],
                         ),
                       ],
@@ -477,9 +477,9 @@ class _HomeScreenState extends State<HomeScreen>
                     AppElevatedButton.large(
                       onPressed: () async {
                         setState(() {
-                          rideDetails
-                              .displayDirectionForActivateTrip(
-                              imageConfiguration);
+                          // rideDetails
+                          //     .displayDirectionForActivateTrip(
+                          //     imageConfiguration);
                           rideDetails.startRide(
                             rideDetails
                                 .driverId ??
@@ -772,7 +772,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ///submit button
                     AppElevatedButton.large(
                       onPressed: () async{
-                        rideDetails.resetApp();
+
                         final docId = authProvider.id;
                         const  docModel = 'driver';
                         final  double rating = driverProvider.userRate ?? 0.0;
@@ -785,7 +785,9 @@ class _HomeScreenState extends State<HomeScreen>
                         print('this is comment $comment');
                         print('this is token $token');
                         driverProvider.userRating(docId!, docModel, rating.toString(), comment, token!);
-                        setState(() {});
+                        setState(() {
+                          rideDetails.resetApp();
+                        });
                         Future.delayed(
                             1.s,
                                 () => context.push(
