@@ -30,7 +30,9 @@ class MapWidgetState extends State<MapWidget>
     super.initState();
     _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.acceptRideRequestResponse(imageConfiguration);
-    _rideRequestProvider.displayDirectionForActivateTrip(imageConfiguration);
+    if(_rideRequestProvider.riderPickUpLat != null && _rideRequestProvider.riderPickUpLon != null){
+      _rideRequestProvider.displayDirectionsToPickup(imageConfiguration, _rideRequestProvider.riderPickUpLat!, _rideRequestProvider.riderPickUpLon!);
+    }
     _googleMapService.markers;
   }
 

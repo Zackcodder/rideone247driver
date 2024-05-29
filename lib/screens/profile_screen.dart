@@ -253,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             const Icon(Icons.star, color: AppColors.yellow, size: 35,),
                             Text(
-                              driverProfile.driverInformation!.profile!.averageRating.toString(),
+                              driverProfile.driverInformation!.profile!.averageRating!.toStringAsFixed(1),
                               style: context.textTheme.bodySmall!
                                   .copyWith(fontWeight: FontWeight.w500, fontSize: 12),
                             ),Text(

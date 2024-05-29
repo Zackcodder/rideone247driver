@@ -54,8 +54,8 @@ class MapService {
 
   /// tring new code
   Future<Map<String, dynamic>?> getDirection1({
-    required List<double> pickup, // [latitude, longitude]
-    required List<double> destination, // [latitude, longitude]
+    required List<double> pickup,
+    required List<double> destination,
   }) async {
     final api = 'https://maps.googleapis.com/maps/api/directions/json'
         '?origin=${pickup[0]},${pickup[1]}'
@@ -66,8 +66,7 @@ class MapService {
 
     if (res.statusCode == 200) {
       final response = json.decode(res.body);
-      print('this is the direction result');
-      print(response);
+      print('Direction result: $response');
       return response;
     } else {
       print('Failed to fetch directions: ${res.statusCode}');
