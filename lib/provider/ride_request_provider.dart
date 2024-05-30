@@ -467,111 +467,28 @@ class RideRequestProvider with ChangeNotifier {
     }
   }
 
-  // Future<void> displayDirectionsToPickup(
-  //     ImageConfiguration imageConfiguration) async {
-  //   try {
-  //     // Get driver's current location
-  //     var currentPosition = await _geoLocationService.getCurrentPosition(
-  //       forceUseCurrentLocation: true,
-  //       asPosition: true,
-  //     );
-  //
-  //     // Get rider's coordinates
-  //     var pickup = _googleMapService.convertDoubleToLatLng(
-  //         _riderDestinationLat ?? 0.0, _riderDestinationLon ?? 0.0);
-  //
-  //     // Check if coordinates are valid
-  //     if (currentPosition == null) {
-  //       Fluttertoast.showToast(
-  //         fontSize: 18,
-  //         toastLength: Toast.LENGTH_LONG,
-  //         backgroundColor: Colors.red.withOpacity(0.7),
-  //         msg: 'Invalid pickup or destination coordinates',
-  //         gravity: ToastGravity.BOTTOM,
-  //         textColor: Colors.white,
-  //       );
-  //       return;
-  //     }
-  //
-  //     // Fetch directions
-  //     var directionsResponse = await _mapService.getDirection1(
-  //       pickup: [currentPosition.latitude, currentPosition.longitude],
-  //       destination: [pickup.latitude, pickup.longitude],
-  //     );
-  //
-  //     // Check if directionsResponse is valid
-  //     if (directionsResponse == null || directionsResponse.isEmpty) {
-  //       Fluttertoast.showToast(
-  //         fontSize: 18,
-  //         toastLength: Toast.LENGTH_LONG,
-  //         backgroundColor: Colors.red.withOpacity(0.7),
-  //         msg: 'Unable to fetch directions',
-  //         gravity: ToastGravity.BOTTOM,
-  //         textColor: Colors.white,
-  //       );
-  //       return;
-  //     }
-  //
-  //     // Extract polyline points from the response
-  //     final List<LatLng> polylineCoordinates =
-  //         _polylinePointService.decodePolyPoints(
-  //       directionsResponse['routes'][0]['overview_polyline']['points'],
-  //     );
-  //
-  //     // Convert List<PointLatLng> to List<LatLng>
-  //     // final List<LatLng> polylineCoordinates = extractPolylineCoordinates(pointLatLngList);
-  //
-  //     // Clear previous map data
-  //     _googleMapService.clearCircles();
-  //     _googleMapService.clearMarkers();
-  //     _googleMapService.clearPolyLines();
-  //     _googleMapService.clearPolyLineCoordinate();
-  //
-  //     // Update the map with the new polyline
-  //     _googleMapService.setPolyLine(polylineCoordinates);
-  //     _googleMapService.fitPolyLineToMap(
-  //       pickup: [currentPosition.latitude, currentPosition.longitude],
-  //       destination: [pickup.latitude, pickup.longitude],
-  //     );
-  //
-  //     // Create and add markers
-  //     var driverMarker = _googleMapService.createMarker(
-  //       id: 'pickup',
-  //       position: LatLng(currentPosition.latitude, currentPosition.longitude),
-  //       imageConfiguration: imageConfiguration,
-  //     );
-  //     var riderMarker = _googleMapService.createMarker(
-  //       id: 'destination',
-  //       position: pickup,
-  //       imageConfiguration: imageConfiguration,
-  //     );
-  //     _googleMapService.addMarkers(driverMarker);
-  //     _googleMapService.addMarkers(riderMarker);
-  //
-  //     // Update ETA and distance
-  //     final durationText =
-  //         directionsResponse['routes'][0]['legs'][0]['duration']['text'];
-  //     final distanceText =
-  //         directionsResponse['routes'][0]['legs'][0]['distance']['text'];
-  //     _etaTimer = durationText ?? 'Calculating';
-  //     _distance = distanceText ?? 'Calculating';
-  //
-  //     print('Time to get to the rider: $_etaTimer');
-  //
-  //     notifyListeners();
-  //   } catch (e) {
-  //     print('Error in displayDirectionsToPickup: $e');
-  //     Fluttertoast.showToast(
-  //       fontSize: 18,
-  //       toastLength: Toast.LENGTH_LONG,
-  //       backgroundColor: Colors.red.withOpacity(0.7),
-  //       msg: 'An error occurred while fetching directions',
-  //       gravity: ToastGravity.BOTTOM,
-  //       textColor: Colors.white,
-  //     );
-  //   }
-  // }
 
+  late Timer _refreshDirectionToPickUpLocationTimer;
+  restartDisplayDirectionsToDestination(imageConfiguration) {
+    // Start a repeating timer that triggers every 2 seconds
+    _refreshDirectionToPickUpLocationTimer =
+        Timer.periodic(const Duration(seconds: 60), (timer) {
+          // Call the refreshMap function to update the map and driver locations
+          displayDirectionsToPickup(imageConfiguration, _riderPickUpLat!, _riderPickUpLon!);
+        });
+  }
+
+  // Start the auto-refresh timer
+  startAutoDisplayDirectionsToPickup(imageConfiguration) {
+    restartDisplayDirectionsToDestination(imageConfiguration);
+  }
+
+  //stop rider request timer
+  stopAutoDisplayDirectionsToPickup() {
+    if (_refreshDirectionToPickUpLocationTimer.isActive) {
+      _refreshDirectionToPickUpLocationTimer.cancel();
+    }
+  }
 
   ///display the trip direction for the driver
   String? get tripEtaTimer => _tripEtaTimer;
@@ -802,28 +719,28 @@ class RideRequestProvider with ChangeNotifier {
   //   }
   // }
 
-  ///refresh connect rider code
-  late Timer _refreshDirectionToDestinationLocationTimer;
-  restartDisplayDirectionsToDestination(imageConfiguration) {
-    // Start a repeating timer that triggers every 2 seconds
-    _refreshDirectionToDestinationLocationTimer =
-        Timer.periodic(const Duration(seconds: 60), (timer) {
-      // Call the refreshMap function to update the map and driver locations
-          displayDirectionsToPickup(imageConfiguration, _riderDestinationLat!, _riderDestinationLon!);
-    });
-  }
-
-  // Start the auto-refresh timer
-  startAutoDisplayDirectionsToPickup(imageConfiguration) {
-    restartDisplayDirectionsToDestination(imageConfiguration);
-  }
-
-  //stop rider request timer
-  stopAutoDisplayDirectionsToPickup() {
-    if (_refreshDirectionToDestinationLocationTimer.isActive) {
-      _refreshDirectionToDestinationLocationTimer.cancel();
-    }
-  }
+  // ///refresh connect rider code
+  // late Timer _refreshDirectionToDestinationLocationTimer;
+  // restartDisplayDirectionsToDestination(imageConfiguration) {
+  //   // Start a repeating timer that triggers every 2 seconds
+  //   _refreshDirectionToDestinationLocationTimer =
+  //       Timer.periodic(const Duration(seconds: 60), (timer) {
+  //     // Call the refreshMap function to update the map and driver locations
+  //         displayDirectionsToPickup(imageConfiguration, _riderDestinationLat!, _riderDestinationLon!);
+  //   });
+  // }
+  //
+  // // Start the auto-refresh timer
+  // startAutoDisplayDirectionsToPickup(imageConfiguration) {
+  //   restartDisplayDirectionsToDestination(imageConfiguration);
+  // }
+  //
+  // //stop rider request timer
+  // stopAutoDisplayDirectionsToPickup() {
+  //   if (_refreshDirectionToDestinationLocationTimer.isActive) {
+  //     _refreshDirectionToDestinationLocationTimer.cancel();
+  //   }
+  // }
 
   ///reset app to default
   resetApp() async {
