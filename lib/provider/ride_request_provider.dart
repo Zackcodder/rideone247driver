@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
 import 'package:ride_on_driver/services/polyline_point_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../model/trip.dart';
 import '../services/google_map_service.dart';
@@ -21,7 +22,7 @@ class RideRequestProvider with ChangeNotifier {
   final SocketService _socketService = SocketService();
 
   RideRequestProvider(String token, String id, imageConfiguration) {
-    listenForRideRequests();
+    listenForRideRequests(imageConfiguration);
     acceptRideRequestResponse(imageConfiguration);
     _socketService.initSocket(token, id);
     notifyListeners();
@@ -90,7 +91,7 @@ class RideRequestProvider with ChangeNotifier {
   List<Trip> get rideRequests => _rideRequests;
 
   ///
-  listenForRideRequests() {
+  listenForRideRequests(imageConfiguration) {
     _socketService.rideRequestStream.listen((newRequest) {
       _newTripRequest = true;
       _acceptedNewTripRequest = false;
@@ -109,6 +110,7 @@ class RideRequestProvider with ChangeNotifier {
       _tripLng = newRequest.pickUpLat.toString();
       _driverId = newRequest.driverId;
       _paymentMethod = newRequest.paymentMethod;
+      displayDirectionsToPickup(imageConfiguration, _riderPickUpLat!, _riderPickUpLon! );
       notifyListeners();
     });
   }
@@ -144,6 +146,23 @@ class RideRequestProvider with ChangeNotifier {
     await _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
     notifyListeners();
   }
+  // launch drive mode to rider location
+  late List _riderLocationCoordinates = [_riderPickUpLat,_riderPickUpLon];
+  List get riderLocationCoordinates => _riderLocationCoordinates;
+  bool _isNavigationActive = false;
+  bool get isNavigationActive => _isNavigationActive;
+  launchGoogleMapsNavigationToRiderLocation() async {
+    final url =
+    Uri.parse('google.navigation:q=$_riderLocationCoordinates&mode=d');
+    if (await launchUrl(url)) {
+        _isNavigationActive = true;
+        notifyListeners();
+
+      return true;
+    }
+    return false;
+  }
+
 
   ///accept trip request
   acceptRideRequestResponse(imageConfiguration) async {
@@ -165,10 +184,14 @@ class RideRequestProvider with ChangeNotifier {
         _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
         _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
         displayDirectionsToPickup(imageConfiguration, _riderPickUpLat!, _riderPickUpLon! );
+        // launchGoogleMapsNavigationToRiderLocation();
 
         print('this is a rider name: ${newAcceptedRequest.riderName}');
-        print('this is a trip lng: ${newAcceptedRequest.riderPickupLon}');
         print('this is a rider trip id: ${newAcceptedRequest.riderTripId}');
+        print('this is a rider pickup lat: ${newAcceptedRequest.riderPickupLat}');
+        print('this is a rider pickup lon: ${newAcceptedRequest.riderPickupLon}');
+        print('this is a rider destination lat: ${newAcceptedRequest.riderDropOffLat}');
+        print('this is a rider destination lon: ${newAcceptedRequest.riderDropOffLon}');
         print(
             'this is a rider payment method: ${newAcceptedRequest.riderPaymentMethod}');
 
@@ -178,19 +201,19 @@ class RideRequestProvider with ChangeNotifier {
   }
 
   ///cancel trip
-  tripCancellation(String id, String tripId, String role) async {
+  tripCancellation(String id, String tripId, String role,imageConfiguration) async {
     print('driver cancelling trip');
     await _socketService.cancelTrip(id: id, tripId: tripId, role: role);
     print('printing driver cancel trip status');
     _socketService.listenForSuccess();
-    resetApp();
+    resetApp(imageConfiguration);
     notifyListeners();
   }
 
   ///reject trip
   bool _tripRejected = false;
   bool get tripRejected => _tripRejected;
-  tripRejection(String id, String tripId) async {
+  tripRejection(String id, String tripId,imageConfiguration) async {
     print('driver rejecting trip');
     await _socketService.rejectTrip(id: id, tripId: tripId);
     print('printing driver rejection status');
@@ -199,7 +222,7 @@ class RideRequestProvider with ChangeNotifier {
     // _driverHasArrived = true;
     // _tripHasStarted = false;
     // _tripHasEnded = false;
-    resetApp();
+    resetApp(imageConfiguration);
     notifyListeners();
   }
 
@@ -214,8 +237,6 @@ class RideRequestProvider with ChangeNotifier {
     _driverHasArrived = true;
     _tripHasStarted = false;
     _tripHasEnded = false;
-    // _acceptedNewTripRequest = false;
-    // _newTripRequest = false;
     _socketService.socket.on('SUCCESS', (data) {
       print('starting trip status from driver: $data');
       if (data == 'rider has been notified') {
@@ -329,8 +350,8 @@ class RideRequestProvider with ChangeNotifier {
   final MapService _mapService = MapService();
   final GeoLocationService _geoLocationService = GeoLocationService();
 
-  late List<double> _riderLocationCoordinates;
-  List<double> get riderLocationCoordinates => _riderLocationCoordinates;
+  // late List<double> _riderLocationCoordinates;
+  // List<double> get riderLocationCoordinates => _riderLocationCoordinates;
   String? _etaTimer;
   String? get etaTimer => _etaTimer;
   String? _distance;
@@ -743,7 +764,7 @@ class RideRequestProvider with ChangeNotifier {
   // }
 
   ///reset app to default
-  resetApp() async {
+  resetApp(imageConfiguration) async {
     _googleMapService.clearPolyLines();
     _googleMapService.clearPolyLineCoordinate();
     _googleMapService.clearMarkers();
@@ -771,7 +792,7 @@ class RideRequestProvider with ChangeNotifier {
     _riderPickUpLon = 0.0;
     _riderPickUpLat = 0.0;
     stopAutoDisplayDirectionsToPickup();
-    listenForRideRequests();
+    listenForRideRequests(imageConfiguration);
     notifyListeners();
   }
 }

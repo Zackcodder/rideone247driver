@@ -47,6 +47,7 @@ class DriverService {
   updateLocation() async {
     final position =
         await _geoLocationService.getCurrentPosition(asPosition: false);
+    // final driverId = await _rid
     _socketService.updateLocation(
       id:
           // id!,
@@ -81,7 +82,7 @@ class DriverService {
         headers: headers,
       );
       final responseData = jsonDecode(response.body);
-      if (response.statusCode == 200 && responseData['message'] == 'success') {
+      if (response.statusCode == 200 && responseData['message'] == 'success')  {
         Fluttertoast.showToast(
             fontSize: 18,
             toastLength: Toast.LENGTH_LONG,
@@ -90,14 +91,9 @@ class DriverService {
             gravity: ToastGravity.BOTTOM,
             textColor: AppColors.white);
         return responseData;
-      } else {
-        throw Fluttertoast.showToast(
-            fontSize: 18,
-            toastLength: Toast.LENGTH_LONG,
-            backgroundColor: AppColors.red.withOpacity(0.7),
-            msg: responseData['message'],
-            gravity: ToastGravity.BOTTOM,
-            textColor: AppColors.white);
+      }
+      else {
+        return;
       }
     } catch (e) {
       print('error login in');

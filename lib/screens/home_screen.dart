@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen>
     _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.updateDriverStatus( _driverId ?? '', isActiveNotifier.value);
     _rideRequestProvider = Provider.of<RideRequestProvider>(context, listen: false);
-    _rideRequestProvider.listenForRideRequests();
+    _rideRequestProvider.listenForRideRequests(imageConfiguration);
     _rideRequestProvider.acceptRideRequestResponse(imageConfiguration);
     _rideRequestProvider.driverOnlineStatus();
     setState(() {});
@@ -135,6 +135,47 @@ class _HomeScreenState extends State<HomeScreen>
               ).clip(radius: 100),
             ).onTap(() => context.push(const ProfileScreen())),
           ),
+          ///Navigate to drive mode screen
+          rideDetails.acceptedNewTripRequest == true
+              ? Positioned(
+            right: 3,
+            top: MediaQuery.sizeOf(context).height * 0.4,
+            child: Visibility(
+              visible: true,
+              child: GestureDetector(
+                onTap: () => rideDetails
+                    .launchGoogleMapsNavigationToRiderLocation(),
+                child: const Card(
+                  elevation: 5,
+                  color: Colors.black,
+                  shape: CircleBorder(),
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.navigation,
+                      color: Colors.orange,
+                      size: 40,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+              : const SizedBox(),
+          // if (rideDetails.isNavigationActive)
+          //   Positioned(
+          //     bottom: 30.0,
+          //     left: 16.0,
+          //     right: 16.0,
+          //     child: ElevatedButton(
+          //       onPressed: () {
+          //         // Handle your button action here
+          //         print('Button Pressed');
+          //       },
+          //       child: Text('Custom Button'),
+          //     ),
+          //   ),
+
 
           ///new trip request
           rideDetails.newTripRequest == true &&
@@ -201,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ],
                             ),
                             Text(
-                                '${rideDetails.tripDistance} Kms away | ${rideDetails.etaTimer} mins',
+                                '${rideDetails.distance} | ${rideDetails.etaTimer}away',
                                 style: context
                                     .textTheme.bodySmall!
                                     .copyWith(
@@ -294,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen>
                             setState(() {
                               rideDetails.tripRejection(
                                   rideDetails.driverId ?? '',
-                                  rideDetails.tripId ?? '');
+                                  rideDetails.tripId ?? '',imageConfiguration);
                             });
                           },
                           text: 'Reject',
@@ -385,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ],
                             ),
                             Text(
-                                '${rideDetails.distance} Kms away | ${rideDetails.etaTimer} mins',
+                                '${rideDetails.distance} | ${rideDetails.etaTimer} away',
                                 style: context
                                     .textTheme.bodySmall!
                                     .copyWith(
@@ -441,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen>
                           text: 'Cancel',
                           onPressed: () async{
                             const String driverRole = 'DRIVER';
-                           rideDetails.tripCancellation(rideDetails.driverId!, rideDetails.acceptedTripId!, driverRole);
+                           rideDetails.tripCancellation(rideDetails.driverId!, rideDetails.acceptedTripId!, driverRole,imageConfiguration);
                           },
                           iconColor: AppColors.yellow,
                           textColor: Colors.white,
@@ -613,7 +654,7 @@ class _HomeScreenState extends State<HomeScreen>
                               const VerticalSpacing(10),
                               ///trip time
                               Text(
-                                '39 mins',
+                                rideDetails.etaTimer ?? '',
                                 style: context
                                     .textTheme.bodySmall!
                                     .copyWith(
@@ -653,7 +694,7 @@ class _HomeScreenState extends State<HomeScreen>
                               const VerticalSpacing(10),
                               ///distance
                               Text(
-                                '15 Km',
+                                rideDetails.distance ?? '',
                                 style: context
                                     .textTheme.bodySmall!
                                     .copyWith(
@@ -786,7 +827,7 @@ class _HomeScreenState extends State<HomeScreen>
                         print('this is token $token');
                         driverProvider.userRating(docId!, docModel, rating.toString(), comment, token!);
                         setState(() {
-                          rideDetails.resetApp();
+                          rideDetails.resetApp(imageConfiguration);
                         });
                         Future.delayed(
                             1.s,

@@ -22,6 +22,8 @@ class TripCompletedScreen extends StatefulWidget {
 class _TripCompletedScreenState extends State<TripCompletedScreen> {
   @override
   Widget build(BuildContext context) {
+    ImageConfiguration imageConfiguration =
+    createLocalImageConfiguration(context, size: const Size(2, 2));
     final rideDetails =
     Provider.of<RideRequestProvider>(context, listen: false);
     return Scaffold(
@@ -75,7 +77,7 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
                 const HorizontalSpacing(10),
                 GestureDetector(
                   onTap: () async{
-                    rideDetails.resetApp();
+                    rideDetails.resetApp(imageConfiguration);
                     setState(() { });
                     Navigator.pushReplacement(
                       context,
