@@ -24,8 +24,6 @@ class _RequestsViewState extends State<RequestsView> {
   }
 
   void showBottonSheet(BuildContext context) {
-    ImageConfiguration imageConfiguration =
-        createLocalImageConfiguration(context, size: const Size(2, 2));
     final rideDetails =
         Provider.of<RideRequestProvider>(context, listen: false);
     showModalBottomSheet(
@@ -37,7 +35,6 @@ class _RequestsViewState extends State<RequestsView> {
         price: 456,
         onAccept: () async {
           setState(() {
-            // rideDetails.displayDirectionsToPickup(imageConfiguration);
             /// Call acceptTripRequest function when the button is pressed
             rideDetails.acceptRideRequest(
                 rideDetails.driverId ?? '',

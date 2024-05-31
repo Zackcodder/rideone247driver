@@ -7,7 +7,6 @@ import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/widgets/check_widget.dart';
-import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 
 import '../provider/ride_request_provider.dart';
@@ -22,8 +21,10 @@ class TripCompletedScreen extends StatefulWidget {
 class _TripCompletedScreenState extends State<TripCompletedScreen> {
   @override
   Widget build(BuildContext context) {
+    ImageConfiguration imageConfiguration =
+        createLocalImageConfiguration(context, size: const Size(2, 2));
     final rideDetails =
-    Provider.of<RideRequestProvider>(context, listen: false);
+        Provider.of<RideRequestProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.lightGrey,
@@ -74,21 +75,23 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
                 ),
                 const HorizontalSpacing(10),
                 GestureDetector(
-                  onTap: () async{
-                    rideDetails.resetApp();
-                    setState(() { });
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    );
-                    // context.push(const HomeScreen());
-                  },
-                  child: Text(
-                    'GO BACK HOME',
-                    style: context.textTheme.bodyMedium!.copyWith(color: AppColors.green),
-                  )
-                      // .onTap(context.popToHome),
-                ),
+                    onTap: () async {
+                      rideDetails.resetApp(imageConfiguration);
+                      setState(() {});
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()),
+                      );
+                      // context.push(const HomeScreen());
+                    },
+                    child: Text(
+                      'GO BACK HOME',
+                      style: context.textTheme.bodyMedium!
+                          .copyWith(color: AppColors.green),
+                    )
+                    // .onTap(context.popToHome),
+                    ),
               ],
             ),
             const Spacer(),

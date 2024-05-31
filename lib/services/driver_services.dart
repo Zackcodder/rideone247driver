@@ -5,7 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as https;
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/model/rides_histories_model.dart';
-import '../provider/authprovider.dart';
 import 'geo_locator_service.dart';
 import 'socket_service.dart';
 
@@ -47,6 +46,7 @@ class DriverService {
   updateLocation() async {
     final position =
         await _geoLocationService.getCurrentPosition(asPosition: false);
+    // final driverId = await _rid
     _socketService.updateLocation(
       id:
           // id!,
@@ -91,13 +91,7 @@ class DriverService {
             textColor: AppColors.white);
         return responseData;
       } else {
-        throw Fluttertoast.showToast(
-            fontSize: 18,
-            toastLength: Toast.LENGTH_LONG,
-            backgroundColor: AppColors.red.withOpacity(0.7),
-            msg: responseData['message'],
-            gravity: ToastGravity.BOTTOM,
-            textColor: AppColors.white);
+        return;
       }
     } catch (e) {
       print('error login in');
@@ -150,7 +144,8 @@ class DriverService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    var response = await https.get(Uri.parse('$baseUrl/api/drivers'), headers: headers);
+    var response =
+        await https.get(Uri.parse('$baseUrl/api/drivers'), headers: headers);
     final driverProfileResponseData = jsonDecode(response.body);
     print('this is the response $driverProfileResponseData');
     if (response.statusCode == 200 &&
