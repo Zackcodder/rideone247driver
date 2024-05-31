@@ -5,7 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as https;
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/model/rides_histories_model.dart';
-import '../provider/authprovider.dart';
 import 'geo_locator_service.dart';
 import 'socket_service.dart';
 
@@ -82,7 +81,7 @@ class DriverService {
         headers: headers,
       );
       final responseData = jsonDecode(response.body);
-      if (response.statusCode == 200 && responseData['message'] == 'success')  {
+      if (response.statusCode == 200 && responseData['message'] == 'success') {
         Fluttertoast.showToast(
             fontSize: 18,
             toastLength: Toast.LENGTH_LONG,
@@ -91,8 +90,7 @@ class DriverService {
             gravity: ToastGravity.BOTTOM,
             textColor: AppColors.white);
         return responseData;
-      }
-      else {
+      } else {
         return;
       }
     } catch (e) {
@@ -146,7 +144,8 @@ class DriverService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    var response = await https.get(Uri.parse('$baseUrl/api/drivers'), headers: headers);
+    var response =
+        await https.get(Uri.parse('$baseUrl/api/drivers'), headers: headers);
     final driverProfileResponseData = jsonDecode(response.body);
     print('this is the response $driverProfileResponseData');
     if (response.statusCode == 200 &&

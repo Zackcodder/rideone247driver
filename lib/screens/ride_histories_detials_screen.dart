@@ -6,9 +6,7 @@ import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/model/rides_histories_model.dart';
 
-import '../core/constants/assets.dart';
 import '../core/painters_clippers/vertical_dot_line.dart';
-import '../widgets/app_elevated_button.dart';
 import '../widgets/currency_widget.dart';
 import '../widgets/map_widget.dart';
 import '../widgets/spacing.dart';

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +59,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
       body: SafeArea(
         child: Container(
           ///background image
-          decoration:  const BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage(Assets.assetsImagesPatternBackground),
               fit: BoxFit.cover,
@@ -99,15 +98,15 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                           width: 1.0,
                         ),
                       ),
-                      child:  Center(
-                        child: Text(
-                          'ALL',
-                          style: context.textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                              color:  ride == true ? AppColors.yellow : AppColors.black,
-                            fontFamily: 'SFPRODISPLAYREGULAR')
-                        ),
+                      child: Center(
+                        child: Text('ALL',
+                            style: context.textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                color: ride == true
+                                    ? AppColors.yellow
+                                    : AppColors.black,
+                                fontFamily: 'SFPRODISPLAYREGULAR')),
                       ),
                     ),
                   ),
@@ -136,15 +135,15 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                           width: 1.0,
                         ),
                       ),
-                      child:  Center(
-                        child: Text(
-                          'COMPLETED',
+                      child: Center(
+                        child: Text('COMPLETED',
                             style: context.textTheme.bodyMedium!.copyWith(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
-                                color:  completed == true ? AppColors.yellow : AppColors.black,
-                                fontFamily: 'SFPRODISPLAYREGULAR')
-                        ),
+                                color: completed == true
+                                    ? AppColors.yellow
+                                    : AppColors.black,
+                                fontFamily: 'SFPRODISPLAYREGULAR')),
                       ),
                     ),
                   ),
@@ -173,15 +172,15 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                           width: 1.0,
                         ),
                       ),
-                      child:  Center(
-                        child: Text(
-                          'CANCELLED',
+                      child: Center(
+                        child: Text('CANCELLED',
                             style: context.textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                            color:  rejected == true ? AppColors.yellow : AppColors.black,
-                            fontFamily: 'SFPRODISPLAYREGULAR')
-                        ),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                color: rejected == true
+                                    ? AppColors.yellow
+                                    : AppColors.black,
+                                fontFamily: 'SFPRODISPLAYREGULAR')),
                       ),
                     ),
                   ),
@@ -191,531 +190,635 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
               ride == true && completed == false && rejected == false
                   ?
 
-              ///All
-              Builder(builder: (context) {
-                return rideHistory.allRideHistory == null
-                    ? const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    VerticalSpacing(150),
-                    CircularProgressIndicator(),
-                  ],
-                )
-                    : rideHistory.allRideHistory!.isEmpty
-                    ?  SizedBox(
-                  child: Column(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                          Assets.assetsImagesNothingtosee),
-                      const VerticalSpacing(10),
-                      const Text(
-                        'Select a category to view history',
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ).expand()
-                    : ListView.builder(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount:
-                  rideHistory.allRideHistory!.length,
-                  itemBuilder: (context, index) {
-                    RidesHistories rides =
-                    rideHistory.allRideHistory![index];
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) =>
-                        //           RidesHistoriesDetailsScreen(rides)),
-                        // );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                          BorderRadius.circular(10.r),
-                        ),
-                        padding: EdgeInsets.all(15.w),
-                        margin: EdgeInsets.symmetric(
-                            vertical: 5.h),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              /// pickup and destination icon
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: AppColors.black,
-                                    size: 20.w,
+                  ///All
+                  Builder(builder: (context) {
+                      return rideHistory.allRideHistory == null
+                          ? const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                VerticalSpacing(150),
+                                CircularProgressIndicator(),
+                              ],
+                            )
+                          : rideHistory.allRideHistory!.isEmpty
+                              ? SizedBox(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                          Assets.assetsImagesNothingtosee),
+                                      const VerticalSpacing(10),
+                                      const Text(
+                                        'Select a category to view history',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
                                   ),
-                                  CustomPaint(
-                                    size: Size(1, 60.h),
-                                    painter: const DashedLineVerticalPainter(
-                                      color: AppColors.black,
-                                    ),
+                                ).expand()
+                              : ListView.builder(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20.w,
                                   ),
-                                  Icon(
-                                    Icons.send_outlined,
-                                    // Icons.electric_bike,
-                                    color: AppColors.black,
-                                    size: 20.w,
-                                  ).rotate(-0.6),
-                                ],
-                              ),
-                              const HorizontalSpacing(10),
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: rideHistory.allRideHistory!.length,
+                                  itemBuilder: (context, index) {
+                                    RidesHistories rides =
+                                        rideHistory.allRideHistory![index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) =>
+                                        //           RidesHistoriesDetailsScreen(rides)),
+                                        // );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                        ),
+                                        padding: EdgeInsets.all(15.w),
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 5.h),
+                                        child: IntrinsicHeight(
+                                          child: Row(
+                                            // crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              /// pickup and destination icon
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Icon(
+                                                    Icons.location_on,
+                                                    color: AppColors.black,
+                                                    size: 20.w,
+                                                  ),
+                                                  CustomPaint(
+                                                    size: Size(1, 60.h),
+                                                    painter:
+                                                        const DashedLineVerticalPainter(
+                                                      color: AppColors.black,
+                                                    ),
+                                                  ),
+                                                  Icon(
+                                                    Icons.send_outlined,
+                                                    // Icons.electric_bike,
+                                                    color: AppColors.black,
+                                                    size: 20.w,
+                                                  ).rotate(-0.6),
+                                                ],
+                                              ),
+                                              const HorizontalSpacing(10),
 
-                              /// pickup location and destination name and date
-                              Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment
-                                    .start,
-                                mainAxisAlignment:
-                                MainAxisAlignment
-                                    .spaceBetween,
-                                children: [
-                                  Text(
-                                    rides.pickUpName ?? 'sss',
-                                    style: context.textTheme
-                                        .bodyMedium,
-                                        // !.copyWith(
-                                        // fontFamily:
-                                        // 'SFPRODISPLAYREGULAR',
-                                        // fontWeight:
-                                        // FontWeight
-                                        //     .w400,
-                                        // color: AppColors
-                                        //     .black),
-                                  ),
-                                  const VerticalSpacing(10),
-                                  Text(
-                                    rides.dropOffName,
-                                    style: context.textTheme
-                                        .bodyMedium,
-                                  ),
-                                  Text(
-                                    rides.createdAt
-                                        .toString(),
-                                    // '20 Dec 2024. 10:20am',
-                                    style: context.textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                        fontFamily:
-                                        'SFPRODISPLAYREGULAR',
-                                        fontWeight:
-                                        FontWeight
-                                            .w400,
-                                        color: AppColors
-                                            .black),
-                                  ),
-                                ],
-                              ).expand(),
-                              const HorizontalSpacing(10),
-                              ///price and status
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  CurrencyWidget(
-                                    price: rides.fare ?? 0,
-                                    color: AppColors.black,
-                                    fontWeight:
-                                    FontWeight.w500,
-                                  ),
-                                  const VerticalSpacing(30),
-                                  ///status
-                            Container(
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white,
-                                      border: Border.all(
-                                        color: rides.status == 'ended' ? AppColors.red : AppColors.yellow,
-                                        width: 1.0,
+                                              /// pickup location and destination name and date
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    rides.pickUpName,
+                                                    style: context
+                                                        .textTheme.bodyMedium,
+                                                    // !.copyWith(
+                                                    // fontFamily:
+                                                    // 'SFPRODISPLAYREGULAR',
+                                                    // fontWeight:
+                                                    // FontWeight
+                                                    //     .w400,
+                                                    // color: AppColors
+                                                    //     .black),
+                                                  ),
+                                                  const VerticalSpacing(10),
+                                                  Text(
+                                                    rides.dropOffName,
+                                                    style: context
+                                                        .textTheme.bodyMedium,
+                                                  ),
+                                                  Text(
+                                                    rides.createdAt.toString(),
+                                                    // '20 Dec 2024. 10:20am',
+                                                    style: context
+                                                        .textTheme.bodySmall!
+                                                        .copyWith(
+                                                            fontFamily:
+                                                                'SFPRODISPLAYREGULAR',
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: AppColors
+                                                                .black),
+                                                  ),
+                                                ],
+                                              ).expand(),
+                                              const HorizontalSpacing(10),
+
+                                              ///price and status
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  CurrencyWidget(
+                                                    price: rides.fare ?? 0,
+                                                    color: AppColors.black,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  const VerticalSpacing(30),
+
+                                                  ///status
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors.white,
+                                                      border: Border.all(
+                                                        color: rides.status ==
+                                                                'ended'
+                                                            ? AppColors.red
+                                                            : AppColors.yellow,
+                                                        width: 1.0,
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(rides.status,
+                                                          style: context
+                                                              .textTheme
+                                                              .bodyMedium!
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  fontSize: 12,
+                                                                  color: rides.status ==
+                                                                          'ended'
+                                                                      ? AppColors
+                                                                          .red
+                                                                      : AppColors
+                                                                          .green,
+                                                                  fontFamily:
+                                                                      'SFPRODISPLAYREGULAR')),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    child:  Center(
-                                      child: Text(
-                                          rides.status,
-                                          style: context.textTheme.bodyMedium!.copyWith(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 12,
-                                              color:  rides.status == 'ended' ? AppColors.red :AppColors.green,
-                                              fontFamily: 'SFPRODISPLAYREGULAR')
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ).expand();
-              })
+                                    );
+                                  },
+                                ).expand();
+                    })
                   : ride == false && completed == true && rejected == false
-                  ?
+                      ?
 
-              ///  completed
-              Builder(builder: (context) {
-                return rideHistory.allRideHistory == null
-                    ? const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    VerticalSpacing(150),
-                    CircularProgressIndicator(),
-                  ],
-                )
-                    : rideHistory.allRideHistory!.isEmpty
-                    ?  SizedBox(
-                  child: Column(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                          Assets.assetsImagesNothingtosee),
-                      const VerticalSpacing(10),
-                      const Text(
-                        'Select a category to view history',
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ).expand()
-                    : ListView.builder(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount:
-                  rideHistory.allRideHistory!.length,
-                  itemBuilder: (context, index) {
-                    RidesHistories rides =
-                    rideHistory.allRideHistory![index];
-                    return
-                      rides.status == 'ended' ? GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) =>
-                          //           RidesHistoriesDetailsScreen(rides)),
-                          // );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                            BorderRadius.circular(10.r),
-                          ),
-                          padding: EdgeInsets.all(15.w),
-                          margin: EdgeInsets.symmetric(
-                              vertical: 5.h),
-                          child: IntrinsicHeight(
-                            child: Row(
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// pickup and destination icon
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      color: AppColors.black,
-                                      size: 20.w,
-                                    ),
-                                    CustomPaint(
-                                      size: Size(1, 60.h),
-                                      painter: const DashedLineVerticalPainter(
-                                        color: AppColors.black,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.send_outlined,
-                                      // Icons.electric_bike,
-                                      color: AppColors.black,
-                                      size: 20.w,
-                                    ).rotate(-0.6),
-                                  ],
-                                ),
-                                const HorizontalSpacing(10),
-
-                                /// pickup location and destination name and date
-                                Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment
-                                      .start,
-                                  mainAxisAlignment:
-                                  MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    Text(
-                                      rides.pickUpName ?? 'sss',
-                                      style: context.textTheme
-                                          .bodyMedium,
-                                      // !.copyWith(
-                                      // fontFamily:
-                                      // 'SFPRODISPLAYREGULAR',
-                                      // fontWeight:
-                                      // FontWeight
-                                      //     .w400,
-                                      // color: AppColors
-                                      //     .black),
-                                    ),
-                                    const VerticalSpacing(10),
-                                    Text(
-                                      rides.dropOffName,
-                                      style: context.textTheme
-                                          .bodyMedium,
-                                    ),
-                                    Text(
-                                      rides.createdAt
-                                          .toString(),
-                                      // '20 Dec 2024. 10:20am',
-                                      style: context.textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                          fontFamily:
-                                          'SFPRODISPLAYREGULAR',
-                                          fontWeight:
-                                          FontWeight
-                                              .w400,
-                                          color: AppColors
-                                              .black),
-                                    ),
-                                  ],
-                                ).expand(),
-                                const HorizontalSpacing(10),
-                                ///price and status
-                                Column(
+                      ///  completed
+                      Builder(builder: (context) {
+                          return rideHistory.allRideHistory == null
+                              ? const Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    CurrencyWidget(
-                                      price: rides.fare ?? 0,
-                                      color: AppColors.black,
-                                      fontWeight:
-                                      FontWeight.w500,
-                                    ),
-                                    const VerticalSpacing(30),
-                                    ///status
-                                    Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        border: Border.all(
-                                          color:  AppColors.yellow,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      child:  Center(
-                                        child: Text(
-                                            rides.status,
-                                            style: context.textTheme.bodyMedium!.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 14,
-                                                color:  AppColors.green,
-                                                fontFamily: 'SFPRODISPLAYREGULAR')
-                                        ),
-                                      ),
-                                    ),
+                                    VerticalSpacing(150),
+                                    CircularProgressIndicator(),
                                   ],
                                 )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ) : const SizedBox();
-                  },
-                ).expand();
-              })
-                  : ride == false && completed == false && rejected == true
-                  ?
+                              : rideHistory.allRideHistory!.isEmpty
+                                  ? SizedBox(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                              Assets.assetsImagesNothingtosee),
+                                          const VerticalSpacing(10),
+                                          const Text(
+                                            'Select a category to view history',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    ).expand()
+                                  : ListView.builder(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20.w,
+                                      ),
+                                      physics: const BouncingScrollPhysics(),
+                                      itemCount:
+                                          rideHistory.allRideHistory!.length,
+                                      itemBuilder: (context, index) {
+                                        RidesHistories rides =
+                                            rideHistory.allRideHistory![index];
+                                        return rides.status == 'ended'
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  // Navigator.push(
+                                                  //   context,
+                                                  //   MaterialPageRoute(
+                                                  //       builder: (context) =>
+                                                  //           RidesHistoriesDetailsScreen(rides)),
+                                                  // );
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.r),
+                                                  ),
+                                                  padding: EdgeInsets.all(15.w),
+                                                  margin: EdgeInsets.symmetric(
+                                                      vertical: 5.h),
+                                                  child: IntrinsicHeight(
+                                                    child: Row(
+                                                      // crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        /// pickup and destination icon
+                                                        Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.location_on,
+                                                              color: AppColors
+                                                                  .black,
+                                                              size: 20.w,
+                                                            ),
+                                                            CustomPaint(
+                                                              size:
+                                                                  Size(1, 60.h),
+                                                              painter:
+                                                                  const DashedLineVerticalPainter(
+                                                                color: AppColors
+                                                                    .black,
+                                                              ),
+                                                            ),
+                                                            Icon(
+                                                              Icons
+                                                                  .send_outlined,
+                                                              // Icons.electric_bike,
+                                                              color: AppColors
+                                                                  .black,
+                                                              size: 20.w,
+                                                            ).rotate(-0.6),
+                                                          ],
+                                                        ),
+                                                        const HorizontalSpacing(
+                                                            10),
 
-              ///  rejected history
-              Builder(builder: (context) {
-                return rideHistory.allRideHistory == null
-                    ? const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    VerticalSpacing(150),
-                    CircularProgressIndicator(),
-                  ],
-                )
-                    : rideHistory.allRideHistory!.isEmpty
-                    ?  SizedBox(
-                  child: Column(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                          Assets.assetsImagesNothingtosee),
-                      const VerticalSpacing(10),
-                      const Text(
-                        'Select a category to view history',
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ).expand()
-                    : ListView.builder(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount:
-                  rideHistory.allRideHistory!.length,
-                  itemBuilder: (context, index) {
-                    RidesHistories rides =
-                    rideHistory.allRideHistory![index];
-                    return
-                      rides.status == 'transit' ? GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) =>
-                          //           RidesHistoriesDetailsScreen(rides)),
-                          // );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                            BorderRadius.circular(10.r),
-                          ),
-                          padding: EdgeInsets.all(15.w),
-                          margin: EdgeInsets.symmetric(
-                              vertical: 5.h),
-                          child: IntrinsicHeight(
-                            child: Row(
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// pickup and destination icon
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      color: AppColors.black,
-                                      size: 20.w,
-                                    ),
-                                    CustomPaint(
-                                      size: Size(1, 60.h),
-                                      painter: const DashedLineVerticalPainter(
-                                        color: AppColors.black,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.send_outlined,
-                                      // Icons.electric_bike,
-                                      color: AppColors.black,
-                                      size: 20.w,
-                                    ).rotate(-0.6),
-                                  ],
-                                ),
-                                const HorizontalSpacing(10),
+                                                        /// pickup location and destination name and date
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              rides.pickUpName,
+                                                              style: context
+                                                                  .textTheme
+                                                                  .bodyMedium,
+                                                              // !.copyWith(
+                                                              // fontFamily:
+                                                              // 'SFPRODISPLAYREGULAR',
+                                                              // fontWeight:
+                                                              // FontWeight
+                                                              //     .w400,
+                                                              // color: AppColors
+                                                              //     .black),
+                                                            ),
+                                                            const VerticalSpacing(
+                                                                10),
+                                                            Text(
+                                                              rides.dropOffName,
+                                                              style: context
+                                                                  .textTheme
+                                                                  .bodyMedium,
+                                                            ),
+                                                            Text(
+                                                              rides.createdAt
+                                                                  .toString(),
+                                                              // '20 Dec 2024. 10:20am',
+                                                              style: context
+                                                                  .textTheme
+                                                                  .bodySmall!
+                                                                  .copyWith(
+                                                                      fontFamily:
+                                                                          'SFPRODISPLAYREGULAR',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      color: AppColors
+                                                                          .black),
+                                                            ),
+                                                          ],
+                                                        ).expand(),
+                                                        const HorizontalSpacing(
+                                                            10),
 
-                                /// pickup location and destination name and date
-                                Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment
-                                      .start,
-                                  mainAxisAlignment:
-                                  MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    Text(
-                                      rides.pickUpName ?? 'sss',
-                                      style: context.textTheme
-                                          .bodyMedium,
-                                      // !.copyWith(
-                                      // fontFamily:
-                                      // 'SFPRODISPLAYREGULAR',
-                                      // fontWeight:
-                                      // FontWeight
-                                      //     .w400,
-                                      // color: AppColors
-                                      //     .black),
-                                    ),
-                                    const VerticalSpacing(10),
-                                    Text(
-                                      rides.dropOffName,
-                                      style: context.textTheme
-                                          .bodyMedium,
-                                    ),
-                                    Text(
-                                      rides.createdAt
-                                          .toString(),
-                                      // '20 Dec 2024. 10:20am',
-                                      style: context.textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                          fontFamily:
-                                          'SFPRODISPLAYREGULAR',
-                                          fontWeight:
-                                          FontWeight
-                                              .w400,
-                                          color: AppColors
-                                              .black),
-                                    ),
-                                  ],
-                                ).expand(),
-                                const HorizontalSpacing(10),
-                                ///price and status
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    CurrencyWidget(
-                                      price: rides.fare ?? 0,
-                                      color: AppColors.black,
-                                      fontWeight:
-                                      FontWeight.w500,
-                                    ),
-                                    const VerticalSpacing(30),
-                                    ///status
-                                    Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        border: Border.all(
-                                          color:  AppColors.red,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      child:  Center(
-                                        child: Text(
-                                            rides.status,
-                                            style: context.textTheme.bodyMedium!.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 14,
-                                                color:  AppColors.red,
-                                                fontFamily: 'SFPRODISPLAYREGULAR')
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ) : const SizedBox();
-                  },
-                ).expand();
-              })
-                  :  SizedBox(
-                child: Image.asset(
-                    Assets.assetsImagesNothingtosee),
-              ).expand(),
+                                                        ///price and status
+                                                        Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            CurrencyWidget(
+                                                              price:
+                                                                  rides.fare ??
+                                                                      0,
+                                                              color: AppColors
+                                                                  .black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                            const VerticalSpacing(
+                                                                30),
+
+                                                            ///status
+                                                            Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(5),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: AppColors
+                                                                    .white,
+                                                                border:
+                                                                    Border.all(
+                                                                  color: AppColors
+                                                                      .yellow,
+                                                                  width: 1.0,
+                                                                ),
+                                                              ),
+                                                              child: Center(
+                                                                child: Text(
+                                                                    rides
+                                                                        .status,
+                                                                    style: context.textTheme.bodyMedium!.copyWith(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w500,
+                                                                        fontSize:
+                                                                            14,
+                                                                        color: AppColors
+                                                                            .green,
+                                                                        fontFamily:
+                                                                            'SFPRODISPLAYREGULAR')),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox();
+                                      },
+                                    ).expand();
+                        })
+                      : ride == false && completed == false && rejected == true
+                          ?
+
+                          ///  rejected history
+                          Builder(builder: (context) {
+                              return rideHistory.allRideHistory == null
+                                  ? const Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        VerticalSpacing(150),
+                                        CircularProgressIndicator(),
+                                      ],
+                                    )
+                                  : rideHistory.allRideHistory!.isEmpty
+                                      ? SizedBox(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(Assets
+                                                  .assetsImagesNothingtosee),
+                                              const VerticalSpacing(10),
+                                              const Text(
+                                                'Select a category to view history',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                        ).expand()
+                                      : ListView.builder(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 20.w,
+                                          ),
+                                          physics:
+                                              const BouncingScrollPhysics(),
+                                          itemCount: rideHistory
+                                              .allRideHistory!.length,
+                                          itemBuilder: (context, index) {
+                                            RidesHistories rides = rideHistory
+                                                .allRideHistory![index];
+                                            return rides.status == 'transit'
+                                                ? GestureDetector(
+                                                    onTap: () {
+                                                      // Navigator.push(
+                                                      //   context,
+                                                      //   MaterialPageRoute(
+                                                      //       builder: (context) =>
+                                                      //           RidesHistoriesDetailsScreen(rides)),
+                                                      // );
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.r),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.all(15.w),
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 5.h),
+                                                      child: IntrinsicHeight(
+                                                        child: Row(
+                                                          // crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            /// pickup and destination icon
+                                                            Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceEvenly,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .location_on,
+                                                                  color:
+                                                                      AppColors
+                                                                          .black,
+                                                                  size: 20.w,
+                                                                ),
+                                                                CustomPaint(
+                                                                  size: Size(
+                                                                      1, 60.h),
+                                                                  painter:
+                                                                      const DashedLineVerticalPainter(
+                                                                    color: AppColors
+                                                                        .black,
+                                                                  ),
+                                                                ),
+                                                                Icon(
+                                                                  Icons
+                                                                      .send_outlined,
+                                                                  // Icons.electric_bike,
+                                                                  color:
+                                                                      AppColors
+                                                                          .black,
+                                                                  size: 20.w,
+                                                                ).rotate(-0.6),
+                                                              ],
+                                                            ),
+                                                            const HorizontalSpacing(
+                                                                10),
+
+                                                            /// pickup location and destination name and date
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  rides
+                                                                      .pickUpName,
+                                                                  style: context
+                                                                      .textTheme
+                                                                      .bodyMedium,
+                                                                  // !.copyWith(
+                                                                  // fontFamily:
+                                                                  // 'SFPRODISPLAYREGULAR',
+                                                                  // fontWeight:
+                                                                  // FontWeight
+                                                                  //     .w400,
+                                                                  // color: AppColors
+                                                                  //     .black),
+                                                                ),
+                                                                const VerticalSpacing(
+                                                                    10),
+                                                                Text(
+                                                                  rides
+                                                                      .dropOffName,
+                                                                  style: context
+                                                                      .textTheme
+                                                                      .bodyMedium,
+                                                                ),
+                                                                Text(
+                                                                  rides
+                                                                      .createdAt
+                                                                      .toString(),
+                                                                  // '20 Dec 2024. 10:20am',
+                                                                  style: context
+                                                                      .textTheme
+                                                                      .bodySmall!
+                                                                      .copyWith(
+                                                                          fontFamily:
+                                                                              'SFPRODISPLAYREGULAR',
+                                                                          fontWeight: FontWeight
+                                                                              .w400,
+                                                                          color:
+                                                                              AppColors.black),
+                                                                ),
+                                                              ],
+                                                            ).expand(),
+                                                            const HorizontalSpacing(
+                                                                10),
+
+                                                            ///price and status
+                                                            Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                CurrencyWidget(
+                                                                  price: rides
+                                                                          .fare ??
+                                                                      0,
+                                                                  color:
+                                                                      AppColors
+                                                                          .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                                const VerticalSpacing(
+                                                                    30),
+
+                                                                ///status
+                                                                Container(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          5),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: AppColors
+                                                                        .white,
+                                                                    border:
+                                                                        Border
+                                                                            .all(
+                                                                      color: AppColors
+                                                                          .red,
+                                                                      width:
+                                                                          1.0,
+                                                                    ),
+                                                                  ),
+                                                                  child: Center(
+                                                                    child: Text(
+                                                                        rides
+                                                                            .status,
+                                                                        style: context.textTheme.bodyMedium!.copyWith(
+                                                                            fontWeight: FontWeight
+                                                                                .w500,
+                                                                            fontSize:
+                                                                                14,
+                                                                            color:
+                                                                                AppColors.red,
+                                                                            fontFamily: 'SFPRODISPLAYREGULAR')),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : const SizedBox();
+                                          },
+                                        ).expand();
+                            })
+                          : SizedBox(
+                              child:
+                                  Image.asset(Assets.assetsImagesNothingtosee),
+                            ).expand(),
             ],
           ),
         ),

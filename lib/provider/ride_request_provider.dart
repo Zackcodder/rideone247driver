@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/services/geo_locator_service.dart';
@@ -110,7 +109,8 @@ class RideRequestProvider with ChangeNotifier {
       _tripLng = newRequest.pickUpLat.toString();
       _driverId = newRequest.driverId;
       _paymentMethod = newRequest.paymentMethod;
-      displayDirectionsToPickup(imageConfiguration, _riderPickUpLat!, _riderPickUpLon! );
+      displayDirectionsToPickup(
+          imageConfiguration, _riderPickUpLat!, _riderPickUpLon!);
       notifyListeners();
     });
   }
@@ -146,23 +146,23 @@ class RideRequestProvider with ChangeNotifier {
     await _socketService.acceptRide(id: id, lon: lon, lat: lat, tripId: tripId);
     notifyListeners();
   }
+
   // launch drive mode to rider location
-  late List _riderLocationCoordinates = [_riderPickUpLat,_riderPickUpLon];
+  late List _riderLocationCoordinates = [_riderPickUpLat, _riderPickUpLon];
   List get riderLocationCoordinates => _riderLocationCoordinates;
   bool _isNavigationActive = false;
   bool get isNavigationActive => _isNavigationActive;
   launchGoogleMapsNavigationToRiderLocation() async {
     final url =
-    Uri.parse('google.navigation:q=$_riderLocationCoordinates&mode=d');
+        Uri.parse('google.navigation:q=$_riderLocationCoordinates&mode=d');
     if (await launchUrl(url)) {
-        _isNavigationActive = true;
-        notifyListeners();
+      _isNavigationActive = true;
+      notifyListeners();
 
       return true;
     }
     return false;
   }
-
 
   ///accept trip request
   acceptRideRequestResponse(imageConfiguration) async {
@@ -183,15 +183,20 @@ class RideRequestProvider with ChangeNotifier {
         _riderPickUpLon = newAcceptedRequest.riderPickupLon;
         _riderDestinationLat = newAcceptedRequest.riderDropOffLat;
         _riderDestinationLon = newAcceptedRequest.riderDropOffLon;
-        displayDirectionsToPickup(imageConfiguration, _riderPickUpLat!, _riderPickUpLon! );
+        displayDirectionsToPickup(
+            imageConfiguration, _riderPickUpLat!, _riderPickUpLon!);
         // launchGoogleMapsNavigationToRiderLocation();
 
         print('this is a rider name: ${newAcceptedRequest.riderName}');
         print('this is a rider trip id: ${newAcceptedRequest.riderTripId}');
-        print('this is a rider pickup lat: ${newAcceptedRequest.riderPickupLat}');
-        print('this is a rider pickup lon: ${newAcceptedRequest.riderPickupLon}');
-        print('this is a rider destination lat: ${newAcceptedRequest.riderDropOffLat}');
-        print('this is a rider destination lon: ${newAcceptedRequest.riderDropOffLon}');
+        print(
+            'this is a rider pickup lat: ${newAcceptedRequest.riderPickupLat}');
+        print(
+            'this is a rider pickup lon: ${newAcceptedRequest.riderPickupLon}');
+        print(
+            'this is a rider destination lat: ${newAcceptedRequest.riderDropOffLat}');
+        print(
+            'this is a rider destination lon: ${newAcceptedRequest.riderDropOffLon}');
         print(
             'this is a rider payment method: ${newAcceptedRequest.riderPaymentMethod}');
 
@@ -201,7 +206,8 @@ class RideRequestProvider with ChangeNotifier {
   }
 
   ///cancel trip
-  tripCancellation(String id, String tripId, String role,imageConfiguration) async {
+  tripCancellation(
+      String id, String tripId, String role, imageConfiguration) async {
     print('driver cancelling trip');
     await _socketService.cancelTrip(id: id, tripId: tripId, role: role);
     print('printing driver cancel trip status');
@@ -213,7 +219,7 @@ class RideRequestProvider with ChangeNotifier {
   ///reject trip
   bool _tripRejected = false;
   bool get tripRejected => _tripRejected;
-  tripRejection(String id, String tripId,imageConfiguration) async {
+  tripRejection(String id, String tripId, imageConfiguration) async {
     print('driver rejecting trip');
     await _socketService.rejectTrip(id: id, tripId: tripId);
     print('printing driver rejection status');
@@ -365,10 +371,8 @@ class RideRequestProvider with ChangeNotifier {
   }
 
   /// Displaying the directions from the driver location to the rider pickup location
-  Future<void> displayDirectionsToPickup(
-      ImageConfiguration imageConfiguration,
-      double riderPickUpLat,
-      double riderPickUpLon) async {
+  Future<void> displayDirectionsToPickup(ImageConfiguration imageConfiguration,
+      double riderPickUpLat, double riderPickUpLon) async {
     try {
       // Get driver's current location
       var currentPosition = await _geoLocationService.getCurrentPosition(
@@ -435,7 +439,8 @@ class RideRequestProvider with ChangeNotifier {
       }
 
       // Extract polyline points from the response
-      final List<LatLng> polylineCoordinates = _polylinePointService.decodePolyPoints(
+      final List<LatLng> polylineCoordinates =
+          _polylinePointService.decodePolyPoints(
         directionsResponse['routes'][0]['overview_polyline']['points'],
       );
 
@@ -467,8 +472,10 @@ class RideRequestProvider with ChangeNotifier {
       _googleMapService.addMarkers(riderMarker);
 
       // Update ETA and distance
-      final durationText = directionsResponse['routes'][0]['legs'][0]['duration']['text'];
-      final distanceText = directionsResponse['routes'][0]['legs'][0]['distance']['text'];
+      final durationText =
+          directionsResponse['routes'][0]['legs'][0]['duration']['text'];
+      final distanceText =
+          directionsResponse['routes'][0]['legs'][0]['distance']['text'];
       _etaTimer = durationText ?? 'Calculating';
       _distance = distanceText ?? 'Calculating';
 
@@ -488,20 +495,20 @@ class RideRequestProvider with ChangeNotifier {
     }
   }
 
-
   late Timer _refreshDirectionToPickUpLocationTimer;
-  restartDisplayDirectionsToDestination(imageConfiguration) {
+  restartDisplayDirectionsToPickUp(imageConfiguration) {
     // Start a repeating timer that triggers every 2 seconds
     _refreshDirectionToPickUpLocationTimer =
         Timer.periodic(const Duration(seconds: 60), (timer) {
-          // Call the refreshMap function to update the map and driver locations
-          displayDirectionsToPickup(imageConfiguration, _riderPickUpLat!, _riderPickUpLon!);
-        });
+      // Call the refreshMap function to update the map and driver locations
+      displayDirectionsToPickup(
+          imageConfiguration, _riderPickUpLat!, _riderPickUpLon!);
+    });
   }
 
   // Start the auto-refresh timer
   startAutoDisplayDirectionsToPickup(imageConfiguration) {
-    restartDisplayDirectionsToDestination(imageConfiguration);
+    restartDisplayDirectionsToPickUp(imageConfiguration);
   }
 
   //stop rider request timer

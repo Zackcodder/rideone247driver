@@ -11,7 +11,6 @@ import '../widgets/app_elevated_button.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/app_text_field.dart';
 import '../widgets/spacing.dart';
-import 'mail_sent_screen.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   static String id = 'forgot_password';
@@ -52,7 +51,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 ),
               ).padOnly(left: 20.w),
               const VerticalSpacing(10),
-               AppTextField(
+              AppTextField(
                 controller: _emailController,
                 hintText: 'Cristianoronaldo@gmail.com',
                 prefixIcon: const Icon(
