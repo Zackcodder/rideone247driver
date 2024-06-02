@@ -57,6 +57,8 @@ class DriverProvider with ChangeNotifier {
     print('oya ooo');
     try {
       allRideHistory = await _driverService.getRideHistory(token);
+      // Sort the ride history from recent to old
+      allRideHistory?.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       print('ahhhh');
       notifyListeners();
     } catch (error) {

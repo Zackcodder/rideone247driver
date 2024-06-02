@@ -44,16 +44,12 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
     DriverProvider rideHistory = Provider.of<DriverProvider>(context);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         title: Text('Ride History',
             style: context.textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
                 fontFamily: 'SFPRODISPLAYREGULAR')),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back)),
       ),
       backgroundColor: AppColors.lightGrey,
       body: SafeArea(
@@ -226,12 +222,13 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                         rideHistory.allRideHistory![index];
                                     return GestureDetector(
                                       onTap: () {
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //       builder: (context) =>
-                                        //           RidesHistoriesDetailsScreen(rides)),
-                                        // );
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RidesHistoriesDetailsScreen(
+                                                      rides)),
+                                        );
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -302,8 +299,9 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                                         .textTheme.bodyMedium,
                                                   ),
                                                   Text(
-                                                    rides.createdAt.toString(),
-                                                    // '20 Dec 2024. 10:20am',
+                                                    rides.createdAt
+                                                        .toLocal()
+                                                        .toString(),
                                                     style: context
                                                         .textTheme.bodySmall!
                                                         .copyWith(
@@ -418,12 +416,13 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                         return rides.status == 'ended'
                                             ? GestureDetector(
                                                 onTap: () {
-                                                  // Navigator.push(
-                                                  //   context,
-                                                  //   MaterialPageRoute(
-                                                  //       builder: (context) =>
-                                                  //           RidesHistoriesDetailsScreen(rides)),
-                                                  // );
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            RidesHistoriesDetailsScreen(
+                                                                rides)),
+                                                  );
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
@@ -506,6 +505,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                                             ),
                                                             Text(
                                                               rides.createdAt
+                                                                  .toLocal()
                                                                   .toString(),
                                                               // '20 Dec 2024. 10:20am',
                                                               style: context
@@ -634,12 +634,13 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                             return rides.status == 'transit'
                                                 ? GestureDetector(
                                                     onTap: () {
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //       builder: (context) =>
-                                                      //           RidesHistoriesDetailsScreen(rides)),
-                                                      // );
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                RidesHistoriesDetailsScreen(
+                                                                    rides)),
+                                                      );
                                                     },
                                                     child: Container(
                                                       decoration: BoxDecoration(
@@ -730,6 +731,7 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
                                                                 Text(
                                                                   rides
                                                                       .createdAt
+                                                                      .toLocal()
                                                                       .toString(),
                                                                   // '20 Dec 2024. 10:20am',
                                                                   style: context

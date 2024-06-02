@@ -21,6 +21,7 @@ class MapWidgetState extends State<MapWidget>
   late GoogleMapController mapController;
   final Completer<GoogleMapController> _controller = Completer();
   late RideRequestProvider _rideRequestProvider;
+  late MapView _mapViewProvider;
   GoogleMapService _googleMapService = GoogleMapService();
 
   @override
@@ -29,6 +30,9 @@ class MapWidgetState extends State<MapWidget>
     _rideRequestProvider =
         Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.acceptRideRequestResponse(imageConfiguration);
+    _mapViewProvider = Provider.of<MapView>(context, listen: false);
+    _mapViewProvider.startLocationUpdates();
+    setState(() {});
     if (_rideRequestProvider.riderPickUpLat != null &&
         _rideRequestProvider.riderPickUpLon != null) {
       _rideRequestProvider.displayDirectionsToPickup(
@@ -37,6 +41,7 @@ class MapWidgetState extends State<MapWidget>
           _rideRequestProvider.riderPickUpLon!);
     }
     _googleMapService.markers;
+
   }
 
   @override
@@ -51,7 +56,7 @@ class MapWidgetState extends State<MapWidget>
       resizeToAvoidBottomInset: false,
       body: GoogleMap(
         myLocationButtonEnabled: false,
-        myLocationEnabled: true,
+        myLocationEnabled: false,
         zoomGesturesEnabled: true,
         mapToolbarEnabled: true,
         zoomControlsEnabled: false,
@@ -66,10 +71,6 @@ class MapWidgetState extends State<MapWidget>
           final position = await mapProvider.currentPosition;
           mapController.animateCamera(CameraUpdate.newLatLng(
               mapProvider.convertPositionToLatLng(position)));
-          // setState(() {
-          //   rideDetails.displayDirectionForActivateTrip(imageConfiguration);
-          // });
-          // rideDetails.displayDirectionsToPickup(imageConfiguration);
         },
       ),
     );
