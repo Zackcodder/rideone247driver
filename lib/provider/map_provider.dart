@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../services/geo_locator_service.dart';
@@ -19,6 +21,17 @@ class MapView extends ChangeNotifier {
   // ValueNotifier<Map<PolylineId, Polyline>> get polyline => GoogleMapService.polyLines;
   get polyline => _googleMapService.polyLines;
   LatLngBounds? get bounds => _googleMapService.bounds;
+  /// user marker
+  Future<void> updateDriverLocationMarker() async {
+    await _googleMapService.updateDriverLocationMarker();
+    notifyListeners();
+  }
+
+  void startLocationUpdates() {
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      await updateDriverLocationMarker();
+    });
+  }
 
   @override
   notifyListeners();

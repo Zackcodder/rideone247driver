@@ -54,23 +54,14 @@ class GoogleMapService {
           : {
         Circle(
             circleId: const CircleId('Current'),
-            strokeColor: Colors.orange,
-            strokeWidth: 1,
+            strokeColor: Colors.blue,
+            strokeWidth: 2,
             radius: 350,
             center: convertPositionToLatLng(pos),
-            fillColor: Colors.orange.withOpacity(0.2))
+            fillColor: Colors.orange.withOpacity(0.1))
       };
 
   /// for markers
-// Set<Marker> _markers = <Marker>{};
-// Set<Marker> get markers => _markers;
-// clearMarkers() => _markers.clear();
-// static const Marker userMarker = Marker(
-//   markerId: MarkerId('Rider'),
-//   infoWindow: InfoWindow(title: 'Rider'),
-//   icon: BitmapDescriptor.defaultMarker,
-//   position: LatLng(37.43296265331129, -122.08832357078792),
-// );
   BitmapDescriptor? movingMarkerIcon;
   Set<Marker> _markers = <Marker>{};
   Set<Marker> get markers => _markers;
@@ -120,6 +111,57 @@ class GoogleMapService {
           : InfoWindow.noText,
     );
   }
+
+  ///
+  // Future<Marker> createMarker({
+  //   required String id,
+  //   required LatLng position,
+  //   required ImageConfiguration imageConfiguration,
+  //   double? rotation,
+  //   String? infoTitle,
+  //   String? snippet,
+  //   String? iconPath, // add this parameter
+  // }) async {
+  //   BitmapDescriptor bitMapIcon =
+  //   BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+  //   if (iconPath != null) {
+  //     bitMapIcon =
+  //         BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+  //   }
+  //
+  //   return Marker(
+  //     markerId: MarkerId(id),
+  //     position: position,
+  //     icon: bitMapIcon,
+  //     rotation: rotation ?? 0.0,
+  //     infoWindow: infoTitle != null
+  //         ? InfoWindow(title: infoTitle, snippet: snippet)
+  //         : InfoWindow.noText,
+  //   );
+  // }
+
+  /// user marker
+  updateDriverLocationMarker() async {
+    Position position = await _geoLocationService.getCurrentPosition();
+    LatLng driverLatLng = LatLng(position.latitude, position.longitude);
+
+    BitmapDescriptor customIcon =
+    await BitmapDescriptor
+        .fromAssetImage(
+      const ImageConfiguration(size: Size(5, 5)),
+      'assets/images/car_icons2.png', // Ensure this path matches your project structure
+    );
+    // .defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+
+    Marker driverMarker = Marker(
+      markerId: const MarkerId('driver_location'),
+      position: driverLatLng,
+      icon: customIcon,
+    );
+
+    _markers = {driverMarker};
+  }
+  ///
 
   ///for polylines
   LatLng convertDoubleToLatLng(double latitude, double longitude) =>
