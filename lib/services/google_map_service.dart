@@ -156,7 +156,7 @@ class GoogleMapService {
     );
   }
 
-  /// user marker
+  /// driver marker
   updateDriverLocationMarker() async {
     Position position = await _geoLocationService.getCurrentPosition();
     LatLng driverLatLng = LatLng(position.latitude, position.longitude);
@@ -198,8 +198,12 @@ class GoogleMapService {
         points: polylineCoordinates,
         jointType: JointType.round,
         width: 4,
-        startCap: Cap.roundCap,
-        endCap: Cap.roundCap,
+        startCap: Cap.customCapFromBitmap(
+            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed)),
+        endCap: Cap.customCapFromBitmap(
+            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue)),
+        // startCap: Cap.roundCap,
+        // endCap: Cap.roundCap,
         geodesic: true,
       );
 
