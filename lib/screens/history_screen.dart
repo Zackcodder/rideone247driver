@@ -11,12 +11,13 @@ import '../core/constants/assets.dart';
 import '../core/constants/colors.dart';
 import '../core/painters_clippers/vertical_dot_line.dart';
 import '../provider/authprovider.dart';
+import '../provider/history_provider.dart';
 import '../widgets/currency_widget.dart';
 import '../widgets/spacing.dart';
 
 class RideHistoriesScreen extends StatefulWidget {
   static String id = 'ride_histories';
-  const RideHistoriesScreen({Key? key}) : super(key: key);
+  const RideHistoriesScreen({super.key});
 
   @override
   State<RideHistoriesScreen> createState() => _RideHistoriesScreenState();
@@ -35,13 +36,13 @@ class _RideHistoriesScreenState extends State<RideHistoriesScreen> {
   void initState() {
     super.initState();
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
-    Provider.of<DriverProvider>(context, listen: false)
+    Provider.of<OrderHistoryProvider>(context, listen: false)
         .fetchRideHistory(_authProvider.token!);
   }
 
   @override
   Widget build(BuildContext context) {
-    DriverProvider rideHistory = Provider.of<DriverProvider>(context);
+    OrderHistoryProvider rideHistory = Provider.of<OrderHistoryProvider>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,

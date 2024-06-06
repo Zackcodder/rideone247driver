@@ -17,16 +17,19 @@ class MapWidget extends StatefulWidget {
 
 class MapWidgetState extends State<MapWidget>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  ImageConfiguration imageConfiguration = ImageConfiguration();
+  ImageConfiguration imageConfiguration = const ImageConfiguration();
   late GoogleMapController mapController;
   final Completer<GoogleMapController> _controller = Completer();
   late RideRequestProvider _rideRequestProvider;
   late MapView _mapViewProvider;
-  GoogleMapService _googleMapService = GoogleMapService();
+  final GoogleMapService _googleMapService = GoogleMapService();
+  CameraPosition _initialCameraPosition = GoogleMapService.googlePlex;
 
   @override
   void initState() {
     super.initState();
+    _setInitialCameraPosition();
+    _googleMapService.getUserLocationCameraPosition();
     _rideRequestProvider =
         Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.acceptRideRequestResponse(imageConfiguration);
@@ -42,6 +45,12 @@ class MapWidgetState extends State<MapWidget>
     }
     _googleMapService.markers;
 
+  }
+  Future<void> _setInitialCameraPosition() async {
+    final userCameraPosition = await _googleMapService.getUserLocationCameraPosition();
+    setState(() {
+      _initialCameraPosition = userCameraPosition;
+    });
   }
 
   @override
@@ -64,7 +73,8 @@ class MapWidgetState extends State<MapWidget>
         markers: mapProvider.marker,
         circles: mapProvider.circle,
         polylines: mapProvider.polyline,
-        initialCameraPosition: GoogleMapService.googlePlex,
+        initialCameraPosition: _initialCameraPosition,
+        // GoogleMapService.googlePlex,
         onMapCreated: (GoogleMapController controller) async {
           _controller.complete(controller);
           mapController = controller;

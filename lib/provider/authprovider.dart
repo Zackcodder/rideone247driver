@@ -119,10 +119,10 @@ class AuthProvider with ChangeNotifier {
             _socketService.authenticate();
 
             /// Start location updates when user logs in
-            _driverService.startLocationUpdates();
+            // _driverService.startLocationUpdates(id!);
 
             ///start driver status
-            _socketService.driverOnlineStatus(id: _id!, availability: true);
+            // _socketService.driverOnlineStatus(id: _id!, availability: true);
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const HomeScreen()),

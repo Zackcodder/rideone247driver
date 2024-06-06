@@ -10,6 +10,7 @@ import 'package:ride_on_driver/services/polyline_point_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/trip.dart';
+import '../services/driver_services.dart';
 import '../services/google_map_service.dart';
 import '../services/map_service.dart';
 import '../services/socket_service.dart';
@@ -19,6 +20,7 @@ class RideRequestProvider with ChangeNotifier {
   bool get rideRequestLoading => _rideRequestLoading;
 
   final SocketService _socketService = SocketService();
+  final DriverService _driverService = DriverService();
 
   RideRequestProvider(String token, String id, imageConfiguration) {
     listenForRideRequests(imageConfiguration);
@@ -43,8 +45,6 @@ class RideRequestProvider with ChangeNotifier {
     print('Driver status:');
     _socketService.listenForSuccess();
     _socketService.socket.on('SUCCESS', (data) {
-      print('Driver status: $data');
-      // Check if the data contains the success message
       if (data == 'You are now available') {
         return Fluttertoast.showToast(
             fontSize: 18,
@@ -54,14 +54,7 @@ class RideRequestProvider with ChangeNotifier {
             gravity: ToastGravity.TOP,
             textColor: AppColors.black);
       } else {
-        print('error from driver online status: $data');
-        Fluttertoast.showToast(
-            fontSize: 18,
-            toastLength: Toast.LENGTH_SHORT,
-            backgroundColor: Colors.red.withOpacity(0.7),
-            msg: data,
-            gravity: ToastGravity.TOP,
-            textColor: Colors.white);
+        _driverService.stopLocationUpdates();
       }
       notifyListeners();
     });

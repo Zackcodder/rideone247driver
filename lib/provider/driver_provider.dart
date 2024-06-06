@@ -50,23 +50,6 @@ class DriverProvider with ChangeNotifier {
     }
   }
 
-  ///ride histories
-  List<RidesHistories>? allRideHistory;
-
-  fetchRideHistory(String token) async {
-    print('oya ooo');
-    try {
-      allRideHistory = await _driverService.getRideHistory(token);
-      // Sort the ride history from recent to old
-      allRideHistory?.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      print('ahhhh');
-      notifyListeners();
-    } catch (error) {
-      // Handle error
-      print('Error fetching ride history: $error');
-    }
-  }
-
   ///driver profile
   DriverInformation? driverInformation;
   bool _profileLoading = false;
