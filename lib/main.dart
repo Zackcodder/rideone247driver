@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/provider/driver_provider.dart';
+import 'package:ride_on_driver/provider/history_provider.dart';
 import 'package:ride_on_driver/provider/map_provider.dart';
 import 'package:ride_on_driver/provider/ride_request_provider.dart';
-import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/screens/nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,19 +70,17 @@ class MyApp extends StatelessWidget {
             ),
             ChangeNotifierProvider(create: (context) => MapView()),
             ChangeNotifierProvider(
-                create: (context) =>
-                    RideRequestProvider(initialToken ?? '', initialId ?? '',ImageConfiguration)),
-            ChangeNotifierProvider(
-                create: (context) =>
-                    DriverProvider()),
+                create: (context) => RideRequestProvider(
+                    initialToken ?? '', initialId ?? '', ImageConfiguration)),
+            ChangeNotifierProvider(create: (context) => DriverProvider()),
+            ChangeNotifierProvider(create: (context) => OrderHistoryProvider()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             title: AppStrings.appName,
             theme: AppTheme.lightTheme,
             navigatorKey: MyApp.navigatorKey,
-            home:
-                initialToken != null ? const NavBar() : const LoginScreen(),
+            home: initialToken != null ? const NavBar() : const LoginScreen(),
           ),
         );
       },

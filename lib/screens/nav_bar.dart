@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_on_driver/screens/history_screen.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
-import 'package:ride_on_driver/screens/profile_edit_screen.dart';
 import 'package:ride_on_driver/screens/profile_screen.dart';
 
 import '../core/constants/assets.dart';
@@ -36,12 +34,13 @@ class _NavBarState extends State<NavBar> {
   void dispose() {
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         ///background deco image
-        decoration:  const BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(Assets.assetsImagesPatternBackground),
             fit: BoxFit.cover,
@@ -56,7 +55,7 @@ class _NavBarState extends State<NavBar> {
               _FloatingBottomBar(
                 currentPageIndex: currentPageIndex,
                 onIndexChange: (int index) =>
-                currentPageIndexNotifier.value = index,
+                    currentPageIndexNotifier.value = index,
               ),
             ],
           ),
@@ -131,6 +130,7 @@ class _BottomBarItem extends StatelessWidget {
               color: AppColors.yellow,
             ),
           const Spacer(),
+
           ///color for selected icon on nav bar
           Icon(
             icon,
@@ -143,4 +143,3 @@ class _BottomBarItem extends StatelessWidget {
     );
   }
 }
-

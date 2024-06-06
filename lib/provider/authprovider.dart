@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:ride_on_driver/model/login_model.dart';
 import 'package:ride_on_driver/model/signup_model.dart';
-import 'package:ride_on_driver/provider/driver_provider.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
 import 'package:ride_on_driver/services/authentication_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -105,26 +103,31 @@ class AuthProvider with ChangeNotifier {
         /// Initialize the socket with the user token
         _socketService.initSocket(_token!, _id!);
 
-
-        await saveDriverData( _driverName!, _driverLastName!,_driverEmail!,_token!, _walletBalance!, _id!);
+        await saveDriverData(_driverName!, _driverLastName!, _driverEmail!,
+            _token!, _walletBalance!, _id!);
         notifyListeners();
         _signInLoading = false;
         //navigate to home page
-        if(_driverName !=null && _driverLastName != null &&_driverEmail!=null &&_token!=null && _walletBalance!=null && _id!=null) {
+        if (_driverName != null &&
+            _driverLastName != null &&
+            _driverEmail != null &&
+            _token != null &&
+            _walletBalance != null &&
+            _id != null) {
           Future.delayed(Duration.zero, () {
-          /// Authenticate the socket connection
-          _socketService.authenticate();
+            /// Authenticate the socket connection
+            _socketService.authenticate();
 
-          /// Start location updates when user logs in
-          _driverService.startLocationUpdates();
+            /// Start location updates when user logs in
+            // _driverService.startLocationUpdates(id!);
 
-          ///start driver status
-          _socketService.driverOnlineStatus(id: _id!, availability: true);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-        });
+            ///start driver status
+            // _socketService.driverOnlineStatus(id: _id!, availability: true);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+          });
         }
       } else {
         _signInLoading = false;
@@ -132,8 +135,8 @@ class AuthProvider with ChangeNotifier {
         print('error');
         setError(responseData['message']);
       }
-    }catch(e){
-    _signInLoading = false;
+    } catch (e) {
+      _signInLoading = false;
       print('printing the eroor in provide login $e');
       notifyListeners();
     }
@@ -221,7 +224,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   ///logout
-   logout(BuildContext context) async {
+  logout(BuildContext context) async {
     // Clear user-related data
     _driverName = null;
     _driverEmail = null;
@@ -241,6 +244,7 @@ class AuthProvider with ChangeNotifier {
 
     // Stop location updates when user logs out
     _driverService.stopLocationUpdates();
+
     ///navigate to login page
     Future.delayed(Duration.zero, () {
       Navigator.pushReplacement(

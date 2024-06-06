@@ -10,7 +10,6 @@ import '../widgets/app_elevated_button.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/app_text_field.dart';
 import '../widgets/spacing.dart';
-import 'home_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   static String id = 'change_password';

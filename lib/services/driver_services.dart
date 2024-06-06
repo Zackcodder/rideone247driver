@@ -5,7 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as https;
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/model/rides_histories_model.dart';
-import '../provider/authprovider.dart';
 import 'geo_locator_service.dart';
 import 'socket_service.dart';
 
@@ -29,34 +28,32 @@ class DriverService {
   String? id;
 
   /// Call this method to start updating the driver's location periodically.
-  startLocationUpdates() {
+  startLocationUpdates(String driverId) {
     /// Start a repeating timer that calls the updateLocation method every 5 seconds.
     locationUpdateTimer = Timer.periodic(const Duration(seconds: 60), (timer) {
       updateDriverLiveStatus();
-      updateLocation();
+      updateLocation(driverId);
     });
   }
 
   /// Call this method to stop the periodic location updates.
-  void stopLocationUpdates() {
+  stopLocationUpdates() {
     locationUpdateTimer?.cancel();
   }
 
   /// Update location using socket
 
-  updateLocation() async {
+  updateLocation(String driverId) async {
     final position =
-        await _geoLocationService.getCurrentPosition(asPosition: false);
+        await _geoLocationService.getCurrentPosition(asPosition: true);
     _socketService.updateLocation(
-      id:
-          // id!,
-          '65aa5dbab2e8f20021fcac83', // Provide the driver ID
+      id: driverId,
       role: 'DRIVER',
       lat: position[0].toString(),
       lon: position[1].toString(),
     );
     print('this is from the driver service class');
-    print('Driver Id: $id');
+    print('Driver Id: $driverId');
     print('Latitude: ${position[0]}');
     print('Longitude: ${position[1]}');
     _socketService.driverLocationUpdate();
@@ -91,13 +88,7 @@ class DriverService {
             textColor: AppColors.white);
         return responseData;
       } else {
-        throw Fluttertoast.showToast(
-            fontSize: 18,
-            toastLength: Toast.LENGTH_LONG,
-            backgroundColor: AppColors.red.withOpacity(0.7),
-            msg: responseData['message'],
-            gravity: ToastGravity.BOTTOM,
-            textColor: AppColors.white);
+        return;
       }
     } catch (e) {
       print('error login in');
@@ -150,7 +141,8 @@ class DriverService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    var response = await https.get(Uri.parse('$baseUrl/api/drivers'), headers: headers);
+    var response =
+        await https.get(Uri.parse('$baseUrl/api/drivers'), headers: headers);
     final driverProfileResponseData = jsonDecode(response.body);
     print('this is the response $driverProfileResponseData');
     if (response.statusCode == 200 &&

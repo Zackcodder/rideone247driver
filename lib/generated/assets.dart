@@ -4,10 +4,16 @@ class Assets {
 
   static const String fontsSfCompactDisplayMedium = 'assets/fonts/sf_compact_display_medium.otf';
   static const String fontsSfCompactDisplayThin = 'assets/fonts/sf_compact_display_thin.otf';
+  static const String imagesCarIcon = 'assets/images/car_icon.png';
+  static const String imagesCarIcon1 = 'assets/images/car_icon1.png';
+  static const String imagesCarIcons2 = 'assets/images/car_icons2.png';
+  static const String imagesDestMarker = 'assets/images/dest_marker.png';
+  static const String imagesDriverCar = 'assets/images/driver_car.png';
   static const String imagesDriverProfile = 'assets/images/driver_profile.png';
   static const String imagesLogo = 'assets/images/logo.png';
   static const String imagesNotin = 'assets/images/notin.png';
   static const String imagesPatternBackground = 'assets/images/pattern_background.png';
+  static const String imagesPickupMarker = 'assets/images/pickup_marker.png';
   static const String imagesVehicle = 'assets/images/vehicle.png';
   static const String svgsAbout = 'assets/svgs/about.svg';
   static const String svgsAccountwallet = 'assets/svgs/accountwallet.svg';
