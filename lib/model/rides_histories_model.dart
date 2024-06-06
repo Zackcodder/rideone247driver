@@ -1,8 +1,8 @@
 class RidesHistories {
   final String id;
-  final Location pickUpLocation;
+  final Map<String, dynamic> pickUpLocation;
   String pickUpName;
-  final Location dropOffLocation;
+  final Map<String, dynamic> dropOffLocation;
   String dropOffName;
   final String status;
   final Rider rider;
@@ -29,8 +29,8 @@ class RidesHistories {
     return RidesHistories(
       id: json['_id'],
       pickUpName: json['pickUp'] ?? '',
-      pickUpLocation: Location.fromJson(json['pickUpLocation']),
-      dropOffLocation: Location.fromJson(json['dropOffLocation']),
+      pickUpLocation: json['pickUpLocation'],
+      dropOffLocation: json['dropOffLocation'],
       dropOffName: json['dropOff'] ?? '',
       status: json['status'],
       rider: Rider.fromJson(json['riderId']),

@@ -14,22 +14,4 @@ class PolylinePointService {
     }
     return polylineCoordinates;
   }
-
-  // ///
-  // List<LatLng> polylineCoordinates = [];
-  // PolylinePoints polylinePoints = PolylinePoints();
-  //
-  // List<LatLng> decodePolyPoints(String encodedPoint) {
-  //   List<PointLatLng> results = polylinePoints.decodePolyline(encodedPoint);
-  //
-  //   polylineCoordinates.clear();
-  //   if (results.isNotEmpty) {
-  //     for (var point in results) {
-  //       polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-  //     }
-  //   }
-  //   return polylineCoordinates;
-  // }
-
-  ///
 }

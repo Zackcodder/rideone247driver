@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/provider/driver_provider.dart';
+import 'package:ride_on_driver/provider/history_provider.dart';
 import 'package:ride_on_driver/provider/map_provider.dart';
 import 'package:ride_on_driver/provider/ride_request_provider.dart';
 import 'package:ride_on_driver/screens/login_screen.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
                 create: (context) => RideRequestProvider(
                     initialToken ?? '', initialId ?? '', ImageConfiguration)),
             ChangeNotifierProvider(create: (context) => DriverProvider()),
+            ChangeNotifierProvider(create: (context) => OrderHistoryProvider()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

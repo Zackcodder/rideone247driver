@@ -1,6 +1,4 @@
-import 'dart:convert' as convert;
 import 'dart:convert';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:http/http.dart' as https;
 
 class MapService {

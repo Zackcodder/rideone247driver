@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen>
     loadDriverDataFromSharedPreference();
     WidgetsBinding.instance.addObserver(this);
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
-    _driverService.startLocationUpdates();
+    // _driverService.startLocationUpdates(_authProvider.id!);
     _rideRequestProvider =
         Provider.of<RideRequestProvider>(context, listen: false);
     _rideRequestProvider.updateDriverStatus(
@@ -103,8 +103,17 @@ class _HomeScreenState extends State<HomeScreen>
                           onChanged: (value) async {
                             setState(() {
                               isActiveNotifier.value = value;
-                              rideDetails.driverOnlineStatus();
+                              // rideDetails.driverOnlineStatus();
                               rideDetails.updateDriverStatus(_driverId!, value);
+                              if (value == true) {
+                                _driverService
+                                    .startLocationUpdates(_authProvider.id!);
+                                setState(() {});
+                              } else {
+                                setState(() {
+                                  _driverService.stopLocationUpdates();
+                                });
+                              }
                             });
                           }
                           // (value) => isActiveNotifier.value = value,

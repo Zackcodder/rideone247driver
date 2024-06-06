@@ -2,8 +2,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../model/trip.dart';
@@ -56,7 +54,7 @@ class SocketService {
 
   ///Driver location update
   updateLocation(
-      {required String id,
+      {required String? id,
       required String role,
       required String lat,
       required String lon}) {
@@ -76,10 +74,7 @@ class SocketService {
 
   ///Driver location update response
   driverLocationUpdate() {
-    socket.on("DRIVER_LOCATION_UPDATED", (data) {
-      print('this is the result from the driver location $data');
-      print(data);
-    });
+    socket.on("DRIVER_LOCATION_UPDATED", (data) {});
   }
 
   ///update driver availability
@@ -175,7 +170,7 @@ class SocketService {
   ///arrive socket
   driverArrival({required String id, required String tripId}) {
     print('driver arrival in socket');
-      socket.emit("ARRIVED", {
+    socket.emit("ARRIVED", {
       'id': id,
       'tripId': tripId,
     });
@@ -205,13 +200,10 @@ class SocketService {
   }
 
   ///cancel trip
-  cancelTrip({required String id, required String tripId, required String role}) {
+  cancelTrip(
+      {required String id, required String tripId, required String role}) {
     print('sending ending trip in socket');
-    socket.emit("CANCEL_TRIP", {
-      'id': id,
-      'tripId': tripId,
-      'role': role
-    });
+    socket.emit("CANCEL_TRIP", {'id': id, 'tripId': tripId, 'role': role});
     listenForSuccess();
   }
 
@@ -227,7 +219,7 @@ class SocketService {
   listenForSuccess() {
     print("listening for success in socket");
     socket.on("SUCCESS", (data) {
-      print("success data fromm socket on driver: $data");
+      // print("success data fromm socket on driver: $data");
     });
   }
 
