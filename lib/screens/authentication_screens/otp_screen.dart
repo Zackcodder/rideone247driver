@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 
-import '../core/constants/colors.dart';
-import '../core/extensions/build_context_extensions.dart';
-import '../widgets/app_elevated_button.dart';
-import '../widgets/app_logo.dart';
-import '../widgets/app_text_button.dart';
-import '../widgets/spacing.dart';
-import 'home_screen.dart';
+import '../../core/constants/colors.dart';
+import '../../core/extensions/build_context_extensions.dart';
+import '../../widgets/app_elevated_button.dart';
+import '../../widgets/app_logo.dart';
+import '../../widgets/app_text_button.dart';
+import '../../widgets/spacing.dart';
+import '../home_screen.dart';
 
 class OTPScreen extends StatelessWidget {
   const OTPScreen({super.key});

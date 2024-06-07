@@ -9,7 +9,7 @@ import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/widgets/check_widget.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 
-import '../provider/ride_request_provider.dart';
+import '../../provider/ride_request_provider.dart';
 
 class TripCompletedScreen extends StatefulWidget {
   const TripCompletedScreen({super.key});

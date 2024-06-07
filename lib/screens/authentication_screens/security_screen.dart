@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
-import 'package:ride_on_driver/screens/change_password_screen.dart';
-import 'package:ride_on_driver/screens/login_screen.dart';
-import 'package:ride_on_driver/screens/profile_screen.dart';
+import 'package:ride_on_driver/screens/authentication_screens/change_password_screen.dart';
+import 'package:ride_on_driver/screens/authentication_screens/login_screen.dart';
+import 'package:ride_on_driver/screens/profile_screens/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../core/constants/assets.dart';
-import '../core/constants/colors.dart';
-import '../widgets/app_elevated_button.dart';
-import '../widgets/app_text_button.dart';
-import '../widgets/spacing.dart';
-import 'nav_bar.dart';
+import '../../core/constants/assets.dart';
+import '../../core/constants/colors.dart';
+import '../../widgets/app_elevated_button.dart';
+import '../../widgets/app_text_button.dart';
+import '../../widgets/spacing.dart';
+import '../nav_bar.dart';
 
 class SecurityScreen extends StatefulWidget {
   const SecurityScreen({Key? key}) : super(key: key);

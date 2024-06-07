@@ -8,7 +8,7 @@ import 'package:ride_on_driver/core/extensions/int_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/provider/driver_provider.dart';
-import 'package:ride_on_driver/screens/profile_screen.dart';
+import 'package:ride_on_driver/screens/profile_screens/profile_screen.dart';
 import 'package:ride_on_driver/services/driver_services.dart';
 import 'package:ride_on_driver/widgets/custom_switch.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
@@ -20,7 +20,7 @@ import '../widgets/app_elevated_button.dart';
 import '../widgets/currency_widget.dart';
 import '../widgets/icon_text_button.dart';
 import '../widgets/map_widget.dart';
-import 'chat_screen.dart';
+import 'trip_screens/chat_screen.dart';
 
 // ValueNotifier isActiveNotifier = ValueNotifier(true);
 ValueNotifier<bool> isActiveNotifier = ValueNotifier<bool>(false);

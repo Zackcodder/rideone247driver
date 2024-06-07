@@ -6,7 +6,7 @@ import 'package:ride_on_driver/provider/driver_provider.dart';
 import 'package:ride_on_driver/provider/history_provider.dart';
 import 'package:ride_on_driver/provider/map_provider.dart';
 import 'package:ride_on_driver/provider/ride_request_provider.dart';
-import 'package:ride_on_driver/screens/login_screen.dart';
+import 'package:ride_on_driver/screens/authentication_screens/login_screen.dart';
 import 'package:ride_on_driver/screens/nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

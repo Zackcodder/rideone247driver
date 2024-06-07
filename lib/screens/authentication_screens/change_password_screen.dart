@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 
-import '../core/constants/assets.dart';
-import '../core/constants/colors.dart';
-import '../widgets/app_elevated_button.dart';
-import '../widgets/app_text_field.dart';
-import '../widgets/spacing.dart';
+import '../../core/constants/assets.dart';
+import '../../core/constants/colors.dart';
+import '../../widgets/app_elevated_button.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/spacing.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({Key? key}) : super(key: key);

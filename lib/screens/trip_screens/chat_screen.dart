@@ -16,9 +16,9 @@ import 'package:ride_on_driver/widgets/spacing.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
-import '../core/constants/colors.dart';
-import '../core/extensions/widget_extensions.dart';
-import '../widgets/borderless_textfield.dart';
+import '../../core/constants/colors.dart';
+import '../../core/extensions/widget_extensions.dart';
+import '../../widgets/borderless_textfield.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
