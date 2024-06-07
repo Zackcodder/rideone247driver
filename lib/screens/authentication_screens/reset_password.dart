@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 
-import '../core/extensions/build_context_extensions.dart';
-import '../core/extensions/widget_extensions.dart';
-import '../provider/authprovider.dart';
-import '../widgets/app_elevated_button.dart';
-import '../widgets/app_logo.dart';
-import '../widgets/app_text_field.dart';
-import '../widgets/spacing.dart';
+import '../../core/extensions/build_context_extensions.dart';
+import '../../core/extensions/widget_extensions.dart';
+import '../../provider/authprovider.dart';
+import '../../widgets/app_elevated_button.dart';
+import '../../widgets/app_logo.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/spacing.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   static String id = 'change_password';

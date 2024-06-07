@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 
-import '../core/constants/assets.dart';
-import '../core/extensions/build_context_extensions.dart';
-import '../widgets/app_elevated_button.dart';
-import '../widgets/app_logo.dart';
-import '../widgets/app_text_button.dart';
-import '../widgets/spacing.dart';
+import '../../core/constants/assets.dart';
+import '../../core/extensions/build_context_extensions.dart';
+import '../../widgets/app_elevated_button.dart';
+import '../../widgets/app_logo.dart';
+import '../../widgets/app_text_button.dart';
+import '../../widgets/spacing.dart';
 import 'reset_password.dart';
 
 class MailSentScreen extends StatelessWidget {

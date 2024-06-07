@@ -5,15 +5,15 @@ import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
 import 'package:ride_on_driver/core/extensions/widget_extensions.dart';
 import 'package:ride_on_driver/model/rides_histories_model.dart';
 import 'package:ride_on_driver/provider/driver_provider.dart';
-import 'package:ride_on_driver/screens/ride_histories_detials_screen.dart';
+import 'package:ride_on_driver/screens/trip_screens/ride_histories_detials_screen.dart';
 
-import '../core/constants/assets.dart';
-import '../core/constants/colors.dart';
-import '../core/painters_clippers/vertical_dot_line.dart';
-import '../provider/authprovider.dart';
-import '../provider/history_provider.dart';
-import '../widgets/currency_widget.dart';
-import '../widgets/spacing.dart';
+import '../../core/constants/assets.dart';
+import '../../core/constants/colors.dart';
+import '../../core/painters_clippers/vertical_dot_line.dart';
+import '../../provider/authprovider.dart';
+import '../../provider/history_provider.dart';
+import '../../widgets/currency_widget.dart';
+import '../../widgets/spacing.dart';
 
 class RideHistoriesScreen extends StatefulWidget {
   static String id = 'ride_histories';

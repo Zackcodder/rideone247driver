@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ride_on_driver/screens/history_screen.dart';
+import 'package:ride_on_driver/screens/trip_screens/history_screen.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
-import 'package:ride_on_driver/screens/profile_screen.dart';
+import 'package:ride_on_driver/screens/profile_screens/profile_screen.dart';
 
 import '../core/constants/assets.dart';
 import '../core/constants/colors.dart';

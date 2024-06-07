@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/authprovider.dart';
-import '../provider/driver_provider.dart';
+import '../../provider/authprovider.dart';
+import '../../provider/driver_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';

@@ -26,6 +26,38 @@ class Assets {
   /// assets/svgs/terms.svg
   static const String assetsSvgsTerms ='assets/svgs/terms.svg';
 
+  /// Assets for assetsSvgsSmallCar
+  /// assets/svgs/car.svg
+  static const String assetsSvgsSmallCar ='assets/svgs/smallcar.svg';
+
+  /// Assets for assetsSvgsBank
+  /// assets/svgs/bank.svg
+  static const String assetsSvgsBank ='assets/svgs/bank.svg';
+
+  /// Assets for assetsSvgsID
+  /// assets/svgs/idcard.svg
+  static const String assetsSvgsID ='assets/svgs/idcard.svg';
+
+  /// Assets for assetsSvgsCar
+  /// assets/svgs/car.svg
+  static const String assetsSvgsCar='assets/svgs/car.svg';
+
+  /// Assets for assetsSvgsLicense
+  /// assets/svgs/license.svg
+  static const String assetsSvgsLicense='assets/svgs/license.svg';
+
+  /// Assets for assetsSvgsDoc
+  /// assets/svgs/doc.svg
+  static const String assetsSvgsDoc ='assets/svgs/doc.svg';
+
+  /// Assets for assetsSvgsChecker
+  /// assets/svgs/checker.svg
+  static const String assetsSvgsChecker ='assets/svgs/checker.svg';
+
+  /// Assets for assetsSvgsTrafficCar
+  /// assets/svgs/trafficcar.svg
+  static const String assetsSvgsTrafficCar ='assets/svgs/trafficcar.svg';
+
   /// Assets for assetsSvgsAccountWallet
   /// assets/svgs/accountwallet.svg
   static const String assetsSvgsAccountWallet ='assets/svgs/accountwallet.svg';

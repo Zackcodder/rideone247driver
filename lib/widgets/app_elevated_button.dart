@@ -11,7 +11,7 @@ class AppElevatedButton extends StatelessWidget {
     required this.text,
     this.backgroundColor,
     this.foregroundColor,
-  })  : _size = const Size(92, 36),
+  })  : _size = const Size(92, 40),
         isLarge = false,
         icon = null;
 
@@ -32,7 +32,7 @@ class AppElevatedButton extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.icon,
-  })  : _size = const Size(350, 45),
+  })  : _size = const Size(350, 40),
         isLarge = true;
 
   const AppElevatedButton.tiny({

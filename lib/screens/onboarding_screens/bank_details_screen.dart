@@ -7,14 +7,14 @@ import 'package:ride_on_driver/widgets/spacing.dart';
 
 import '../../core/constants/colors.dart';
 
-class BankDetailsRegScreen extends StatefulWidget {
-  const BankDetailsRegScreen({super.key});
+class BankDetailsScreen extends StatefulWidget {
+  const BankDetailsScreen({super.key});
 
   @override
-  State<BankDetailsRegScreen> createState() => _BankDetailsRegScreenState();
+  State<BankDetailsScreen> createState() => _BankDetailsScreenState();
 }
 
-class _BankDetailsRegScreenState extends State<BankDetailsRegScreen> {
+class _BankDetailsScreenState extends State<BankDetailsScreen> {
   @override
   void dispose() {
     super.dispose();

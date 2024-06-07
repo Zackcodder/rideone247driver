@@ -8,8 +8,8 @@ import 'package:ride_on_driver/widgets/app_elevated_button.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../provider/authprovider.dart';
-import '../provider/driver_provider.dart';
+import '../../provider/authprovider.dart';
+import '../../provider/driver_provider.dart';
 
 class ProfileEditScreen extends StatefulWidget {
   const ProfileEditScreen({super.key});

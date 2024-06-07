@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ride_on_driver/model/login_model.dart';
 import 'package:ride_on_driver/model/signup_model.dart';
-import 'package:ride_on_driver/screens/login_screen.dart';
+import 'package:ride_on_driver/screens/authentication_screens/login_screen.dart';
 import 'package:ride_on_driver/services/authentication_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 
-import '../screens/mail_sent_screen.dart';
+import '../screens/authentication_screens/mail_sent_screen.dart';
 import '../services/driver_services.dart';
 import '../services/socket_service.dart';
 

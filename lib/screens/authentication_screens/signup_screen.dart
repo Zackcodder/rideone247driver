@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
-import 'package:ride_on_driver/screens/forget_password.dart';
+import 'package:ride_on_driver/screens/authentication_screens/forget_password.dart';
 
-import '../core/constants/colors.dart';
-import '../core/extensions/build_context_extensions.dart';
-import '../core/extensions/widget_extensions.dart';
-import '../widgets/app_elevated_button.dart';
-import '../widgets/app_logo.dart';
-import '../widgets/app_text_button.dart';
-import '../widgets/app_text_field.dart';
-import '../widgets/spacing.dart';
+import '../../core/constants/colors.dart';
+import '../../core/extensions/build_context_extensions.dart';
+import '../../core/extensions/widget_extensions.dart';
+import '../../widgets/app_elevated_button.dart';
+import '../../widgets/app_logo.dart';
+import '../../widgets/app_text_button.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/spacing.dart';
 
 class SignupScreen extends StatefulWidget {
   static String id = 'signup';

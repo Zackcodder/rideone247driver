@@ -15,7 +15,7 @@ class AppTextField extends StatefulWidget {
     this.isPassword = false,
     this.controller,
     this.validator,
-  this.capitalization = TextCapitalization.none,
+    this.capitalization = TextCapitalization.none,
     this.keyboardType = TextInputType.text,
     this.dense = true,
     this.onTap,
@@ -53,7 +53,17 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius:
+            BorderRadius.circular(10.r), // Adjust the radius as needed
+        border: Border.all(
+          color: !widget.hasBorder || widget.readOnly
+              ? AppColors.yellow
+              : AppColors.black, // Specify the border color here
+          width: 1.0, // Adjust the border width as needed
+        ),
+      ),
       width: 350.w,
       child: TextFormField(
         onTap: widget.onTap,
