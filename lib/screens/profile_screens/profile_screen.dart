@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -146,15 +147,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ImagePickerWidget(
                                             backgroundColor: AppColors.black,
                                             diameter: 60.r,
-                                            initialImage: AssetImage(
-                                              driverProfile
-                                                      .driverInformation!
-                                                      .profile!
-                                                      .driver!
-                                                      .avatar ??
-                                                  Assets
-                                                      .assetsImagesDriverProfile,
-                                            ),
+                                            initialImage:
+                                                '${driverProfile.driverInformation!.profile!.driver!.avatar}',
+                                            // CachedNetworkImage(
+                                            //   imageUrl:
+                                            //       '${driverProfile.driverInformation!.profile!.driver!.avatar}',
+                                            // ),
+                                            // AssetImage(
+                                            //   driverProfile
+                                            //           .driverInformation!
+                                            //           .profile!
+                                            //           .driver!
+                                            //           .avatar ??
+                                            //       Assets
+                                            //           .assetsImagesDriverProfile,
+                                            // ),
                                             iconAlignment:
                                                 Alignment.bottomRight,
                                             shape:
@@ -218,7 +225,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     fontSize: 14),
                                           ),
                                           Text(
-                                            _driverName!,
+                                            '${_driverName}',
                                             style: context.textTheme.bodySmall!
                                                 .copyWith(
                                                     fontWeight: FontWeight.w500,
@@ -246,8 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Column(
                                         children: [
                                           SvgPicture.asset(
-                                            Assets.assetsSvgsTrafficCar
-                                          ),
+                                              Assets.assetsSvgsTrafficCar),
 
                                           ///car plate number
                                           Text(
@@ -306,7 +312,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     children: [
                                       Column(
                                         children: [
-
                                           SvgPicture.asset(
                                             Assets.assetsSvgsChecker,
                                           ),
@@ -398,9 +403,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 1.0, // Adjust the border width as needed
                                           ),
                                         ),
-                                        child:  Center(
-                                          child:
-                                          SvgPicture.asset(
+                                        child: Center(
+                                          child: SvgPicture.asset(
                                             Assets.assetsSvgsAccountWallet,
                                             color: AppColors.yellow,
                                           ),
@@ -412,15 +416,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          CurrencyWidget(
-                                            price: driverProfile
-                                                .driverInformation!
-                                                .profile!
-                                                .balance!
-                                                .toDouble(),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                          ),
+                                          driverProfile.driverInformation!
+                                                      .profile!.balance! ==
+                                                  null
+                                              ? SizedBox()
+                                              : CurrencyWidget(
+                                                  price: driverProfile
+                                                      .driverInformation!
+                                                      .profile!
+                                                      .balance!
+                                                      .toDouble(),
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
                                           Text(
                                             'Available balance',
                                             style: context.textTheme.bodySmall!

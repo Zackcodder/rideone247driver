@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:ride_on_driver/provider/nav_bar_provider.dart';
+import 'package:ride_on_driver/provider/nav_bar_provider.dart';
 import 'package:ride_on_driver/screens/trip_screens/history_screen.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/screens/profile_screens/profile_screen.dart';
@@ -9,26 +12,32 @@ import '../core/constants/colors.dart';
 
 class NavBar extends StatefulWidget {
   static String id = 'nav_bar';
-  const NavBar({Key? key}) : super(key: key);
+  const NavBar({super.key});
 
   @override
   State<NavBar> createState() => _NavBarState();
 }
 
-final ValueNotifier<int> currentPageIndexNotifier = ValueNotifier<int>(0);
+// final ValueNotifier<int> currentPageIndexNotifier = ValueNotifier<int>(0);
 
 class _NavBarState extends State<NavBar> {
-  late final List<Widget> screens;
+  // late final List<Widget> screens;
 
   @override
   void initState() {
     super.initState();
-    screens = [
-      const HomeScreen(),
-      const RideHistoriesScreen(),
-      const ProfileScreen(),
-    ];
+    // screens = [
+    //   const HomeScreen(),
+    //   const RideHistoriesScreen(),
+    //   const ProfileScreen(),
+    // ];
   }
+
+  List<Widget> screens = [
+    const HomeScreen(),
+    const RideHistoriesScreen(),
+    const ProfileScreen(),
+  ];
 
   @override
   void dispose() {
@@ -37,31 +46,99 @@ class _NavBarState extends State<NavBar> {
 
   @override
   Widget build(BuildContext context) {
+    NavbarProvider navbarProvider = Provider.of<NavbarProvider>(context);
     return Scaffold(
-      body: Container(
-        ///background deco image
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(Assets.assetsImagesPatternBackground),
-            fit: BoxFit.cover,
+        body: screens[navbarProvider.currenTab],
+        // Container(
+        //   ///background deco image
+        //   decoration: const BoxDecoration(
+        //     image: DecorationImage(
+        //       image: AssetImage(Assets.assetsImagesPatternBackground),
+        //       fit: BoxFit.cover,
+        //     ),
+        //   ),
+        //   child: Stack(
+        //     alignment: Alignment.bottomCenter,
+        //     children: [
+        //       screens[navbarProvider.currenTab],
+        //       _FloatingBottomBar(
+        //         currentPageIndex: navbarProvider.currenTab,
+        //         onIndexChange: (int index) =>
+        //             Provider.of<NavbarProvider>(context, listen: false)
+        //                 .updateScreen(index),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+
+        bottomNavigationBar: Container(
+          margin: EdgeInsets.all(10.h),
+          height: 56.h,
+          ///background deco image
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: const DecorationImage(
+              image: AssetImage(Assets.assetsImagesPatternBackground),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: ValueListenableBuilder(
-          valueListenable: currentPageIndexNotifier,
-          builder: (ctx, int currentPageIndex, _) => Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              screens[currentPageIndex],
-              _FloatingBottomBar(
-                currentPageIndex: currentPageIndex,
-                onIndexChange: (int index) =>
-                    currentPageIndexNotifier.value = index,
+          child: NavigationBarTheme(
+            data: const NavigationBarThemeData(
+              backgroundColor: AppColors.black,
+              indicatorColor: Colors.transparent,
+            ),
+            child: Center(
+              child: NavigationBar(
+                animationDuration: const Duration(seconds: 1),
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                selectedIndex: navbarProvider.currenTab,
+                onDestinationSelected: (int idx) {
+                  Provider.of<NavbarProvider>(context, listen: false)
+                      .updateScreen(idx);
+                },
+                destinations: const [
+                  NavigationDestination(
+                      icon: Icon(
+                        Icons.home,
+                        color: AppColors.white,
+                        size: 30,
+                      ),
+                      selectedIcon: Icon(
+                        Icons.home,
+                        color: AppColors.yellow,
+                        size: 30,
+                      ),
+                      label: 'Home'),
+                  NavigationDestination(
+                      icon: Icon(
+                        Icons.history,
+                        color: AppColors.white,
+                        size: 30,
+                      ),
+                      selectedIcon: Icon(
+                        Icons.history,
+                        color: AppColors.yellow,
+                        size: 30,
+                      ),
+                      label: 'History'),
+                  NavigationDestination(
+                    icon: Icon(
+                      Icons.settings,
+                      color: AppColors.white,
+                      size: 30,
+                    ),
+                    selectedIcon: Icon(
+                      Icons.settings,
+                      color: AppColors.yellow,
+                      size: 30,
+                    ),
+                    label: 'Settings',
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 

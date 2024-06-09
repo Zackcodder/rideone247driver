@@ -61,7 +61,6 @@ class DriverProvider with ChangeNotifier {
     try {
       _profileLoading = true;
       _profileLoadingError = false;
-      notifyListeners();
 
       var response = await DriverService().getDriverProfile(token);
       driverInformation = DriverInformation.fromJson(response);
@@ -71,7 +70,7 @@ class DriverProvider with ChangeNotifier {
     } catch (e) {
       _profileLoading = false;
       _profileLoadingError = true;
-      notifyListeners();;
+      notifyListeners();
     }
   }
 }
