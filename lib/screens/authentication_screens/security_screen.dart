@@ -115,6 +115,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
                                       foregroundColor: AppColors.white,
                                     ),
                                     const Spacer(),
+
                                     ///no button
                                     AppElevatedButton.tiny(
                                       onPressed: context.pop,
@@ -146,11 +147,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
                       AppTextButton(
                           onPressed: () async {
                             final SharedPreferences sharedPreferences =
-                            await SharedPreferences.getInstance();
+                                await SharedPreferences.getInstance();
                             sharedPreferences.setBool('autoLogin', false);
                             // Navigator.pushNamedAndRemoveUntil(context, LoginScreen(), (Route<dynamic> route) => false);
                             context.pushReplacement(const LoginScreen());
-                            currentPageIndexNotifier.value = 0;
+                            // currentPageIndexNotifier.value = 0;
                           },
                           text: 'Logout')
                     ],

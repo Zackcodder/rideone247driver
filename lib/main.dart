@@ -5,6 +5,7 @@ import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/provider/driver_provider.dart';
 import 'package:ride_on_driver/provider/history_provider.dart';
 import 'package:ride_on_driver/provider/map_provider.dart';
+import 'package:ride_on_driver/provider/nav_bar_provider.dart';
 import 'package:ride_on_driver/provider/ride_request_provider.dart';
 import 'package:ride_on_driver/screens/authentication_screens/login_screen.dart';
 import 'package:ride_on_driver/screens/nav_bar.dart';
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
                     initialToken ?? '', initialId ?? '', ImageConfiguration)),
             ChangeNotifierProvider(create: (context) => DriverProvider()),
             ChangeNotifierProvider(create: (context) => OrderHistoryProvider()),
+            ChangeNotifierProvider(create: (context) => NavbarProvider())
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
