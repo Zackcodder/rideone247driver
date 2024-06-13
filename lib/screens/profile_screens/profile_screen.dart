@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../provider/driver_provider.dart';
 import '../../widgets/app_text_button.dart';
+import '../authentication_screens/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -559,11 +560,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onPressed: () async {
                             final SharedPreferences sharedPreferences =
                                 await SharedPreferences.getInstance();
-                            sharedPreferences.setBool('autoLogin', false);
-                            // Navigator.pushNamedAndRemoveUntil(context, LoginScreen(), (Route<dynamic> route) => false);
-                            // context.pushReplacement(const AuthScreen());
-                            // currentPageIndexNotifier.value = 0;
-                          },
+                            await sharedPreferences.clear();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                  (Route<dynamic> route) => false,
+                            );
+                            },
                           text: 'Logout')
                     ],
                   ),

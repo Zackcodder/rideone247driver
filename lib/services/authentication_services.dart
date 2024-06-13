@@ -44,6 +44,7 @@ class AuthService {
   ///signup function
   signUp(String firstName, String lastName, String phone, String email,
       String password, String gender, String role) async {
+    try {
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -61,6 +62,8 @@ class AuthService {
       headers: headers,
     );
     final responseData = jsonDecode(response.body);
+
+    print('res from signup in service classa $responseData');
     if (response.statusCode == 200 && responseData['message'] == 'success') {
       Fluttertoast.showToast(
           fontSize: 18,
@@ -71,18 +74,25 @@ class AuthService {
           textColor: Colors.white);
       return responseData;
     } else {
-      throw Fluttertoast.showToast(
+     throw Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: responseData['message'],
+          msg: responseData['message']['message'],
           gravity: ToastGravity.BOTTOM,
           textColor: Colors.white);
+      return;
     }
+
+  } catch (e) {
+  print('error login in signup serivce');
+  print(e);
+  }
   }
 
-  //sending of otp
-  sendOtp(String otp) async {
+  ///sending of otp
+  sendOtp(int otp) async {
+    try {
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -113,10 +123,54 @@ class AuthService {
           gravity: ToastGravity.BOTTOM,
           textColor: Colors.white);
     }
+    } catch (e) {
+      print('error login in signup serivce');
+      print(e);
+    }
   }
 
-  //forget password
+  ///get otp
+  getOtp(String email) async {
+    try{
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+    var response = await https.patch(
+      Uri.parse('$baseUrl/api/drivers/send-otp'),
+      body: jsonEncode({
+        'email': email,
+      }),
+      headers: headers,
+    );
+    final responseData = jsonDecode(response.body);
+    print('res from resend otp in service $responseData');
+    if (response.statusCode == 200 && responseData['message'] == 'success') {
+      Fluttertoast.showToast(
+          fontSize: 18,
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: Colors.green.withOpacity(0.7),
+          msg: responseData['message'],
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white);
+      return responseData;
+    } else {
+      throw Fluttertoast.showToast(
+          fontSize: 18,
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.red.withOpacity(0.7),
+          msg: responseData['message'],
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white);
+    }
+    } catch (e) {
+      print('error login in signup serivce');
+      print(e);
+    }
+  }
+
+  ///forget password
   forgetPassword(String email) async {
+    try{
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -147,10 +201,15 @@ class AuthService {
           gravity: ToastGravity.BOTTOM,
           textColor: Colors.white);
     }
+    } catch (e) {
+      print('error login in signup serivce');
+      print(e);
+    }
   }
 
   //reset password
   resetPassword(String otp, String newPassword) async {
+    try{
     final headers = {
       'Content-Type': 'application/json',
     };
@@ -180,4 +239,9 @@ class AuthService {
           textColor: Colors.white);
     }
   }
+   catch (e) {
+  print('error login in signup serivce');
+  print(e);
+  }
+}
 }
