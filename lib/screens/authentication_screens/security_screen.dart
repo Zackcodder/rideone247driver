@@ -147,11 +147,13 @@ class _SecurityScreenState extends State<SecurityScreen> {
                       AppTextButton(
                           onPressed: () async {
                             final SharedPreferences sharedPreferences =
-                                await SharedPreferences.getInstance();
-                            sharedPreferences.setBool('autoLogin', false);
-                            // Navigator.pushNamedAndRemoveUntil(context, LoginScreen(), (Route<dynamic> route) => false);
-                            context.pushReplacement(const LoginScreen());
-                            // currentPageIndexNotifier.value = 0;
+                            await SharedPreferences.getInstance();
+                            await sharedPreferences.clear();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                  (Route<dynamic> route) => false,
+                            );
                           },
                           text: 'Logout')
                     ],

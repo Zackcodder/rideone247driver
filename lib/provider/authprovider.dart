@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ride_on_driver/model/login_model.dart';
 import 'package:ride_on_driver/model/signup_model.dart';
 import 'package:ride_on_driver/screens/authentication_screens/login_screen.dart';
@@ -7,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 
 import '../screens/authentication_screens/mail_sent_screen.dart';
+import '../screens/authentication_screens/otp_screen.dart';
 import '../services/driver_services.dart';
 import '../services/socket_service.dart';
 
@@ -145,21 +147,21 @@ class AuthProvider with ChangeNotifier {
   ///SignUp
   signUp(BuildContext context, String firstName, String lastName, String phone,
       String email, String password, String gender, String role) async {
-    print('signing method in provider service');
+    try {
+      print('signing method in provider service');
     _signUpLoading = true;
     final responseData = await _authService.signUp(
         firstName, lastName, phone, email, password, gender, role);
+    print('res from signup in provider classa $responseData');
+    if (responseData['message'] == 'success') {
+      _driverEmail = responseData['data']['newUser']['email'];
+      print('this is the driver email on signup $_driverEmail');
 
-    final signUpResponse = SignUpResponse.fromJson(responseData);
-    print(responseData);
-    if (signUpResponse.message == 'success') {
-      //navigate to home page
-      Future.delayed(Duration.zero, () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          MaterialPageRoute(builder: (context) => const OTPScreen()),
         );
-      });
+
       _signUpLoading = false;
       notifyListeners();
     } else {
@@ -170,24 +172,75 @@ class AuthProvider with ChangeNotifier {
     }
     _signUpLoading = false;
     notifyListeners();
+    } catch (e) {
+      _signUpLoading = false;
+      print('printing the eroor in provide login $e');
+      notifyListeners();
+    }
   }
 
   ///sending of otp
-  sendOtp(BuildContext context, String otp) async {
-    final responseData = await _authService.sendOtp(otp);
-
-    if (responseData['message'] == 'success') {
-      // navigate to otp page
-      Future.delayed(Duration.zero, () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      });
-    } else {
-      setError(responseData['message']);
+  sendOtp(BuildContext context, int otp) async {
+      _signUpLoading = true;
+      final responseData = await _authService.sendOtp(otp);
+      try {
+      if (responseData['message'] == 'success') {
+        _signUpLoading = false;
+        notifyListeners();
+        // navigate to otp page
+        Future.delayed(Duration.zero, () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        });
+      } else {
+        _signUpLoading = false;
+        notifyListeners();
+        setError(responseData['message']);
+      }
+    }catch (e) {
+        _signUpLoading = false;
+        print('printing the eroor in provide login $e');
+        notifyListeners();
+      // Fluttertoast.showToast(
+      //     fontSize: 18,
+      //     toastLength: Toast.LENGTH_LONG,
+      //     backgroundColor: Colors.red.withOpacity(0.7),
+      //     msg: responseData['message'],
+      //     gravity: ToastGravity.BOTTOM,
+      //     textColor: Colors.white);
     }
   }
+  ///resend of otp
+  Future<void> getOtp(
+      BuildContext context,
+      String email,
+      ) async {
+    try {
+      // setLoading(true);
+      final otpResponseData = await _authService.getOtp(email);
+      print('res from resend otp in provider $otpResponseData');
+      if (otpResponseData['message'] == 'success') {
+        print('res from resend work n resend occured');
+        // Navigate to another screen
+        Future.delayed(Duration.zero, () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const OTPScreen()),
+          );
+        });
+      } else {
+        setError(otpResponseData['message']);
+      }
+    } catch (error) {
+      setError('An error occurred. Please try again later.');
+    }
+    // finally {
+    //   _getOtpLoading;
+    // }
+  }
+
 
   ///forgot password
   forgotPassword(BuildContext context, String email) async {

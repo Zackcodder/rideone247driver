@@ -49,7 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               const VerticalSpacing(50),
-              //first name text field
+              ///first name text field
               AppTextField(
                 controller: firstNameController,
                 hintText: 'Please Enter Your First Names',
@@ -130,9 +130,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           final password = passwordController.text;
                           final email = emailController.text;
                           final gender = genderController.text;
-                          const String role = 'driver';
+                          const String role = 'DRIVER';
                           authProvider.signUp(context, firstName, lastName, phone,
-                              password, email, gender, role);
+                               email,password, gender, role);
 
                           setState(() {
                             authProvider.signUpLoading;
