@@ -89,8 +89,8 @@ class _RidesHistoriesDetailsScreenState
           geodesic: true,
           polylineId: const PolylineId('trip_polyline'),
           points: [
-            convertToLatLng(widget.singleTrip.dropOffLocation),
-            convertToLatLng(widget.singleTrip.pickUpLocation),
+            convertToLatLng(widget.singleTrip.dropOffLocation!),
+            convertToLatLng(widget.singleTrip.pickUpLocation!),
           ],
           color: Colors.orange,
           width: 3,
@@ -100,8 +100,8 @@ class _RidesHistoriesDetailsScreenState
       };
 
       LatLngBounds bounds = boundsFromLatLngList([
-        convertToLatLng(widget.singleTrip.dropOffLocation),
-        convertToLatLng(widget.singleTrip.pickUpLocation),
+        convertToLatLng(widget.singleTrip.dropOffLocation!),
+        convertToLatLng(widget.singleTrip.pickUpLocation!),
       ]);
 
       // Move camera to fit the bounds
@@ -111,6 +111,11 @@ class _RidesHistoriesDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final rider = widget.singleTrip.rider;
+
+    // Add debug prints to identify if any value is null
+    print('Rider: $rider');
+    print('Rider first name: ${rider?.firstName}');
     return Scaffold(
       appBar: AppBar(
         title: Text('Trip History',
@@ -145,7 +150,7 @@ class _RidesHistoriesDetailsScreenState
               height: 150,
               child: GoogleMap(
                 initialCameraPosition: CameraPosition(
-                  target: convertToLatLng(widget.singleTrip.dropOffLocation),
+                  target: convertToLatLng(widget.singleTrip.dropOffLocation!),
                   zoom: 12,
                 ),
                 polylines: _polylines,
@@ -156,7 +161,7 @@ class _RidesHistoriesDetailsScreenState
                   mapController = controller;
                   _controller.complete(controller);
                   mapController!.animateCamera(CameraUpdate.newLatLng(
-                      convertToLatLng(widget.singleTrip.dropOffLocation)));
+                      convertToLatLng(widget.singleTrip.dropOffLocation!)));
                 },
                 zoomControlsEnabled: false,
                 myLocationButtonEnabled: false,
@@ -181,7 +186,7 @@ class _RidesHistoriesDetailsScreenState
                             fontSize: 12,
                             fontFamily: 'SFPRODISPLAYREGULAR')),
                     Text(
-                        '${widget.singleTrip.rider.firstName} ${widget.singleTrip.rider.lastName}',
+                        '${widget.singleTrip.rider?.firstName ?? 'Unknown'} ${widget.singleTrip.rider?.lastName ?? ""}',
                         style: context.textTheme.bodyMedium!.copyWith(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -233,7 +238,7 @@ class _RidesHistoriesDetailsScreenState
                         ),
                       ),
                       child: Center(
-                        child: Text(widget.singleTrip.status,
+                        child: Text(widget.singleTrip.status!,
                             style: context.textTheme.bodyMedium!.copyWith(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
@@ -290,20 +295,20 @@ class _RidesHistoriesDetailsScreenState
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            widget.singleTrip.pickUpName,
+                            widget.singleTrip.pickUpName!,
                             style: context.textTheme.bodyMedium,
                           ),
                           Text(
-                            widget.singleTrip.createdAt.toLocal().toString(),
+                            widget.singleTrip.startTime?.toLocal().toString() ?? 'not completed trip',
                             style: context.textTheme.bodySmall,
                           ),
                           const VerticalSpacing(10),
                           Text(
-                            widget.singleTrip.dropOffName,
+                            widget.singleTrip.dropOffName!,
                             style: context.textTheme.bodyMedium,
                           ),
                           Text(
-                            widget.singleTrip.createdAt.toLocal().toString(),
+                            widget.singleTrip.endTime?.toLocal().toString() ?? 'not completed trip',
                             style: context.textTheme.bodySmall,
                           ),
                         ],

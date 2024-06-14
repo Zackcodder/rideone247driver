@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/constants/colors.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
+import 'package:ride_on_driver/screens/onboarding_screens/car_details_screen.dart';
 import 'package:ride_on_driver/widgets/dash_boarder_painter.dart';
 
 import '../../widgets/app_elevated_button.dart';
@@ -253,7 +254,12 @@ class _IdRegistrationScreenState extends State<IdRegistrationScreen> {
               ),
               const SizedBox(height: 20),
               AppElevatedButton.large(
-                onPressed: context.pop,
+                onPressed: (){
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const VehicleRegistrationScreen()),
+                  );
+                },
                 text: 'Save',
                 backgroundColor: AppColors.black,
                 foregroundColor: AppColors.yellow,

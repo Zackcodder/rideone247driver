@@ -16,7 +16,7 @@ class OrderHistoryProvider with ChangeNotifier {
     try {
       allRideHistory = await _driverService.getRideHistory(token);
       // Sort the ride history from recent to old
-      allRideHistory?.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      allRideHistory?.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
       print('ahhhh');
       notifyListeners();
     } catch (error) {

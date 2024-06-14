@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
+import 'package:ride_on_driver/screens/onboarding_screens/id_registration_screen.dart';
 import 'package:ride_on_driver/widgets/app_elevated_button.dart';
 import 'package:ride_on_driver/widgets/app_text_field.dart';
 import 'package:ride_on_driver/widgets/spacing.dart';
@@ -131,7 +132,12 @@ class _BankDetailsRegScreenState extends State<BankDetailsRegScreen> {
 
             ///save button
             AppElevatedButton.large(
-              onPressed: context.pop,
+              onPressed: (){
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const IdRegistrationScreen()),
+                );
+              },
               text: 'Save',
               backgroundColor: AppColors.black,
               foregroundColor: AppColors.yellow,

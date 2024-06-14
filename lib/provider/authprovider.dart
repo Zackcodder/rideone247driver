@@ -8,6 +8,7 @@ import 'package:ride_on_driver/screens/home_screen.dart';
 
 import '../screens/authentication_screens/mail_sent_screen.dart';
 import '../screens/authentication_screens/otp_screen.dart';
+import '../screens/onboarding_screens/complete_profiles_screen.dart';
 import '../services/driver_services.dart';
 import '../services/socket_service.dart';
 
@@ -188,9 +189,13 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
         // navigate to otp page
         Future.delayed(Duration.zero, () {
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const LoginScreen()),
+          // );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
+            MaterialPageRoute(builder: (context) => const CompleteProfileScreen()),
           );
         });
       } else {
