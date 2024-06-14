@@ -44,8 +44,7 @@ class MyApp extends StatelessWidget {
       this.initialToken,
       this.initialwalletBalance,
       this.initialId,
-      {Key? key})
-      : super(key: key);
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +81,7 @@ class MyApp extends StatelessWidget {
             title: AppStrings.appName,
             theme: AppTheme.lightTheme,
             navigatorKey: MyApp.navigatorKey,
-            home: initialToken != null ? const NavBar() : const LoginScreen(),
+            home: initialToken != null ?  NavBar() : const LoginScreen(),
           ),
         );
       },

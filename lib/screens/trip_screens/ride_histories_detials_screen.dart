@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,7 +12,6 @@ import '../../core/constants/assets.dart';
 import '../../core/painters_clippers/vertical_dot_line.dart';
 import '../../widgets/app_elevated_button.dart';
 import '../../widgets/currency_widget.dart';
-import '../../widgets/map_widget.dart';
 import '../../widgets/spacing.dart';
 
 class RidesHistoriesDetailsScreen extends StatefulWidget {

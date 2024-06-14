@@ -51,8 +51,8 @@ abstract class AppTheme {
     checkboxTheme: CheckboxThemeData(
       shape: const CircleBorder(),
       side: const BorderSide(color: AppColors.grey),
-      fillColor: MaterialStateProperty.all(AppColors.yellow),
-      checkColor: MaterialStateProperty.all(Colors.white),
+      fillColor: WidgetStateProperty.all(AppColors.yellow),
+      checkColor: WidgetStateProperty.all(Colors.white),
     ),
     textTheme: Typography.englishLike2018
         .apply(

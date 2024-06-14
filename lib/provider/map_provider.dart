@@ -28,7 +28,7 @@ class MapView extends ChangeNotifier {
   }
 
   void startLocationUpdates() {
-    Timer.periodic(Duration(seconds: 5), (timer) async {
+    Timer.periodic(const Duration(seconds: 5), (timer) async {
       await updateDriverLocationMarker();
     });
   }

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,7 +19,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../provider/driver_provider.dart';
 import '../../widgets/app_text_button.dart';
-import '../authentication_screens/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -32,7 +30,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
     Provider.of<DriverProvider>(context, listen: false)
@@ -150,19 +147,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             diameter: 60.r,
                                             initialImage:
                                                 '${driverProfile.driverInformation!.profile!.driver!.avatar}',
-                                            // CachedNetworkImage(
-                                            //   imageUrl:
-                                            //       '${driverProfile.driverInformation!.profile!.driver!.avatar}',
-                                            // ),
-                                            // AssetImage(
-                                            //   driverProfile
-                                            //           .driverInformation!
-                                            //           .profile!
-                                            //           .driver!
-                                            //           .avatar ??
-                                            //       Assets
-                                            //           .assetsImagesDriverProfile,
-                                            // ),
                                             iconAlignment:
                                                 Alignment.bottomRight,
                                             shape:
@@ -226,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     fontSize: 14),
                                           ),
                                           Text(
-                                            '${_driverName}',
+                                            '$_driverName',
                                             style: context.textTheme.bodySmall!
                                                 .copyWith(
                                                     fontWeight: FontWeight.w500,
@@ -286,7 +270,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                                           ///car model and make
                                           Text(
-                                            '${driverProfile.driverInformation!.profile!.vehicleDetails!.make} ${driverProfile.driverInformation!.profile!.vehicleDetails!.model}',
+                                            '${driverProfile.driverInformation!.profile!.vehicleDetails!.make ?? 'no car \nregistered'} ${driverProfile.driverInformation!.profile!.vehicleDetails!.model ??''}',
                                             style: context.textTheme.bodySmall!
                                                 .copyWith(
                                                     fontWeight: FontWeight.w600,
@@ -417,11 +401,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          driverProfile.driverInformation!
-                                                      .profile!.balance! ==
-                                                  null
-                                              ? SizedBox()
-                                              : CurrencyWidget(
+                                           CurrencyWidget(
                                                   price: driverProfile
                                                       .driverInformation!
                                                       .profile!
@@ -558,15 +538,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       AppTextButton(
                           onPressed: () async {
-                            final SharedPreferences sharedPreferences =
-                                await SharedPreferences.getInstance();
-                            await sharedPreferences.clear();
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                                  (Route<dynamic> route) => false,
-                            );
-                            },
+                            _authProvider.logout(context);
+                          },
                           text: 'Logout')
                     ],
                   ),

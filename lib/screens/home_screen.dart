@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker_widget/image_picker_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/core/constants/assets.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
@@ -126,14 +128,26 @@ class _HomeScreenState extends State<HomeScreen>
             top: 50,
             right: 20,
             child:
-
-                ///driver image
-                UnconstrainedBox(
-              child: Image.asset(
-                Assets.assetsImagesDriverProfile,
-                width: 40.w,
-              ).clip(radius: 100),
+            ImagePickerWidget(
+              backgroundColor: AppColors.black,
+              diameter: 60.r,
+              initialImage:
+              '${driverProvider.driverInformation!.profile!.driver!.avatar}',
+              iconAlignment:
+              Alignment.bottomRight,
+              shape:
+              ImagePickerWidgetShape.circle,
+              isEditable: false,
+              shouldCrop: false,
             ).onTap(() => context.push(const ProfileScreen())),
+                ///driver image
+
+            //     UnconstrainedBox(
+            //   child: Image.asset(
+            //     Assets.assetsImagesDriverProfile,
+            //     width: 40.w,
+            //   ).clip(radius: 100),
+            // ).onTap(() => context.push(const ProfileScreen())),
           ),
 
           ///Navigate to drive mode screen

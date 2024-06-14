@@ -20,15 +20,15 @@ class SocketService {
 
   SocketService._internal();
 
-  initSocket(String _token, String _id) {
+  initSocket(String token, String id) {
     print('starting socket class');
     try {
       socket = IO.io(baseUrl, <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
-        'query': 'token=$_token',
+        'query': 'token=$token',
       });
-      print('this is the token gotten: $_token');
+      print('this is the token gotten: $token');
 
       socket.connect();
       listenForRideRequest();
@@ -89,7 +89,7 @@ class SocketService {
   }
 
   ///listen for ride request
-  StreamController<Trip> _rideRequestController =
+  final StreamController<Trip> _rideRequestController =
       StreamController<Trip>.broadcast();
 
   Stream<Trip> get rideRequestStream => _rideRequestController.stream;
@@ -130,7 +130,7 @@ class SocketService {
   }
 
   ///accept trip request
-  StreamController<Trip?> _acceptedRequestController =
+  final StreamController<Trip?> _acceptedRequestController =
       StreamController<Trip?>.broadcast();
 
   Stream<Trip?> get acceptedRequestStream => _acceptedRequestController.stream;

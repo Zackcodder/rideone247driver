@@ -11,7 +11,6 @@ import '../../widgets/app_elevated_button.dart';
 import '../../widgets/app_logo.dart';
 import '../../widgets/app_text_button.dart';
 import '../../widgets/spacing.dart';
-import '../home_screen.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({super.key});

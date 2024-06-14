@@ -13,7 +13,7 @@ import '../provider/driver_provider.dart';
 import '../widgets/app_elevated_button.dart';
 
 class WalletScreen extends StatefulWidget {
-  const WalletScreen({Key? key}) : super(key: key);
+  const WalletScreen({super.key});
 
   @override
   State<WalletScreen> createState() => _WalletScreenState();

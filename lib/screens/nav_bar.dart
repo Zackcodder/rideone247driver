@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/provider/nav_bar_provider.dart';
-import 'package:ride_on_driver/provider/nav_bar_provider.dart';
 import 'package:ride_on_driver/screens/trip_screens/history_screen.dart';
 import 'package:ride_on_driver/screens/home_screen.dart';
 import 'package:ride_on_driver/screens/profile_screens/profile_screen.dart';
@@ -12,25 +11,18 @@ import '../core/constants/colors.dart';
 
 class NavBar extends StatefulWidget {
   static String id = 'nav_bar';
-  const NavBar({super.key});
+   NavBar({super.key});
 
   @override
   State<NavBar> createState() => _NavBarState();
 }
 
-// final ValueNotifier<int> currentPageIndexNotifier = ValueNotifier<int>(0);
 
 class _NavBarState extends State<NavBar> {
-  // late final List<Widget> screens;
 
   @override
   void initState() {
     super.initState();
-    // screens = [
-    //   const HomeScreen(),
-    //   const RideHistoriesScreen(),
-    //   const ProfileScreen(),
-    // ];
   }
 
   List<Widget> screens = [
