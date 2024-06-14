@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ride_on_driver/services/map_service.dart';
 
 import 'geo_locator_service.dart';
 
@@ -182,13 +181,13 @@ class GoogleMapService {
   LatLng convertDoubleToLatLng(double latitude, double longitude) =>
       LatLng(latitude, longitude);
 
-  static List<LatLng> _polylineCoordinates = [];
+  static final List<LatLng> _polylineCoordinates = [];
   List<LatLng> get polylineCoordinates => _polylineCoordinates;
 
   clearPolyLineCoordinate() => _polylineCoordinates.clear();
 
   clearPolyLines() => _polyLines.clear();
-  static Set<Polyline> _polyLines = <Polyline>{};
+  static final Set<Polyline> _polyLines = <Polyline>{};
   Set<Polyline> get polyLines => _polyLines;
 
     setPolyLine(List<LatLng> polylineCoordinates) {

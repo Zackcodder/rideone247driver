@@ -12,7 +12,7 @@ import 'package:ride_on_driver/widgets/spacing.dart';
 
 
 class VehicleDetailsScreen extends StatefulWidget {
-  const VehicleDetailsScreen({Key? key}) : super(key: key);
+  const VehicleDetailsScreen({super.key});
 
   @override
   State<VehicleDetailsScreen> createState() => _VehicleDetailsScreenState();

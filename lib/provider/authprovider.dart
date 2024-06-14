@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ride_on_driver/model/login_model.dart';
 import 'package:ride_on_driver/model/signup_model.dart';
 import 'package:ride_on_driver/screens/authentication_screens/login_screen.dart';
@@ -9,6 +8,7 @@ import 'package:ride_on_driver/screens/home_screen.dart';
 
 import '../screens/authentication_screens/mail_sent_screen.dart';
 import '../screens/authentication_screens/otp_screen.dart';
+import '../screens/onboarding_screens/complete_profiles_screen.dart';
 import '../services/driver_services.dart';
 import '../services/socket_service.dart';
 
@@ -88,17 +88,17 @@ class AuthProvider with ChangeNotifier {
       print(responseData);
       if (loginResponse.message == 'success') {
         print('data gotten');
-        _driverName = loginResponse.data.driver.firstName;
+        _driverName = loginResponse.data!.driver!.firstName;
         print(' driver name $_driverName');
-        _driverEmail = loginResponse.data.driver.email;
+        _driverEmail = loginResponse.data!.driver!.email;
         print(_driverEmail);
-        _driverLastName = loginResponse.data.driver.lastName;
+        _driverLastName = loginResponse.data!.driver!.lastName;
         print(_driverLastName);
-        _walletBalance = loginResponse.data.driver.walletBalance;
+        _walletBalance = loginResponse.data!.driver!.walletBalance;
         print('driver wallet balance $_walletBalance');
-        _token = loginResponse.data.token;
+        _token = loginResponse.data!.token;
         print(_token);
-        _id = loginResponse.data.driver.id;
+        _id = loginResponse.data!.driver!.id;
         print('driver id $_id');
         // _driverImage = loginResponse.data.userDetails.image;
         // print('driver id $_driverImage');
@@ -149,29 +149,29 @@ class AuthProvider with ChangeNotifier {
       String email, String password, String gender, String role) async {
     try {
       print('signing method in provider service');
-    _signUpLoading = true;
-    final responseData = await _authService.signUp(
-        firstName, lastName, phone, email, password, gender, role);
-    print('res from signup in provider classa $responseData');
-    if (responseData['message'] == 'success') {
-      _driverEmail = responseData['data']['newUser']['email'];
-      print('this is the driver email on signup $_driverEmail');
+      _signUpLoading = true;
+      final responseData = await _authService.signUp(
+          firstName, lastName, phone, email, password, gender, role);
+      print('res from signup in provider classa $responseData');
+      if (responseData['message'] == 'success') {
+        _driverEmail = responseData['data']['newUser']['email'];
+        print('this is the driver email on signup $_driverEmail');
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const OTPScreen()),
         );
 
+        _signUpLoading = false;
+        notifyListeners();
+      } else {
+        _signUpLoading = false;
+        print('error');
+        setError(responseData['message']);
+        notifyListeners();
+      }
       _signUpLoading = false;
       notifyListeners();
-    } else {
-      _signUpLoading = false;
-      print('error');
-      setError(responseData['message']);
-      notifyListeners();
-    }
-    _signUpLoading = false;
-    notifyListeners();
     } catch (e) {
       _signUpLoading = false;
       print('printing the eroor in provide login $e');
@@ -181,17 +181,21 @@ class AuthProvider with ChangeNotifier {
 
   ///sending of otp
   sendOtp(BuildContext context, int otp) async {
-      _signUpLoading = true;
-      final responseData = await _authService.sendOtp(otp);
-      try {
+    _signUpLoading = true;
+    final responseData = await _authService.sendOtp(otp);
+    try {
       if (responseData['message'] == 'success') {
         _signUpLoading = false;
         notifyListeners();
         // navigate to otp page
         Future.delayed(Duration.zero, () {
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const LoginScreen()),
+          // );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const CompleteProfileScreen()),
           );
         });
       } else {
@@ -199,26 +203,19 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
         setError(responseData['message']);
       }
-    }catch (e) {
-        _signUpLoading = false;
-        print('printing the eroor in provide login $e');
-        notifyListeners();
-      // Fluttertoast.showToast(
-      //     fontSize: 18,
-      //     toastLength: Toast.LENGTH_LONG,
-      //     backgroundColor: Colors.red.withOpacity(0.7),
-      //     msg: responseData['message'],
-      //     gravity: ToastGravity.BOTTOM,
-      //     textColor: Colors.white);
+    } catch (e) {
+      _signUpLoading = false;
+      print('printing the eroor in provide login $e');
+      notifyListeners();
     }
   }
+
   ///resend of otp
   Future<void> getOtp(
-      BuildContext context,
-      String email,
-      ) async {
+    BuildContext context,
+    String email,
+  ) async {
     try {
-      // setLoading(true);
       final otpResponseData = await _authService.getOtp(email);
       print('res from resend otp in provider $otpResponseData');
       if (otpResponseData['message'] == 'success') {
@@ -236,77 +233,66 @@ class AuthProvider with ChangeNotifier {
     } catch (error) {
       setError('An error occurred. Please try again later.');
     }
-    // finally {
-    //   _getOtpLoading;
-    // }
   }
-
 
   ///forgot password
   forgotPassword(BuildContext context, String email) async {
-    final responseData = await _authService.forgetPassword(email);
+    try {
+      final responseData = await _authService.forgetPassword(email);
 
-    if (responseData['message'] == 'success') {
-      // navigate to mail screen page
-      Future.delayed(Duration.zero, () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MailSentScreen()),
-        );
-      });
-    } else {
-      setError(responseData['message']);
+      if (responseData['message'] == 'success') {
+        // navigate to mail screen page
+        Future.delayed(Duration.zero, () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MailSentScreen()),
+          );
+        });
+      } else {
+        setError(responseData['message']);
+      }
+    } catch (error) {
+      setError('An error occurred. Please try again later.');
     }
   }
 
   ///reset password
   resetPassword(BuildContext context, String otp, String newPassword) async {
-    final responseData = await _authService.resetPassword(otp, newPassword);
-
-    if (responseData['message'] == 'success') {
-      // navigate to login page
-      Future.delayed(Duration.zero, () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-        );
-      });
-    } else {
-      setError(responseData['message']);
+    try {
+      final responseData = await _authService.resetPassword(otp, newPassword);
+      if (responseData['message'] == 'success') {
+        // navigate to login page
+        Future.delayed(Duration.zero, () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        });
+      } else {
+        setError(responseData['message']);
+      }
+    } catch (error) {
+      setError('An error occurred. Please try again later.');
     }
   }
 
   ///logout
   logout(BuildContext context) async {
-    // Clear user-related data
-    _driverName = null;
-    _driverEmail = null;
-    _driverLastName = null;
-    _token = null;
-    _walletBalance = null;
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('auth_token');
-    await prefs.remove('driver_email');
-    await prefs.remove('driver_name');
-    await prefs.remove('driver_lastname');
-    await prefs.remove('wallet_balance');
-
     // Disconnect the socket
     _socketService.disconnectSocket();
 
     // Stop location updates when user logs out
     _driverService.stopLocationUpdates();
 
-    ///navigate to login page
-    Future.delayed(Duration.zero, () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
-    });
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    await sharedPreferences.clear();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (Route<dynamic> route) => false,
+    );
 
-    // Notify listeners
     notifyListeners();
   }
 }

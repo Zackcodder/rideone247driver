@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ride_on_driver/core/extensions/build_context_extensions.dart';
+import 'package:ride_on_driver/screens/authentication_screens/login_screen.dart';
 
 import '../../core/constants/assets.dart';
 import '../../core/constants/colors.dart';
@@ -254,7 +255,12 @@ class _DriverLicenseRegistrationScreenState
                   ),
                   const SizedBox(height: 20),
                   AppElevatedButton.large(
-                    onPressed: context.pop,
+                    onPressed: (){
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
+                    },
                     text: 'Save',
                     backgroundColor: AppColors.black,
                     foregroundColor: AppColors.yellow,

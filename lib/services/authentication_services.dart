@@ -96,8 +96,8 @@ class AuthService {
     final headers = {
       'Content-Type': 'application/json',
     };
-    var response = await https.post(
-      Uri.parse('$baseUrl/api/users/verify'),
+    var response = await https.patch(
+      Uri.parse('$baseUrl/api/drivers/verify-email'),
       body: jsonEncode({
         'otp': otp,
       }),

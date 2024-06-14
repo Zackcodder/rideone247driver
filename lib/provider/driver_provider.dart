@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ride_on_driver/model/rides_histories_model.dart';
 import 'package:ride_on_driver/services/driver_services.dart';
 
 import '../core/constants/colors.dart';
@@ -41,7 +40,7 @@ class DriverProvider with ChangeNotifier {
             fontSize: 18,
             toastLength: Toast.LENGTH_SHORT,
             backgroundColor: AppColors.green.withOpacity(0.7),
-            msg: ratingResponse.message,
+            msg: ratingResponse.message!,
             gravity: ToastGravity.BOTTOM,
             textColor: AppColors.black);
       }
