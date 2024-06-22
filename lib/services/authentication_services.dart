@@ -17,6 +17,7 @@ class AuthService {
         headers: headers,
       );
       final responseData = jsonDecode(response.body);
+      print(responseData);
       if (response.statusCode == 200 && responseData['message'] == 'success') {
         Fluttertoast.showToast(
             fontSize: 18,
@@ -27,13 +28,26 @@ class AuthService {
             textColor: Colors.white);
         return responseData;
       } else {
-        throw Fluttertoast.showToast(
+        if (responseData['message'] is Map && responseData['message']['message'] is List) {
+          var messageList = responseData['message']['message'];
+          String formattedMessage = messageList.join(', ');
+          throw Fluttertoast.showToast(
+              fontSize: 18,
+              toastLength: Toast.LENGTH_LONG,
+              backgroundColor: Colors.red.withOpacity(0.7),
+              msg: formattedMessage,
+              gravity: ToastGravity.BOTTOM,
+              textColor: Colors.white);
+        }else {
+          Fluttertoast.showToast(
             fontSize: 18,
             toastLength: Toast.LENGTH_LONG,
             backgroundColor: Colors.red.withOpacity(0.7),
-            msg: responseData['message'],
+            msg: responseData['message'].toString(),
             gravity: ToastGravity.BOTTOM,
-            textColor: Colors.white);
+            textColor: Colors.white,
+          );
+        }
       }
     } catch (e) {
       print('error login in');
@@ -74,13 +88,26 @@ class AuthService {
           textColor: Colors.white);
       return responseData;
     } else {
-     throw Fluttertoast.showToast(
+      if (responseData['message'] is Map && responseData['message']['message'] is List) {
+        var messageList = responseData['message']['message'];
+        String formattedMessage = messageList.join(', ');
+        throw Fluttertoast.showToast(
+            fontSize: 18,
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.red.withOpacity(0.7),
+            msg: formattedMessage,
+            gravity: ToastGravity.BOTTOM,
+            textColor: Colors.white);
+      }else {
+        Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: responseData['message']['message'],
+          msg: responseData['message'].toString(),
           gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white);
+          textColor: Colors.white,
+        );
+      }
       return;
     }
 
@@ -115,13 +142,26 @@ class AuthService {
           textColor: Colors.white);
       return responseData;
     } else {
-      throw Fluttertoast.showToast(
+      if (responseData['message'] is Map && responseData['message']['message'] is List) {
+        var messageList = responseData['message']['message'];
+        String formattedMessage = messageList.join(', ');
+        throw Fluttertoast.showToast(
+            fontSize: 18,
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.red.withOpacity(0.7),
+            msg: formattedMessage,
+            gravity: ToastGravity.BOTTOM,
+            textColor: Colors.white);
+      }else {
+        Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: responseData['message'],
+          msg: responseData['message'].toString(),
           gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white);
+          textColor: Colors.white,
+        );
+      }
     }
     } catch (e) {
       print('error login in signup serivce');
@@ -154,13 +194,26 @@ class AuthService {
           textColor: Colors.white);
       return responseData;
     } else {
-      throw Fluttertoast.showToast(
+      if (responseData['message'] is Map && responseData['message']['message'] is List) {
+        var messageList = responseData['message']['message'];
+        String formattedMessage = messageList.join(', ');
+        throw Fluttertoast.showToast(
+            fontSize: 18,
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.red.withOpacity(0.7),
+            msg: formattedMessage,
+            gravity: ToastGravity.BOTTOM,
+            textColor: Colors.white);
+      }else {
+        Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: responseData['message'],
+          msg: responseData['message'].toString(),
           gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white);
+          textColor: Colors.white,
+        );
+      }
     }
     } catch (e) {
       print('error login in signup serivce');
@@ -193,13 +246,26 @@ class AuthService {
           textColor: Colors.white);
       return responseData;
     } else {
-      throw Fluttertoast.showToast(
+      if (responseData['message'] is Map && responseData['message']['message'] is List) {
+        var messageList = responseData['message']['message'];
+        String formattedMessage = messageList.join(', ');
+        throw Fluttertoast.showToast(
+            fontSize: 18,
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.red.withOpacity(0.7),
+            msg: formattedMessage,
+            gravity: ToastGravity.BOTTOM,
+            textColor: Colors.white);
+      }else {
+        Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: responseData['message'],
+          msg: responseData['message'].toString(),
           gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white);
+          textColor: Colors.white,
+        );
+      }
     }
     } catch (e) {
       print('error login in signup serivce');
@@ -230,13 +296,26 @@ class AuthService {
           textColor: Colors.white);
       return responseData;
     } else {
-      throw Fluttertoast.showToast(
+      if (responseData['message'] is Map && responseData['message']['message'] is List) {
+        var messageList = responseData['message']['message'];
+        String formattedMessage = messageList.join(', ');
+        throw Fluttertoast.showToast(
+            fontSize: 18,
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.red.withOpacity(0.7),
+            msg: formattedMessage,
+            gravity: ToastGravity.BOTTOM,
+            textColor: Colors.white);
+      }else {
+        Fluttertoast.showToast(
           fontSize: 18,
           toastLength: Toast.LENGTH_LONG,
           backgroundColor: Colors.red.withOpacity(0.7),
-          msg: responseData['message'],
+          msg: responseData['message'].toString(),
           gravity: ToastGravity.BOTTOM,
-          textColor: Colors.white);
+          textColor: Colors.white,
+        );
+      }
     }
   }
    catch (e) {

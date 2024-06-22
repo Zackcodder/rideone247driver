@@ -11,7 +11,7 @@ import '../core/constants/colors.dart';
 
 class NavBar extends StatefulWidget {
   static String id = 'nav_bar';
-   NavBar({super.key});
+   const NavBar({super.key});
 
   @override
   State<NavBar> createState() => _NavBarState();
@@ -19,10 +19,11 @@ class NavBar extends StatefulWidget {
 
 
 class _NavBarState extends State<NavBar> {
-
   @override
   void initState() {
+    // FlutterNativeSplash.remove();
     super.initState();
+
   }
 
   List<Widget> screens = [
@@ -40,7 +41,7 @@ class _NavBarState extends State<NavBar> {
   Widget build(BuildContext context) {
     NavbarProvider navbarProvider = Provider.of<NavbarProvider>(context);
     return Scaffold(
-        body: screens[navbarProvider.currenTab],
+        body: screens[navbarProvider.currentTab],
         // Container(
         //   ///background deco image
         //   decoration: const BoxDecoration(
@@ -83,7 +84,7 @@ class _NavBarState extends State<NavBar> {
               child: NavigationBar(
                 animationDuration: const Duration(seconds: 1),
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-                selectedIndex: navbarProvider.currenTab,
+                selectedIndex: navbarProvider.currentTab,
                 onDestinationSelected: (int idx) {
                   Provider.of<NavbarProvider>(context, listen: false)
                       .updateScreen(idx);

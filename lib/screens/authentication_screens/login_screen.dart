@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/screens/authentication_screens/forget_password.dart';
@@ -56,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const VerticalSpacing(100),
               //email text field
               AppTextField(
-                hintText: 'Cristianoronaldo@gmail.com',
+                hintText: '@gmail.com*',
                 prefixIcon: const Icon(
                   Icons.alternate_email_rounded,
                   color: AppColors.grey,
@@ -66,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const VerticalSpacing(20),
               //password text field
               AppTextField(
-                hintText: 'Your Password',
+                hintText: 'Password*',
                 prefixIcon: const Icon(
                   Icons.lock_outline_rounded,
                   color: AppColors.grey,
@@ -86,12 +87,22 @@ class _LoginScreenState extends State<LoginScreen> {
               AppElevatedButton.large(
                       onPressed: () async {
                         if(mounted){
-                          setState(() {
-                            authProvider.signInLoading;
-                            final email = emailController.text;
-                            final password = passwordController.text;
-                            authProvider.signIn(context, email, password);
-                          });
+                          if(emailController.text =='' || passwordController.text == ''){
+                            Fluttertoast.showToast(
+                                fontSize: 18,
+                                toastLength: Toast.LENGTH_LONG,
+                                backgroundColor: Colors.red.withOpacity(0.7),
+                                msg: 'Email/Password field is empty!',
+                                gravity: ToastGravity.BOTTOM,
+                                textColor: Colors.white);
+                          }else{
+                            setState(() {
+                              authProvider.signInLoading;
+                              final email = emailController.text;
+                              final password = passwordController.text;
+                              authProvider.signIn(context, email, password);
+                            });
+                          }
                         }
                          },
                       text: 'Login',

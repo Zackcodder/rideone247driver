@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class NavbarProvider extends ChangeNotifier {
-  int currenTab = 0;
+  int currentTab = 0;
 
   updateScreen(int tab) {
-    currenTab = tab;
+    currentTab = tab;
     notifyListeners();
   }
 }

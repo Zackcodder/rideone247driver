@@ -166,7 +166,7 @@ class AuthProvider with ChangeNotifier {
         notifyListeners();
       } else {
         _signUpLoading = false;
-        print('error');
+        print('error from sign up ${responseData['message']}');
         setError(responseData['message']);
         notifyListeners();
       }

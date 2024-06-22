@@ -568,7 +568,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ],
                 ).expand(),
-                const VerticalSpacing(100)
               ],
             ),
           ),

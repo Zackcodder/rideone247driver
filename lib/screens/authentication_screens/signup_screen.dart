@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_on_driver/provider/authprovider.dart';
 import 'package:ride_on_driver/screens/authentication_screens/forget_password.dart';
@@ -36,134 +37,164 @@ class _SignupScreenState extends State<SignupScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          child: Column(
-            children: [
-              //app logo
-              const AppLogo(),
-              SizedBox(
-                width: 220.w,
-                child: Text(
-                  'Hey, to join our community, please provide these details.',
-                  textAlign: TextAlign.center,
+          child: Container(
+            margin: EdgeInsets.only(left:23, right:23),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //app logo
+                Align(
+                  alignment: Alignment.center,
+                    child: const AppLogo()),
+                Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: 220.w,
+                    child: Text(
+                      'Hey, to join our community, please provide these details.',
+                      textAlign: TextAlign.center,
+                      style: context.textTheme.bodySmall,
+                    ),
+                  ),
+                ),
+                const VerticalSpacing(50),
+                Text(
+                  'All Fields are required. Email field should not have extra space',
+                  textAlign: TextAlign.justify,
                   style: context.textTheme.bodySmall,
                 ),
-              ),
-              const VerticalSpacing(50),
-              ///first name text field
-              AppTextField(
-                controller: firstNameController,
-                hintText: 'Please Enter Your First Names',
-                prefixIcon: const Icon(
-                  Icons.person_2_outlined,
-                  color: AppColors.grey,
-                ),
-              ),
-              const VerticalSpacing(20),
-              //last name
-              AppTextField(
-                controller: lastNameController,
-                hintText: 'Please Enter Your Last Names',
-                prefixIcon: const Icon(
-                  Icons.person_2_outlined,
-                  color: AppColors.grey,
-                ),
-              ),
-              const VerticalSpacing(20),
-              //phone number
-              AppTextField(
-                keyboardType: TextInputType.number,
-                controller: phoneNumberController,
-                hintText: 'Please Enter Your Phone Number',
-                prefixIcon: const Icon(
-                  Icons.phone_iphone_rounded,
-                  color: AppColors.grey,
-                ),
-              ),
-              const VerticalSpacing(20),
-              //email
-              AppTextField(
-                keyboardType: TextInputType.emailAddress,
-                controller: emailController,
-                hintText: 'Please Enter Your Email',
-                prefixIcon: const Icon(
-                  Icons.mail_outline_rounded,
-                  color: AppColors.grey,
-                ),
-              ),
-              const VerticalSpacing(20),
-              //password
-              AppTextField(
-                keyboardType: TextInputType.visiblePassword,
-                controller: passwordController,
-                hintText: 'Please Enter Your Password',
-                prefixIcon: const Icon(
-                  Icons.lock_outline_rounded,
-                  color: AppColors.grey,
-                ),
-                isPassword: true,
-              ),
-              const VerticalSpacing(20),
-              //gender
-              AppTextField(
-                capitalization: TextCapitalization.characters,
-                controller: genderController,
-                hintText: 'Please Enter Your Gender',
-                prefixIcon: const Icon(
-                  Icons.male,
-                  color: AppColors.grey,
-                ),
-              ),
-              const VerticalSpacing(50),
-              //signup button
-              authProvider.signUpLoading == true
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.black),
-                      ),
-                    )
-                  : AppElevatedButton.large(
-                      onPressed: () async {
-                        if(mounted){
-                          final firstName = firstNameController.text;
-                          final lastName = lastNameController.text;
-                          final phone = phoneNumberController.text;
-                          final password = passwordController.text;
-                          final email = emailController.text;
-                          final gender = genderController.text;
-                          const String role = 'DRIVER';
-                          authProvider.signUp(context, firstName, lastName, phone,
-                               email,password, gender, role);
-
-                          setState(() {
-                            authProvider.signUpLoading;
-                          });
-                        }
-                      },
-                      text: 'Sign Up',
-                    ),
-              const VerticalSpacing(10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Already have an account?',
-                    style: context.textTheme.bodySmall,
+                ///first name text field
+                AppTextField(
+                  controller: firstNameController,
+                  hintText: 'Please Enter Your First Names*',
+                  prefixIcon: const Icon(
+                    Icons.person_2_outlined,
+                    color: AppColors.grey,
                   ),
-                  AppTextButton(
+                ),
+                const VerticalSpacing(20),
+                //last name
+                AppTextField(
+                  controller: lastNameController,
+                  hintText: 'Please Enter Your Last Names*',
+                  prefixIcon: const Icon(
+                    Icons.person_2_outlined,
+                    color: AppColors.grey,
+                  ),
+                ),
+                const VerticalSpacing(20),
+                //phone number
+                AppTextField(
+                  keyboardType: TextInputType.number,
+                  controller: phoneNumberController,
+                  hintText: 'Please Enter Your Phone Number*',
+                  prefixIcon: const Icon(
+                    Icons.phone_iphone_rounded,
+                    color: AppColors.grey,
+                  ),
+                ),
+                const VerticalSpacing(20),
+                //email
+                AppTextField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
+                  hintText: 'Please Enter Your Email*',
+                  prefixIcon: const Icon(
+                    Icons.mail_outline_rounded,
+                    color: AppColors.grey,
+                  ),
+                ),
+                const VerticalSpacing(20),
+                //password
+                AppTextField(
+                  keyboardType: TextInputType.visiblePassword,
+                  controller: passwordController,
+                  hintText: 'Please Enter Your Password*',
+                  prefixIcon: const Icon(
+                    Icons.lock_outline_rounded,
+                    color: AppColors.grey,
+                  ),
+                  isPassword: true,
+                ),
+                const VerticalSpacing(20),
+                //gender
+                AppTextField(
+                  capitalization: TextCapitalization.characters,
+                  controller: genderController,
+                  hintText: 'Please Enter Your Gender*',
+                  prefixIcon: const Icon(
+                    Icons.male,
+                    color: AppColors.grey,
+                  ),
+                ),
+                const VerticalSpacing(50),
+                //signup button
+                authProvider.signUpLoading == true
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(Colors.black),
+                        ),
+                      )
+                    : AppElevatedButton.large(
+                        onPressed: () async {
+                          if(mounted){
+                            final firstName = firstNameController.text;
+                            final lastName = lastNameController.text;
+                            final phone = phoneNumberController.text;
+                            final password = passwordController.text;
+                            final email = emailController.text;
+                            final gender = genderController.text;
+                            const String role = 'DRIVER';
+                            if(firstNameController.text == '' || lastNameController.text == '' || phoneNumberController.text =='' ||
+                                passwordController.text =='' || emailController.text == '' || genderController.text ==''){
+                              Fluttertoast.showToast(
+                                  fontSize: 18,
+                                  toastLength: Toast.LENGTH_LONG,
+                                  backgroundColor: Colors.red.withOpacity(0.7),
+                                  msg: 'Empty fields!',
+                                  gravity: ToastGravity.BOTTOM,
+                                  textColor: Colors.white);
+                            }
+                            else{
+                              authProvider.signUp(context, firstName, lastName, phone,
+                                  email,password, gender, role);
+
+                            }
+
+                            setState(() {
+                              authProvider.signUpLoading;
+                            });
+                          }
+                        },
+                        text: 'Sign Up',
+                      ),
+                const VerticalSpacing(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Already have an account?',
+                      style: context.textTheme.bodySmall,
+                    ),
+                    AppTextButton(
+                      onPressed: () {
+                        context.pop();
+                      },
+                      text: 'Log In',
+                    )
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: AppTextButton(
                     onPressed: () {
-                      context.pop();
+                      context.push(const ForgetPasswordScreen());
                     },
-                    text: 'Log In',
-                  )
-                ],
-              ),
-              AppTextButton(
-                onPressed: () {
-                  context.push(const ForgetPasswordScreen());
-                },
-                text: 'Forgot Password?',
-              ),
-            ],
+                    text: 'Forgot Password?',
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -112,7 +112,7 @@ class _MyAppState extends State<MyApp> {
               title: AppStrings.appName,
               theme: AppTheme.lightTheme,
               navigatorKey: MyApp.navigatorKey,
-              home: widget.initialToken != null ?  NavBar() : const LoginScreen(),
+              home: widget.initialToken != null ?  const NavBar() : const LoginScreen(),
             ),
           ),
         );
